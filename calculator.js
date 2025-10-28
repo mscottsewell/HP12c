@@ -47,6 +47,7 @@ class HP12cCalculator {
         
         this.initializeEventListeners();
         this.updateDisplay();
+        this.showReadyStep();
     }
     
     initializeEventListeners() {
@@ -996,7 +997,7 @@ class HP12cCalculator {
                 const stepsContainer = document.getElementById('steps-container');
                 stepsContainer.innerHTML = '';
                 if (this.steps.length === 0) {
-                    stepsContainer.innerHTML = '<p class="steps-intro">Click calculator buttons to see the sequence of steps here. This helps students learn the exact button sequence needed for calculations.</p>';
+                    this.showReadyStep();
                     this.lastStepWasNumber = false;
                 } else {
                     this.steps.forEach(step => this.renderStep(step));
@@ -1018,6 +1019,7 @@ class HP12cCalculator {
             const stepsContainer = document.getElementById('steps-container');
             stepsContainer.innerHTML = '';
             if (this.steps.length === 0) {
+                this.showReadyStep();
                 this.lastStepWasNumber = false;
             } else {
                 this.steps.forEach(step => this.renderStep(step));
@@ -1070,6 +1072,7 @@ class HP12cCalculator {
         this.stepBackupSaved = false;
         const stepsContainer = document.getElementById('steps-container');
         stepsContainer.innerHTML = '';
+        this.showReadyStep();
         this.updateDisplay();
     }
     
@@ -1490,7 +1493,28 @@ class HP12cCalculator {
     }
     
     // Steps recording system
+    showReadyStep() {
+        const stepsContainer = document.getElementById('steps-container');
+        const stepElement = document.createElement('div');
+        stepElement.className = 'step ready-step';
+        stepElement.innerHTML = `
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-description">Ready</div>
+            </div>
+            <div class="step-result">${this.formatNumber(0)}</div>
+        `;
+        stepsContainer.appendChild(stepElement);
+    }
+    
     addStep(button, functionUsed, result) {
+        // Remove the ready step if this is the first real step
+        if (this.stepCounter === 0) {
+            const stepsContainer = document.getElementById('steps-container');
+            const readyStep = stepsContainer.querySelector('.ready-step');
+            if (readyStep) readyStep.remove();
+        }
+        
         this.stepCounter++;
         
         // Wrap operators and storage buttons in brackets for standalone steps

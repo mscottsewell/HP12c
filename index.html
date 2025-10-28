@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP 12C Financial Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=8">
+    <script src="calculator.js?v=36"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-section">
+            <div class="calculator-container">
+                <!-- Calculator Display -->
+                <div class="display-container">
+                    <div class="display">
+                        <div class="display-screen" id="display-screen">0.00</div>
+                        <div class="display-indicators">
+                            <span class="indicator user" id="user-indicator">USER</span>
+                            <span class="indicator f" id="f-indicator">f</span>
+                            <span class="indicator g" id="g-indicator">g</span>
+                            <span class="indicator begin" id="begin-indicator">BEGIN</span>
+                            <span class="indicator grad" id="grad-indicator">GRAD</span>
+                            <span class="indicator rad" id="rad-indicator">RAD</span>
+                            <span class="indicator dmy" id="dmy-indicator">D.MY</span>
+                            <span class="indicator c" id="c-indicator">C</span>
+                            <span class="indicator prgm" id="prgm-indicator">PRGM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Image with Button Overlays -->
+                <div class="calculator-image-container">
+                    <img src="Assets/AmyCalc_HP12c.png" alt="AmyCalc12c Calculator" class="calculator-image">
+                    
+                    <!-- Row 1 buttons -->
+                    <button class="calc-btn" data-key="n" data-primary="n" data-f="AMORT" data-g="12×" style="top: 39%; left: 9.2%;">n</button>
+                    <button class="calc-btn" data-key="i" data-primary="i" data-f="INT" data-g="12÷" style="top: 39%; left: 18.2%;">i</button>
+                    <button class="calc-btn" data-key="pv" data-primary="PV" data-f="NPV" data-g="CFo" style="top: 39%; left: 27.2%;">PV</button>
+                    <button class="calc-btn" data-key="pmt" data-primary="PMT" data-f="RND" data-g="CFj" style="top: 39%; left: 36.2%;">PMT</button>
+                    <button class="calc-btn" data-key="fv" data-primary="FV" data-f="IRR" data-g="Nj" style="top: 39%; left: 45.2%;">FV</button>
+                    <button class="calc-btn" data-key="chs" data-primary="CHS" data-f="" data-g="DATE" style="top: 39%; left: 54.2%;">CHS</button>
+                    <button class="calc-btn" data-key="7" data-primary="7" data-f="" data-g="BEG" style="top: 39%; left: 63.2%;">7</button>
+                    <button class="calc-btn" data-key="8" data-primary="8" data-f="" data-g="END" style="top: 39%; left: 72.2%;">8</button>
+                    <button class="calc-btn" data-key="9" data-primary="9" data-f="" data-g="MEM" style="top: 39%; left: 81.2%;">9</button>
+                    <button class="calc-btn" data-key="divide" data-primary="÷" data-f="" data-g="" style="top: 39%; left: 90.2%;">÷</button>
+
+                    <!-- Row 2 buttons -->
+                    <button class="calc-btn" data-key="yx" data-primary="y^x" data-f="PRICE" data-g="√x" style="top: 55%; left: 9.2%;">y^x</button>
+                    <button class="calc-btn" data-key="1x" data-primary="1/x" data-f="YTM" data-g="e^x" style="top: 55%; left: 18.2%;">1/x</button>
+                    <button class="calc-btn" data-key="percent" data-primary="%T" data-f="SL" data-g="LN" style="top: 55%; left: 27.2%;">%T</button>
+                    <button class="calc-btn" data-key="delta" data-primary="Δ%" data-f="SOYD" data-g="FRAC" style="top: 55%; left: 36.2%;">Δ%</button>
+                    <button class="calc-btn" data-key="percentdb" data-primary="%" data-f="DB" data-g="INTG" style="top: 55%; left: 45.2%;">%</button>
+                    <button class="calc-btn" data-key="eex" data-primary="EEX" data-f="" data-g="ΔDYS" style="top: 55%; left: 54.2%;">EEX</button>
+                    <button class="calc-btn" data-key="4" data-primary="4" data-f="" data-g="D.MY" style="top: 55%; left: 63.2%;">4</button>
+                    <button class="calc-btn" data-key="5" data-primary="5" data-f="" data-g="M.DY" style="top: 55%; left: 72.2%;">5</button>
+                    <button class="calc-btn" data-key="6" data-primary="6" data-f="" data-g="x̄,w" style="top: 55%; left: 81.2%;">6</button>
+                    <button class="calc-btn" data-key="multiply" data-primary="×" data-f="" data-g="" style="top: 55%; left: 90.2%;">×</button>
+
+                    <!-- Row 3 buttons -->
+                    <button class="calc-btn" data-key="rs" data-primary="R/S" data-f="P/R" data-g="PSE" style="top: 71%; left: 9.2%;">R/S</button>
+                    <button class="calc-btn" data-key="sst" data-primary="SST" data-f="Σ" data-g="BST" style="top: 71%; left: 18.2%;">SST</button>
+                    <button class="calc-btn" data-key="roll" data-primary="R↓" data-f="PRGM" data-g="GTO" style="top: 71%; left: 27.2%;">R↓</button>
+                    <button class="calc-btn" data-key="xy" data-primary="x↔y" data-f="FIN" data-g="x≤y" style="top: 71%; left: 36.2%;">x↔y</button>
+                    <button class="calc-btn" data-key="clx" data-primary="CLx" data-f="REG" data-g="x=0" style="top: 71%; left: 45.2%;">CLx</button>
+                    <button class="calc-btn" data-key="enter" data-primary="ENTER" data-f="PREFIX" data-g="LSTx" style="top: 79%; left: 54.2%; height: 25%;">ENTER</button>
+                    <button class="calc-btn" data-key="1" data-primary="1" data-f="" data-g="x̄,r" style="top: 71%; left: 63.2%;">1</button>
+                    <button class="calc-btn" data-key="2" data-primary="2" data-f="" data-g="ŷ,r" style="top: 71%; left: 72.2%;">2</button>
+                    <button class="calc-btn" data-key="3" data-primary="3" data-f="" data-g="n!" style="top: 71%; left: 81.2%;">3</button>
+                    <button class="calc-btn" data-key="minus" data-primary="−" data-f="" data-g="BST" style="top: 71%; left: 90.2%;">−</button>
+
+                    <!-- Row 4 buttons -->
+                    <button class="calc-btn" data-key="on" data-primary="ON" data-f="" data-g="" style="top: 87%; left: 9.2%;">ON</button>
+                    <button class="calc-btn f-key" data-key="f" data-primary="f" style="top: 87%; left: 18.2%;">f</button>
+                    <button class="calc-btn g-key" data-key="g" data-primary="g" style="top: 87%; left: 27.2%;">g</button>
+                    <button class="calc-btn" data-key="sto" data-primary="STO" data-f="" data-g="" style="top: 87%; left: 36.2%;">STO</button>
+                    <button class="calc-btn" data-key="rcl" data-primary="RCL" data-f="" data-g="" style="top: 87%; left: 45.2%;">RCL</button>
+                    <!-- Space where no button exists on real HP12c -->
+                    <button class="calc-btn" data-key="0" data-primary="0" data-f="" data-g="x̂" style="top: 87%; left: 63.2%;">0</button>
+                    <button class="calc-btn" data-key="decimal" data-primary="." data-f="" data-g="s" style="top: 87%; left: 72.2%;">.</button>
+                    <button class="calc-btn" data-key="sum" data-primary="Σ+" data-f="" data-g="Σ-" style="top: 87%; left: 81.2%;">Σ+</button>
+                    <button class="calc-btn" data-key="plus" data-primary="+" data-f="" data-g="" style="top: 87%; left: 90.2%;">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="steps-section">
+            <h2>Calculation Steps</h2>
+            <div class="steps-controls">
+                <button id="clear-steps" class="control-btn">Clear Steps</button>
+                <button id="export-steps" class="control-btn">Export Steps</button>
+            </div>
+            <div class="steps-container" id="steps-container">
+                <p class="steps-intro">Click calculator buttons to see the sequence of steps here. This helps students learn the exact button sequence needed for calculations.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="calculator.js?v=34"></script>
+</body>
+</html>

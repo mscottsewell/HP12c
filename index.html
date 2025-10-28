@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=9">
-    <script src="calculator.js?v=37"></script>
+    <link rel="stylesheet" href="styles.css?v=10">
+    <script src="calculator.js?v=38"></script>
 </head>
 <body>
     <div class="container">
@@ -85,6 +85,72 @@
                     <button class="calc-btn" data-key="plus" data-primary="+" data-f="" data-g="" style="top: 87%; left: 90.2%;">+</button>
                 </div>
             </div>
+
+            <!-- Help/Documentation Section -->
+            <div class="help-section collapsed">
+                <div class="help-nav">
+                    <button class="help-nav-btn" id="show-tips-btn" onclick="toggleHelp('tips')">Practice Tips & Common Errors</button>
+                    <button class="help-nav-btn" id="show-examples-btn" onclick="toggleHelp('examples')">View Examples</button>
+                </div>
+                
+                <div id="help-content" style="display: none;">
+                    <!-- Default content -->
+                    <div id="help-tips" class="help-default">
+                        <h3>Practice Tips</h3>
+                        <ul>
+                            <li><strong>Always Clear:</strong> Press <code>f REG</code> or <code>ON</code> to clear before starting new problems</li>
+                            <li><strong>Check Signs:</strong> Cash outflows are negative (use <code>CHS</code>)</li>
+                            <li><strong>Verify Units:</strong> Ensure interest rates and time periods match (annual vs. monthly)</li>
+                            <li><strong>Use ENTER:</strong> For multi-step calculations, use <code>ENTER</code> to separate values</li>
+                            <li><strong>Practice RPN:</strong> Get comfortable with Reverse Polish Notation logic</li>
+                            <li><strong>Verify Results:</strong> Use known examples to check your technique</li>
+                        </ul>
+
+                        <h3>Common Errors to Avoid</h3>
+                        <ul>
+                            <li><strong>Wrong Sign Convention:</strong> Forgetting to make initial investments negative</li>
+                            <li><strong>Mismatched Periods:</strong> Using annual interest rate with monthly payments</li>
+                            <li><strong>Forgetting ENTER:</strong> Not using ENTER between stack operations</li>
+                            <li><strong>Calculator Mode:</strong> Not clearing previous calculations</li>
+                            <li><strong>Date Format:</strong> Using wrong date format (M.DY vs D.MY)</li>
+                            <li><strong>Statistics:</strong> Not clearing registers with <code>f REG</code> before new calculations</li>
+                        </ul>
+                    </div>
+
+                    <!-- Example categories and list -->
+                    <div id="help-examples" class="help-category-view" style="display: none;">
+                        <h3>Select a Category</h3>
+                        <div class="help-categories">
+                            <button class="help-category-btn" onclick="showCategory('tvm')">Time Value of Money</button>
+                            <button class="help-category-btn" onclick="showCategory('cashflow')">Cash Flow Analysis</button>
+                            <button class="help-category-btn" onclick="showCategory('percentage')">Percentage Calculations</button>
+                            <button class="help-category-btn" onclick="showCategory('statistics')">Statistical Calculations</button>
+                            <button class="help-category-btn" onclick="showCategory('math')">Mathematical Operations</button>
+                            <button class="help-category-btn" onclick="showCategory('depreciation')">Depreciation</button>
+                            <button class="help-category-btn" onclick="showCategory('amortization')">Amortization</button>
+                            <button class="help-category-btn" onclick="showCategory('dates')">Date Calculations</button>
+                        </div>
+                    </div>
+
+                    <!-- Example list for each category -->
+                    <div id="help-example-list" class="help-example-list-view" style="display: none;">
+                        <div class="help-header-row">
+                            <button class="help-back-arrow" onclick="showExamplesMenu()">←</button>
+                            <h3 id="category-title"></h3>
+                        </div>
+                        <div id="example-buttons"></div>
+                    </div>
+
+                    <!-- Individual example view -->
+                    <div id="help-example-detail" class="help-example-detail-view" style="display: none;">
+                        <div class="help-header-row">
+                            <button class="help-back-arrow" onclick="backToExampleList()">←</button>
+                            <h3 id="example-title"></h3>
+                        </div>
+                        <div id="example-content"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="steps-section">
@@ -94,6 +160,7 @@
         </div>
     </div>
 
-    <script src="calculator.js?v=37"></script>
+    <script src="calculator.js?v=38"></script>
+    <script src="help.js?v=1"></script>
 </body>
 </html>

@@ -1571,8 +1571,8 @@ class HP12cCalculator {
             this.stepBackupSaved = true;
         }
         
-        // Format the button text with space before bracket
-        const formattedButton = needsBrackets ? ` [${button}]` : button;
+        // Format the button text with bracket
+        const formattedButton = needsBrackets ? `[${button}]` : button;
         
         // For number entry, limit to 10 digits (matching calculator display limit)
         let newButtonText;

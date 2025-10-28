@@ -27,7 +27,7 @@ body {
     flex: 2;
     background: white;
     border-radius: 15px;
-    padding: 25px;
+    padding: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     height: fit-content;
 }
@@ -183,13 +183,14 @@ body {
 /* Steps Section */
 .steps-section {
     flex: 1;
-    background: white;
+    background: #eceef0;
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     max-height: 90vh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .steps-section h2 {
@@ -199,13 +200,8 @@ body {
     text-align: center;
 }
 
-.steps-container {
+#steps-container {
     flex: 1;
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 15px;
-    overflow-y: auto;
     font-family: 'Courier New', monospace;
     line-height: 1.6;
 }
@@ -226,8 +222,9 @@ body {
     border-left: 4px solid #3498db;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 10px;
+    align-items: start;
+    position: relative;
 }
 
 .step-number {
@@ -246,25 +243,32 @@ body {
 
 .step-content {
     flex: 1;
-    margin: 0 10px;
+    min-width: 0;
+    padding-right: 10px;
 }
 
 .step-button {
     font-weight: bold;
     color: #2c3e50;
+    display: inline;
 }
 
 .step-description {
     color: #6c757d;
     font-size: 0.9rem;
     margin-top: 2px;
+    padding-right: 0;
 }
 
 .step-result {
     color: #27ae60;
     font-weight: bold;
     font-size: 0.9rem;
-    flex-shrink: 0;
+    white-space: nowrap;
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    pointer-events: none;
 }
 
 /* Responsive Design */

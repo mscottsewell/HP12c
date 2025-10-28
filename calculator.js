@@ -3,7 +3,19 @@ class HP12cCalculator {
     constructor() {
         this.stack = [0, 0, 0, 0]; // X, Y, Z, T registers (RPN stack)
         this.memory = new Array(20).fill(0); // .0 to .9 and R0 to R9
-        this.display = '0.00';
+        
+        // Settings - load displayDecimals first before setting display
+        this.beginMode = false;
+        // Load displayDecimals from localStorage, default to 4 if not set
+        this.displayDecimals = localStorage.getItem('hp12c_displayDecimals') 
+            ? parseInt(localStorage.getItem('hp12c_displayDecimals')) 
+            : 4;
+        this.dateFormat = 'MDY'; // Default date format
+        this.programMode = false; // Program mode flag
+        this.stats = []; // Statistics data
+        
+        // Now set display with correct decimal places
+        this.display = (0).toFixed(this.displayDecimals);
         this.isNewNumber = true;
         this.isTyping = false;
         this.decimalEntered = false;
@@ -23,13 +35,6 @@ class HP12cCalculator {
         // Cash flow registers
         this.cashFlows = [];  // Array to store cash flows
         this.cashFlowCounts = [];  // Array to store counts for each cash flow
-        
-        // Settings
-        this.beginMode = false;
-        this.displayDecimals = 2;
-        this.dateFormat = 'MDY'; // Default date format
-        this.programMode = false; // Program mode flag
-        this.stats = []; // Statistics data
         
         // Steps tracking
         this.steps = [];
@@ -52,15 +57,6 @@ class HP12cCalculator {
                 this.handleButtonPress(button);
             });
         });
-        
-        // Control button listeners
-        document.getElementById('clear-steps').addEventListener('click', () => {
-            this.clearSteps();
-        });
-        
-        document.getElementById('export-steps').addEventListener('click', () => {
-            this.exportSteps();
-        });
     }
     
     handleButtonPress(button) {
@@ -79,9 +75,13 @@ class HP12cCalculator {
         if (this.fActive && this.isDigit(key)) {
             const decimals = parseInt(key);
             this.displayDecimals = decimals;
+            // Save to localStorage to persist across browser sessions
+            localStorage.setItem('hp12c_displayDecimals', decimals.toString());
             this.fActive = false;
             this.updateFunctionIndicators();
             this.updateDisplay();
+            // Add a step to show the decimal places change
+            this.addStep(`f ${key}`, `Set decimals to ${decimals}`, this.display);
             return;
         }
         
@@ -1018,7 +1018,6 @@ class HP12cCalculator {
             const stepsContainer = document.getElementById('steps-container');
             stepsContainer.innerHTML = '';
             if (this.steps.length === 0) {
-                stepsContainer.innerHTML = '<p class="steps-intro">Click calculator buttons to see the sequence of steps here. This helps students learn the exact button sequence needed for calculations.</p>';
                 this.lastStepWasNumber = false;
             } else {
                 this.steps.forEach(step => this.renderStep(step));
@@ -1037,7 +1036,8 @@ class HP12cCalculator {
     
     clearAll() {
         this.stack = [0, 0, 0, 0];
-        this.display = '0.00';
+        // Use current displayDecimals setting instead of hardcoded value
+        this.display = (0).toFixed(this.displayDecimals);
         this.isNewNumber = true;
         this.isTyping = false;
         this.decimalEntered = false;
@@ -1059,7 +1059,8 @@ class HP12cCalculator {
         this.cashFlowCounts = [];
         // Clear the display and stack
         this.stack = [0, 0, 0, 0];
-        this.display = '0';
+        // Use current displayDecimals setting
+        this.display = (0).toFixed(this.displayDecimals);
         this.isNewNumber = true;
         // Clear the steps display
         this.steps = [];
@@ -1068,7 +1069,7 @@ class HP12cCalculator {
         this.previousStep = null;
         this.stepBackupSaved = false;
         const stepsContainer = document.getElementById('steps-container');
-        stepsContainer.innerHTML = '<p class="steps-intro">Click calculator buttons to see the sequence of steps here. This helps students learn the exact button sequence needed for calculations.</p>';
+        stepsContainer.innerHTML = '';
         this.updateDisplay();
     }
     
@@ -1700,41 +1701,6 @@ class HP12cCalculator {
         `;
         
         stepsContainer.appendChild(stepElement);
-    }
-    
-    clearSteps() {
-        this.steps = [];
-        this.stepCounter = 0;
-        const stepsContainer = document.getElementById('steps-container');
-        stepsContainer.innerHTML = '<p class="steps-intro">Click calculator buttons to see the sequence of steps here. This helps students learn the exact button sequence needed for calculations.</p>';
-    }
-    
-    exportSteps() {
-        if (this.steps.length === 0) {
-            alert('No steps to export!');
-            return;
-        }
-        
-        let exportText = 'HP12c Calculator Steps\n';
-        exportText += '======================\n\n';
-        
-        this.steps.forEach(step => {
-            exportText += `Step ${step.number}: ${step.button}\n`;
-            exportText += `Description: ${step.description}\n`;
-            exportText += `Result: ${step.result}\n`;
-            exportText += `Time: ${step.timestamp}\n\n`;
-        });
-        
-        // Create download
-        const blob = new Blob([exportText], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'hp12c-steps.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
     }
     
     scrollToBottom() {

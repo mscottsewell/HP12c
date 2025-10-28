@@ -199,32 +199,6 @@ body {
     text-align: center;
 }
 
-.steps-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
-}
-
-.control-btn {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.3s;
-}
-
-.control-btn:hover {
-    background: #2980b9;
-}
-
-.control-btn:active {
-    transform: translateY(1px);
-}
-
 .steps-container {
     flex: 1;
     background: #f8f9fa;

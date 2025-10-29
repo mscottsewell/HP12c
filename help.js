@@ -392,6 +392,8 @@ const exampleData = {
     }
 };
 
+
+
 let currentCategory = null;
 let currentCategoryKey = null;
 let helpExpanded = false;

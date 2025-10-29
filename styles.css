@@ -196,8 +196,96 @@ body {
 .steps-section h2 {
     color: #2c3e50;
     margin-bottom: 20px;
+    margin-top: 25px;
     font-size: 1.4rem;
     text-align: center;
+}
+
+.steps-section h2:first-of-type {
+    margin-top: 0;
+}
+
+/* Registers Display */
+.registers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+.register-group {
+    background: white;
+    border-radius: 8px;
+    padding: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.register-group h3 {
+    display: none;
+}
+
+.register-display {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.register-display-horizontal {
+    display: grid;
+    grid-template-columns: 0.75fr 0.75fr 1.5fr 1.5fr 1.5fr;
+    gap: 8px;
+    align-items: center;
+    padding: 4px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.register-item {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    padding: 4px 6px;
+    border-right: none;
+    background: white;
+}
+
+.register-display-horizontal .register-label {
+    font-weight: bold;
+    color: #34495e;
+}
+
+.register-display-horizontal > div > span:not(.register-label) {
+    text-align: right;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    flex: 1;
+    min-width: 60px;
+}
+
+.register-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.register-row.empty {
+    justify-content: center;
+    color: #95a5a6;
+    font-style: italic;
+}
+
+.register-label {
+    font-weight: bold;
+    color: #34495e;
+    min-width: 35px;
+}
+
+.register-row span:last-child {
+    color: #2c3e50;
+    letter-spacing: 0.05em;
 }
 
 #steps-container {
@@ -296,6 +384,11 @@ body {
         font-size: 1.4rem;
     }
     
+    .register-display-horizontal {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
     .calculator-image {
         width: 120%;
     }
@@ -355,12 +448,38 @@ body {
     background: #a8a8a8;
 }
 
+/* Stack Section */
+.stack-section {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.stack-toggle-btn {
+    background-color: #ff6b35;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.stack-toggle-btn:hover {
+    background-color: #e55a2b;
+}
+
+#stack-content {
+    margin-top: 10px;
+}
+
 /* Help Section */
 .help-section {
     background: white;
     border-radius: 10px;
     padding: 15px;
-    margin-top: 20px;
+    margin-top: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }

@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=14">
-    <script src="calculator.js?v=38"></script>
+    <link rel="stylesheet" href="styles.css?v=41">
+    <script src="calculator.js?v=47"></script>
 </head>
 <body>
     <div class="container">
@@ -83,6 +83,19 @@
                     <button class="calc-btn" data-key="decimal" data-primary="." data-f="" data-g="s" style="top: 87%; left: 72.2%;">.</button>
                     <button class="calc-btn" data-key="sum" data-primary="Σ+" data-f="" data-g="Σ-" style="top: 87%; left: 81.2%;">Σ+</button>
                     <button class="calc-btn" data-key="plus" data-primary="+" data-f="" data-g="" style="top: 87%; left: 90.2%;">+</button>
+                </div>
+            </div>
+
+            <!-- Financial Registers -->
+            <div id="registers-container" class="registers-container">
+                <div class="register-group register-financial" id="financial-register-group" style="display: none;">
+                    <div class="register-display-horizontal">
+                        <div class="register-item"><span class="register-label">n:</span><span id="reg-n">0.00</span></div>
+                        <div class="register-item"><span class="register-label">i:</span><span id="reg-i">0.00</span></div>
+                        <div class="register-item"><span class="register-label">PV:</span><span id="reg-pv">0.00</span></div>
+                        <div class="register-item"><span class="register-label">PMT:</span><span id="reg-pmt">0.00</span></div>
+                        <div class="register-item"><span class="register-label">FV:</span><span id="reg-fv">0.00</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -161,13 +174,22 @@
         </div>
 
         <div class="steps-section">
+            <div id="registers-container-storage" class="registers-container">
+                <div class="register-group" id="storage-register-group" style="display: none;">
+                    <h3>Storage</h3>
+                    <div class="register-display" id="storage-registers">
+                    </div>
+                </div>
+            </div>
+            
             <h2>Calculation Steps</h2>
             <div id="steps-container">
             </div>
         </div>
     </div>
 
-    <script src="calculator.js?v=38"></script>
-    <script src="help.js?v=6"></script>
+    <link rel="stylesheet" href="styles.css?v=24">
+    <script src="calculator.js?v=54"></script>
+    <script src="help.js?v=8"></script>
 </body>
 </html>

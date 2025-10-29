@@ -45,6 +45,9 @@ class HP12cCalculator {
         this.previousStep = null; // Backup of step before it was modified (for CLx undo)
         this.stepBackupSaved = false; // Track if we've already saved a backup for current step
         
+        // Double-tap detection for CLx
+        this.lastKeyPressed = null;
+        
         this.initializeEventListeners();
         this.updateDisplay();
         this.showReadyStep();
@@ -78,11 +81,32 @@ class HP12cCalculator {
             this.displayDecimals = decimals;
             // Save to localStorage to persist across browser sessions
             localStorage.setItem('hp12c_displayDecimals', decimals.toString());
+            
+            // Reformat the current display value with new decimal places
+            const currentValue = parseFloat(this.stack[0]);
+            this.display = this.formatNumber(currentValue);
+            
+            // Reformat all existing steps with new decimal places
+            this.steps.forEach(step => {
+                // Parse the numeric result and reformat with new decimals
+                const numericResult = parseFloat(step.result.replace(/,/g, ''));
+                if (!isNaN(numericResult)) {
+                    step.result = this.formatNumber(numericResult);
+                }
+            });
+            
+            // Re-render all steps with updated formatting
+            const stepsContainer = document.getElementById('steps-container');
+            stepsContainer.innerHTML = '';
+            if (this.steps.length === 0) {
+                this.showReadyStep();
+            } else {
+                this.steps.forEach(step => this.renderStep(step));
+            }
+            
             this.fActive = false;
             this.updateFunctionIndicators();
             this.updateDisplay();
-            // Add a step to show the decimal places change
-            this.addStep(`f ${key}`, `Set decimals to ${decimals}`, this.display);
             return;
         }
         
@@ -159,19 +183,25 @@ class HP12cCalculator {
     }
     
     executeFunction(key, func) {
+        // Track last function for double-tap detection (must be before early returns)
+        const isDoubleTapCLx = (func === 'CLx' && this.lastKeyPressed === 'CLx');
+        
         switch (func) {
             case 'f':
                 this.fActive = !this.fActive;
                 this.gActive = false;
                 this.updateFunctionIndicators();
+                this.lastKeyPressed = func;
                 return;
             case 'g':
                 this.gActive = !this.gActive;
                 this.fActive = false;
                 this.updateFunctionIndicators();
+                this.lastKeyPressed = func;
                 return;
             case 'ON':
                 this.clearAll();
+                this.lastKeyPressed = func;
                 return;
         }
         
@@ -196,9 +226,29 @@ class HP12cCalculator {
         
         // Clear functions based on function used
         if (func === 'CLx') {
-            this.clearX();
+            // Clear display and steps only (not financial registers)
+            this.stack = [0, 0, 0, 0];
+            this.display = '0';
+            this.isNewNumber = false;
+            this.isTyping = false;
+            this.decimalEntered = false;
+            this.steps = [];
+            this.stepCounter = 0;
+            this.lastStepWasNumber = false;
+            this.previousStep = null;
+            this.stepBackupSaved = false;
+            
+            // Clear steps display and show ready
+            const stepsContainer = document.getElementById('steps-container');
+            stepsContainer.innerHTML = '';
+            this.showReadyStep();
+            
+            this.updateDisplay();
             return;
         }
+        
+        // Update last key pressed for other functions
+        this.lastKeyPressed = func;
         
         if (func === 'CLRG') {
             this.clearRegisters();
@@ -707,6 +757,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.lastTVMWasCalculation = false;
+        this.updateDisplay();
     }
     
     calculateN() {
@@ -722,6 +773,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.lastTVMWasCalculation = false;
+        this.updateDisplay();
     }
     
     calculateI() {
@@ -737,6 +789,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.lastTVMWasCalculation = false;
+        this.updateDisplay();
     }
     
     storePMT() {
@@ -746,6 +799,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.lastTVMWasCalculation = false;
+        this.updateDisplay();
     }
     
     storeFV() {
@@ -755,6 +809,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.lastTVMWasCalculation = false;
+        this.updateDisplay();
     }
     
     calculatePV() {
@@ -1460,6 +1515,9 @@ class HP12cCalculator {
         }
         
         document.getElementById('display-screen').textContent = displayValue;
+        
+        // Update registers display
+        this.updateRegisters();
     }
     
     updateFunctionIndicators() {
@@ -1730,6 +1788,43 @@ class HP12cCalculator {
     scrollToBottom() {
         const stepsContainer = document.getElementById('steps-container');
         stepsContainer.scrollTop = stepsContainer.scrollHeight;
+    }
+    
+    updateRegisters() {
+        // Update financial registers
+        document.getElementById('reg-n').textContent = this.formatRegisterValue(this.n);
+        document.getElementById('reg-i').textContent = this.formatRegisterValue(this.i) + '%';
+        document.getElementById('reg-pv').textContent = '$' + this.formatRegisterValue(this.pv);
+        document.getElementById('reg-pmt').textContent = '$' + this.formatRegisterValue(this.pmt);
+        document.getElementById('reg-fv').textContent = '$' + this.formatRegisterValue(this.fv);
+        
+        // Show/hide financial register group based on whether any values are non-zero
+        const hasFinancialValues = this.n !== 0 || this.i !== 0 || this.pv !== 0 || this.pmt !== 0 || this.fv !== 0;
+        const financialGroup = document.getElementById('financial-register-group');
+        financialGroup.style.display = hasFinancialValues ? 'block' : 'none';
+        
+        // Update storage registers (only show non-zero)
+        const storageContainer = document.getElementById('storage-registers');
+        storageContainer.innerHTML = '';
+        
+        let hasNonZero = false;
+        for (let i = 0; i < this.memory.length; i++) {
+            if (this.memory[i] !== 0) {
+                hasNonZero = true;
+                const row = document.createElement('div');
+                row.className = 'register-row';
+                row.innerHTML = `<span class="register-label">R${i}:</span><span>${this.formatRegisterValue(this.memory[i])}</span>`;
+                storageContainer.appendChild(row);
+            }
+        }
+        
+        // Show/hide storage register group based on whether any values are stored
+        const storageGroup = document.getElementById('storage-register-group');
+        storageGroup.style.display = hasNonZero ? 'block' : 'none';
+    }
+    
+    formatRegisterValue(value) {
+        return this.formatNumber(value, this.displayDecimals);
     }
 }
 

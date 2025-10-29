@@ -51,7 +51,7 @@ body {
     position: absolute;
     top: 6.75%;
     left: 18%;
-    width: 48%;
+    width: 46%;
     height: 15%;
     z-index: 10;
 }
@@ -102,6 +102,9 @@ body {
     letter-spacing: 0.15em;
     text-shadow: 0 0 1px rgba(0,0,0,0.3);
     letter-spacing: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 /* Calculator Image and Buttons */
@@ -211,7 +214,6 @@ body {
     flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
 }
 
 .register-group {
@@ -257,7 +259,6 @@ body {
 
 .register-display-horizontal > div > span:not(.register-label) {
     text-align: right;
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
     flex: 1;
     min-width: 60px;
 }

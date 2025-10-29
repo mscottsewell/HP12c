@@ -1,6 +1,10 @@
 // HP12c Help System - Examples and Documentation
 
 const exampleData = {
+    tips: {
+        title: "Practice Tips & Common Errors",
+        examples: [] // This is handled differently in the HTML
+    },
     tvm: {
         title: "Time Value of Money (TVM)",
         examples: [
@@ -101,10 +105,10 @@ const exampleData = {
                 name: "Net Present Value (NPV)",
                 problem: "Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate",
                 steps: [
-                    "`1000` `CHS` `f` `CFo` (initial cash flow)",
-                    "`300` `f` `CFj` (first year cash flow)",
-                    "`400` `f` `CFj` (second year cash flow)",
-                    "`500` `f` `CFj` (third year cash flow)",
+                    "`1000` `CHS` `g` `CFo` (initial cash flow)",
+                    "`300` `g` `CFj` (first year cash flow)",
+                    "`400` `g` `CFj` (second year cash flow)",
+                    "`500` `g` `CFj` (third year cash flow)",
                     "`10` `i` (discount rate)",
                     "`f` `NPV` (calculate net present value)"
                 ],
@@ -114,10 +118,10 @@ const exampleData = {
                 name: "Internal Rate of Return (IRR)",
                 problem: "Find IRR for project: Initial -$50,000, Year 1: $15,000, Year 2: $20,000, Year 3: $25,000",
                 steps: [
-                    "`50000` `CHS` `f` `CFo` (initial investment)",
-                    "`15000` `f` `CFj` (year 1 return)",
-                    "`20000` `f` `CFj` (year 2 return)",
-                    "`25000` `f` `CFj` (year 3 return)",
+                    "`50000` `CHS` `g` `CFo` (initial investment)",
+                    "`15000` `g` `CFj` (year 1 return)",
+                    "`20000` `g` `CFj` (year 2 return)",
+                    "`25000` `g` `CFj` (year 3 return)",
                     "`f` `IRR` (calculate internal rate of return)"
                 ],
                 result: "11.79% annual return"
@@ -126,13 +130,13 @@ const exampleData = {
                 name: "Uneven Cash Flows with Repeated Values",
                 problem: "Initial -$100,000, Years 1-3: $20,000 each, Years 4-5: $30,000 each. Find NPV at 8%.",
                 steps: [
-                    "`100000` `CHS` `f` `CFo`",
-                    "`20000` `f` `CFj`",
-                    "`3` `f` `Nj` (repeat 3 times)",
-                    "`30000` `f` `CFj`",
-                    "`2` `f` `Nj` (repeat 2 times)",
-                    "`8` `i`",
-                    "`f` `NPV`"
+                    "`100000` `CHS` `g` `CFo` (initial investment)",
+                    "`20000` `g` `CFj` (cash flow)",
+                    "`3` `g` `Nj` (repeat 3 times)",
+                    "`30000` `g` `CFj` (cash flow)",
+                    "`2` `g` `Nj` (repeat 2 times)",
+                    "`8` `i` (discount rate)",
+                    "`f` `NPV` (calculate NPV)"
                 ],
                 result: "$2,431.57"
             }
@@ -145,8 +149,8 @@ const exampleData = {
                 name: "Simple Percentage",
                 problem: "What is 15% of $250?",
                 steps: [
-                    "`250` `ENTER`",
-                    "`15` `%`"
+                    "`250` `ENTER` (base amount)",
+                    "`15` `%` (calculate percentage)"
                 ],
                 result: "$37.50"
             },
@@ -154,8 +158,8 @@ const exampleData = {
                 name: "Percentage Change (Delta %)",
                 problem: "Sales increased from $80,000 to $95,000. What's the percentage increase?",
                 steps: [
-                    "`80000` `ENTER`",
-                    "`95000` `Δ%`"
+                    "`80000` `ENTER` (old value)",
+                    "`95000` `Δ%` (new value, calculate % change)"
                 ],
                 result: "18.75% increase"
             },
@@ -163,8 +167,8 @@ const exampleData = {
                 name: "Percentage of Total (%T)",
                 problem: "$45,000 is what percentage of $180,000?",
                 steps: [
-                    "`180000` `ENTER`",
-                    "`45000` `%T`"
+                    "`180000` `ENTER` (total amount)",
+                    "`45000` `%T` (part amount, calculate % of total)"
                 ],
                 result: "25%"
             },
@@ -172,7 +176,7 @@ const exampleData = {
                 name: "Markup Calculation",
                 problem: "A product costs $60. Add 35% markup. What's the selling price?",
                 steps: [
-                    "`60` `ENTER`",
+                    "`60` `ENTER` (cost)",
                     "`35` `%` (calculate markup amount)",
                     "`+` (add to cost)"
                 ],
@@ -182,7 +186,7 @@ const exampleData = {
                 name: "Discount Calculation",
                 problem: "Original price $150, 20% discount. What's the sale price?",
                 steps: [
-                    "`150` `ENTER`",
+                    "`150` `ENTER` (original price)",
                     "`20` `%` (calculate discount amount)",
                     "`-` (subtract from original)"
                 ],
@@ -197,12 +201,11 @@ const exampleData = {
                 name: "Mean (Average)",
                 problem: "Find the mean of: 10, 15, 20, 25, 30",
                 steps: [
-                    "`f` `REG` (clear statistics)",
-                    "`10` `Σ+`",
-                    "`15` `Σ+`",
-                    "`20` `Σ+`",
-                    "`25` `Σ+`",
-                    "`30` `Σ+`",
+                    "`10` `Σ+` (add to data set)",
+                    "`15` `Σ+` (add to data set)",
+                    "`20` `Σ+` (add to data set)",
+                    "`25` `Σ+` (add to data set)",
+                    "`30` `Σ+` (add to data set)",
                     "`g` `x̄` (calculate mean)"
                 ],
                 result: "20"
@@ -211,12 +214,11 @@ const exampleData = {
                 name: "Standard Deviation",
                 problem: "Find standard deviation of: 5, 10, 15, 20, 25",
                 steps: [
-                    "`f` `REG` (clear statistics)",
-                    "`5` `Σ+`",
-                    "`10` `Σ+`",
-                    "`15` `Σ+`",
-                    "`20` `Σ+`",
-                    "`25` `Σ+`",
+                    "`5` `Σ+` (add to data set)",
+                    "`10` `Σ+` (add to data set)",
+                    "`15` `Σ+` (add to data set)",
+                    "`20` `Σ+` (add to data set)",
+                    "`25` `Σ+` (add to data set)",
                     "`g` `s` (standard deviation)"
                 ],
                 result: "7.91"
@@ -225,10 +227,9 @@ const exampleData = {
                 name: "Weighted Average",
                 problem: "Test scores: 85 (weight 3), 90 (weight 2), 78 (weight 1). Find weighted average.",
                 steps: [
-                    "`f` `REG` (clear statistics)",
                     "`85` `ENTER` `3` `Σ+` (score, weight)",
-                    "`90` `ENTER` `2` `Σ+`",
-                    "`78` `ENTER` `1` `Σ+`",
+                    "`90` `ENTER` `2` `Σ+` (score, weight)",
+                    "`78` `ENTER` `1` `Σ+` (score, weight)",
                     "`g` `x̄,w` (weighted mean)"
                 ],
                 result: "85.67"
@@ -242,8 +243,8 @@ const exampleData = {
                 name: "Power Calculation",
                 problem: "Calculate 3⁴",
                 steps: [
-                    "`3` `ENTER`",
-                    "`4` `y^x`"
+                    "`3` `ENTER` (base)",
+                    "`4` `y^x` (exponent, calculate power)"
                 ],
                 result: "81"
             },
@@ -251,7 +252,7 @@ const exampleData = {
                 name: "Square Root",
                 problem: "Find the square root of 144",
                 steps: [
-                    "`144` `g` `√x`"
+                    "`144` `g` `√x` (calculate square root)"
                 ],
                 result: "12"
             },
@@ -259,7 +260,7 @@ const exampleData = {
                 name: "Factorial",
                 problem: "Calculate 5! (5 factorial)",
                 steps: [
-                    "`5` `g` `n!`"
+                    "`5` `g` `n!` (calculate factorial)"
                 ],
                 result: "120"
             },
@@ -267,7 +268,7 @@ const exampleData = {
                 name: "Natural Logarithm",
                 problem: "Find ln(100)",
                 steps: [
-                    "`100` `g` `LN`"
+                    "`100` `g` `LN` (calculate natural log)"
                 ],
                 result: "4.61"
             },
@@ -275,7 +276,7 @@ const exampleData = {
                 name: "Exponential (e^x)",
                 problem: "Calculate e²",
                 steps: [
-                    "`2` `g` `e^x`"
+                    "`2` `g` `e^x` (calculate e to the power)"
                 ],
                 result: "7.39"
             },
@@ -283,7 +284,7 @@ const exampleData = {
                 name: "Reciprocal",
                 problem: "Find 1/8",
                 steps: [
-                    "`8` `1/x`"
+                    "`8` `1/x` (calculate reciprocal)"
                 ],
                 result: "0.125"
             },
@@ -291,9 +292,9 @@ const exampleData = {
                 name: "Compound Calculation",
                 problem: "Calculate (15 + 25) × (8 - 3)",
                 steps: [
-                    "`15` `ENTER` `25` `+` (= 40)",
-                    "`8` `ENTER` `3` `-` (= 5)",
-                    "`×`"
+                    "`15` `ENTER` `25` `+` (first sum = 40)",
+                    "`8` `ENTER` `3` `-` (second difference = 5)",
+                    "`×` (multiply results)"
                 ],
                 result: "200"
             }
@@ -344,8 +345,8 @@ const exampleData = {
                 problem: "$200,000 loan at 6% for 30 years. How much principal and interest in first year?",
                 steps: [
                     "`360` `n` (30 × 12 months)",
-                    "`6` `ENTER` `12` `÷` `i`",
-                    "`200000` `PV`",
+                    "`6` `ENTER` `12` `÷` `i` (monthly rate)",
+                    "`200000` `PV` (loan amount)",
                     "`PMT` (get payment first)",
                     "`1` `f` `AMORT` (amortize period 1)",
                     "`x↔y` (view principal)",
@@ -373,8 +374,8 @@ const exampleData = {
                 problem: "How many days between January 15, 2024 and March 30, 2024?",
                 steps: [
                     "`g` `M.DY` (set date format)",
-                    "`1.152024` `ENTER`",
-                    "`3.302024` `g` `ΔDYS`"
+                    "`1.152024` `ENTER` (first date)",
+                    "`3.302024` `g` `ΔDYS` (second date, calculate days)"
                 ],
                 result: "75 days (actual), interest calculation varies"
             },
@@ -382,8 +383,8 @@ const exampleData = {
                 name: "Future Date",
                 problem: "What date is 90 days after February 15, 2024?",
                 steps: [
-                    "`2.152024` `ENTER`",
-                    "`90` `g` `DATE`"
+                    "`2.152024` `ENTER` (start date)",
+                    "`90` `g` `DATE` (number of days, calculate future date)"
                 ],
                 result: "5.152024 (May 15, 2024)"
             }
@@ -395,51 +396,77 @@ let currentCategory = null;
 let currentCategoryKey = null;
 let helpExpanded = false;
 
-function toggleHelp(mode) {
+function toggleFAQ() {
     const helpContent = document.getElementById('help-content');
     const helpSection = document.querySelector('.help-section');
+    const faqBtn = document.getElementById('faq-btn');
     
-    // If clicking the same button that's already active, collapse
-    if (helpExpanded && 
-        ((mode === 'tips' && document.getElementById('help-tips').style.display !== 'none') ||
-         (mode === 'examples' && document.getElementById('help-examples').style.display !== 'none'))) {
-        helpContent.style.display = 'none';
-        helpSection.classList.add('collapsed');
-        helpExpanded = false;
-        return;
+    if (helpExpanded) {
+        // Collapse everything
+        collapseFAQ();
+    } else {
+        // Expand and show category menu
+        helpContent.style.display = 'block';
+        helpSection.classList.remove('collapsed');
+        faqBtn.style.display = 'none';
+        showCategoryMenu();
+        helpExpanded = true;
     }
+}
+
+function collapseFAQ() {
+    const helpContent = document.getElementById('help-content');
+    const helpSection = document.querySelector('.help-section');
+    const faqBtn = document.getElementById('faq-btn');
     
-    // Expand and show the requested view
-    helpContent.style.display = 'block';
-    helpSection.classList.remove('collapsed');
-    helpExpanded = true;
-    
-    if (mode === 'tips') {
-        showHelpDefault();
-    } else if (mode === 'examples') {
-        showExamplesMenu();
-    }
+    helpContent.style.display = 'none';
+    helpSection.classList.add('collapsed');
+    faqBtn.style.display = 'block';
+    helpExpanded = false;
+}
+
+function showCategoryMenu() {
+    document.getElementById('help-categories-view').style.display = 'block';
+    document.getElementById('help-tips').style.display = 'none';
+    document.getElementById('help-example-list').style.display = 'none';
+    document.getElementById('help-example-detail').style.display = 'none';
+}
+
+function backToCategoryMenu() {
+    showCategoryMenu();
+}
+
+function toggleHelp(mode) {
+    // Deprecated - kept for compatibility if needed
+    toggleFAQ();
 }
 
 function showHelpDefault() {
-    document.getElementById('help-tips').style.display = 'block';
-    document.getElementById('help-examples').style.display = 'none';
-    document.getElementById('help-example-list').style.display = 'none';
-    document.getElementById('help-example-detail').style.display = 'none';
+    // Deprecated - replaced by category menu
+    showCategoryMenu();
 }
 
 function showExamplesMenu() {
-    document.getElementById('help-tips').style.display = 'none';
-    document.getElementById('help-examples').style.display = 'block';
-    document.getElementById('help-example-list').style.display = 'none';
-    document.getElementById('help-example-detail').style.display = 'none';
+    // Deprecated - replaced by category menu
+    showCategoryMenu();
 }
 
 function showCategory(categoryKey) {
     currentCategoryKey = categoryKey;
+    
+    // Handle tips specially - show the tips view instead of example list
+    if (categoryKey === 'tips') {
+        document.getElementById('help-categories-view').style.display = 'none';
+        document.getElementById('help-tips').style.display = 'block';
+        document.getElementById('help-example-list').style.display = 'none';
+        document.getElementById('help-example-detail').style.display = 'none';
+        return;
+    }
+    
     currentCategory = exampleData[categoryKey];
     
-    document.getElementById('help-examples').style.display = 'none';
+    document.getElementById('help-categories-view').style.display = 'none';
+    document.getElementById('help-tips').style.display = 'none';
     document.getElementById('help-example-list').style.display = 'block';
     document.getElementById('help-example-detail').style.display = 'none';
     
@@ -458,16 +485,10 @@ function showCategory(categoryKey) {
 }
 
 function formatStep(step) {
-    // Replace backtick content with bold and add brackets for text
+    // Replace backtick content with code tags for shaded background
     return step.replace(/`([^`]+)`/g, (match, content) => {
-        // Check if content is text (not just numbers/symbols)
-        if (/[a-zA-Z]/.test(content)) {
-            // It contains letters, wrap in brackets and bold
-            return `<strong>[${content}]</strong>`;
-        } else {
-            // Just numbers/symbols, make bold without brackets
-            return `<strong>${content}</strong>`;
-        }
+        // Wrap all content in code tag for shaded background
+        return `<code>${content}</code>`;
     });
 }
 

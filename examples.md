@@ -128,10 +128,10 @@ This file contains step-by-step examples of common financial calculations using 
 **Problem**: Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate
 
 **Steps**:
-1. `1000` `CHS` `f` `CFo` (initial cash flow)
-2. `300` `f` `CFj` (first year cash flow)
-3. `400` `f` `CFj` (second year cash flow)
-4. `500` `f` `CFj` (third year cash flow)
+1. `1000` `CHS` `g` `CFo` (initial cash flow)
+2. `300` `g` `CFj` (first year cash flow)
+3. `400` `g` `CFj` (second year cash flow)
+4. `500` `g` `CFj` (third year cash flow)
 5. `10` `i` (discount rate)
 6. `f` `NPV` (calculate net present value)
 
@@ -142,10 +142,10 @@ This file contains step-by-step examples of common financial calculations using 
 **Problem**: Find IRR for project: Initial -$50,000, Year 1: $15,000, Year 2: $20,000, Year 3: $25,000
 
 **Steps**:
-1. `50000` `CHS` `f` `CFo` (initial investment)
-2. `15000` `f` `CFj` (year 1 return)
-3. `20000` `f` `CFj` (year 2 return)
-4. `25000` `f` `CFj` (year 3 return)
+1. `50000` `CHS` `g` `CFo` (initial investment)
+2. `15000` `g` `CFj` (year 1 return)
+3. `20000` `g` `CFj` (year 2 return)
+4. `25000` `g` `CFj` (year 3 return)
 5. `f` `IRR` (calculate internal rate of return)
 
 **Result**: 11.79% annual return
@@ -155,11 +155,11 @@ This file contains step-by-step examples of common financial calculations using 
 **Problem**: Initial -$100,000, Years 1-3: $20,000 each, Years 4-5: $30,000 each. Find NPV at 8%.
 
 **Steps**:
-1. `100000` `CHS` `f` `CFo`
-2. `20000` `f` `CFj`
-3. `3` `f` `Nj` (repeat 3 times)
-4. `30000` `f` `CFj`
-5. `2` `f` `Nj` (repeat 2 times)
+1. `100000` `CHS` `g` `CFo`
+2. `20000` `g` `CFj`
+3. `3` `g` `Nj` (repeat 3 times)
+4. `30000` `g` `CFj`
+5. `2` `g` `Nj` (repeat 2 times)
 6. `8` `i`
 7. `f` `NPV`
 

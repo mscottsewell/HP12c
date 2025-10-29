@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=10">
+    <link rel="stylesheet" href="styles.css?v=14">
     <script src="calculator.js?v=38"></script>
 </head>
 <body>
@@ -88,38 +88,15 @@
 
             <!-- Help/Documentation Section -->
             <div class="help-section collapsed">
-                <div class="help-nav">
-                    <button class="help-nav-btn" id="show-tips-btn" onclick="toggleHelp('tips')">Practice Tips & Common Errors</button>
-                    <button class="help-nav-btn" id="show-examples-btn" onclick="toggleHelp('examples')">View Examples</button>
-                </div>
+                <button class="faq-btn" id="faq-btn" onclick="toggleFAQ()">FAQ</button>
                 
                 <div id="help-content" style="display: none;">
-                    <!-- Default content -->
-                    <div id="help-tips" class="help-default">
-                        <h3>Practice Tips</h3>
-                        <ul>
-                            <li><strong>Always Clear:</strong> Press <code>f REG</code> or <code>ON</code> to clear before starting new problems</li>
-                            <li><strong>Check Signs:</strong> Cash outflows are negative (use <code>CHS</code>)</li>
-                            <li><strong>Verify Units:</strong> Ensure interest rates and time periods match (annual vs. monthly)</li>
-                            <li><strong>Use ENTER:</strong> For multi-step calculations, use <code>ENTER</code> to separate values</li>
-                            <li><strong>Practice RPN:</strong> Get comfortable with Reverse Polish Notation logic</li>
-                            <li><strong>Verify Results:</strong> Use known examples to check your technique</li>
-                        </ul>
-
-                        <h3>Common Errors to Avoid</h3>
-                        <ul>
-                            <li><strong>Wrong Sign Convention:</strong> Forgetting to make initial investments negative</li>
-                            <li><strong>Mismatched Periods:</strong> Using annual interest rate with monthly payments</li>
-                            <li><strong>Forgetting ENTER:</strong> Not using ENTER between stack operations</li>
-                            <li><strong>Calculator Mode:</strong> Not clearing previous calculations</li>
-                            <li><strong>Date Format:</strong> Using wrong date format (M.DY vs D.MY)</li>
-                            <li><strong>Statistics:</strong> Not clearing registers with <code>f REG</code> before new calculations</li>
-                        </ul>
-                    </div>
-
-                    <!-- Example categories and list -->
-                    <div id="help-examples" class="help-category-view" style="display: none;">
-                        <h3>Select a Category</h3>
+                    <!-- Category menu -->
+                    <div id="help-categories-view" class="help-category-view">
+                        <div class="help-header-row">
+                            <button class="help-back-arrow" onclick="collapseFAQ()">←</button>
+                            <h3>Select a Category</h3>
+                        </div>
                         <div class="help-categories">
                             <button class="help-category-btn" onclick="showCategory('tvm')">Time Value of Money</button>
                             <button class="help-category-btn" onclick="showCategory('cashflow')">Cash Flow Analysis</button>
@@ -129,6 +106,36 @@
                             <button class="help-category-btn" onclick="showCategory('depreciation')">Depreciation</button>
                             <button class="help-category-btn" onclick="showCategory('amortization')">Amortization</button>
                             <button class="help-category-btn" onclick="showCategory('dates')">Date Calculations</button>
+                            <button class="help-category-btn help-category-btn-wide" onclick="showCategory('tips')">Practice Tips & Common Errors</button>
+                        </div>
+                    </div>
+
+                    <!-- Practice Tips content -->
+                    <div id="help-tips" class="help-tips-view" style="display: none;">
+                        <div class="help-header-row">
+                            <button class="help-back-arrow" onclick="backToCategoryMenu()">←</button>
+                            <h3>Practice Tips & Common Errors</h3>
+                        </div>
+                        <div class="tips-content">
+                            <h4>Practice Tips</h4>
+                            <ul>
+                                <li><strong>Always Clear:</strong> Press <code>f REG</code> or <code>ON</code> to clear before starting new problems</li>
+                                <li><strong>Check Signs:</strong> Cash outflows are negative (use <code>CHS</code>)</li>
+                                <li><strong>Verify Units:</strong> Ensure interest rates and time periods match (annual vs. monthly)</li>
+                                <li><strong>Use ENTER:</strong> For multi-step calculations, use <code>ENTER</code> to separate values</li>
+                                <li><strong>Practice RPN:</strong> Get comfortable with Reverse Polish Notation logic</li>
+                                <li><strong>Verify Results:</strong> Use known examples to check your technique</li>
+                            </ul>
+
+                            <h4>Common Errors to Avoid</h4>
+                            <ul>
+                                <li><strong>Wrong Sign Convention:</strong> Forgetting to make initial investments negative</li>
+                                <li><strong>Mismatched Periods:</strong> Using annual interest rate with monthly payments</li>
+                                <li><strong>Forgetting ENTER:</strong> Not using ENTER between stack operations</li>
+                                <li><strong>Calculator Mode:</strong> Not clearing previous calculations</li>
+                                <li><strong>Date Format:</strong> Using wrong date format (M.DY vs D.MY)</li>
+                                <li><strong>Statistics:</strong> Not clearing registers with <code>f REG</code> before new calculations</li>
+                            </ul>
                         </div>
                     </div>
 
@@ -161,6 +168,6 @@
     </div>
 
     <script src="calculator.js?v=38"></script>
-    <script src="help.js?v=1"></script>
+    <script src="help.js?v=6"></script>
 </body>
 </html>

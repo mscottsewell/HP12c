@@ -412,6 +412,25 @@ body {
     color: #c7254e;
 }
 
+.faq-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.faq-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
 .help-nav {
     display: flex;
     gap: 10px;
@@ -513,6 +532,10 @@ body {
     transform: translateY(-2px);
 }
 
+.help-category-btn-wide {
+    grid-column: 1 / -1;
+}
+
 #example-buttons {
     display: flex;
     flex-direction: column;
@@ -578,10 +601,20 @@ body {
 }
 
 .steps-list li {
-    margin-bottom: 8px;
-    line-height: 1.6;
+    margin-bottom: 4px;
+    line-height: 1.4;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
+}
+
+.steps-list li code {
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    color: #000000;
+    font-weight: 600;
 }
 
 .example-result {
@@ -608,4 +641,41 @@ body {
 
 #help-content::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
+}
+
+.tips-content {
+    padding: 15px;
+    background: white;
+    border-radius: 5px;
+}
+
+.tips-content h4 {
+    color: #2c3e50;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.tips-content h4:first-child {
+    margin-top: 0;
+}
+
+.tips-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.tips-content li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.tips-content code {
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    color: #000000;
 }

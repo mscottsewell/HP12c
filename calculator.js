@@ -110,13 +110,16 @@ class HP12cCalculator {
             return;
         }
         
-        // Determine which function to execute
+        // Determine which function to execute and create combined display for f/g functions
+        let displayButton = primary;
         if (this.fActive && fFunction && fFunction.trim() !== '') {
             functionUsed = fFunction;
+            displayButton = 'f-' + fFunction;  // Combined display
             this.fActive = false;
             this.updateFunctionIndicators();
         } else if (this.gActive && gFunction && gFunction.trim() !== '') {
             functionUsed = gFunction;
+            displayButton = 'g-' + gFunction;  // Combined display
             this.gActive = false;
             this.updateFunctionIndicators();
         }
@@ -168,13 +171,13 @@ class HP12cCalculator {
         
         if (isNumberEntry && this.lastStepWasNumber) {
             // Update the last step instead of creating a new one
-            this.updateLastStep(functionUsed, functionUsed, this.display);
+            this.updateLastStep(displayButton, functionUsed, this.display);
         } else if (isOperatorOrStorage && this.lastStepWasNumber) {
             // Append operator/storage to the number entry on same row
-            this.updateLastStep(functionUsed, functionUsed, stepDisplayValue);
+            this.updateLastStep(displayButton, functionUsed, stepDisplayValue);
             this.lastStepWasNumber = false;  // Reset so next operation starts new row
         } else {
-            this.addStep(functionUsed, functionUsed, stepDisplayValue);
+            this.addStep(displayButton, functionUsed, stepDisplayValue);
         }
         this.lastStepWasNumber = isNumberEntry;
         
@@ -1575,11 +1578,8 @@ class HP12cCalculator {
         
         this.stepCounter++;
         
-        // Wrap operators and storage buttons in brackets for standalone steps
-        const bracketButtons = ['n', 'i', 'PV', 'PMT', 'FV', 'CFo', 'CFj', 'Nj', 'STO', 'RCL',
-                                 '+', '−', '×', '÷', 'ENTER', '%', 'Δ%', '%T', 'y^x', '1/x', 'CHS'];
-        const needsBrackets = bracketButtons.includes(button);
-        const formattedButton = needsBrackets ? `[${button}]` : button;
+        // No bracket wrapping - keep button text as-is
+        const formattedButton = button;
         
         // Format the result value to ensure thousands separators
         // Remove any existing commas first before parsing
@@ -1611,14 +1611,12 @@ class HP12cCalculator {
         
         const lastStep = this.steps[this.steps.length - 1];
         
-        // Determine if this should be in brackets (operators and storage buttons)
-        const bracketButtons = ['n', 'i', 'PV', 'PMT', 'FV', 'CFo', 'CFj', 'Nj', 'STO', 'RCL',
-                                 '+', '−', '×', '÷', 'ENTER', '%', 'Δ%', '%T', 'y^x', '1/x', 'CHS'];
-        const needsBrackets = bracketButtons.includes(button);
+        // Check if this is a non-digit operator/function
+        const isOperator = ![...button].every(char => /[0-9.]/.test(char));
         
-        // Save backup ONLY if this step already contains brackets (has an operator)
-        // This means we're appending to "2 [+]" not just updating "45" to "456"
-        if (!this.stepBackupSaved && lastStep.button.includes('[')) {
+        // Save backup ONLY if we're appending an operator to an existing step
+        // This means we're appending to "2 +" not just updating "45" to "456"
+        if (!this.stepBackupSaved && isOperator && lastStep.button.length > 0) {
             this.previousStep = {
                 number: lastStep.number,
                 button: lastStep.button,
@@ -1629,22 +1627,21 @@ class HP12cCalculator {
             this.stepBackupSaved = true;
         }
         
-        // Format the button text with bracket
-        const formattedButton = needsBrackets ? `[${button}]` : button;
-        
         // For number entry, limit to 10 digits (matching calculator display limit)
         let newButtonText;
-        if (!needsBrackets && this.isDigit(button)) {
+        const isNumberEntry = this.isDigit(button) || button === '.' || button === 'decimal' || button === 'EEX' || button === 'CHS';
+        if (isNumberEntry) {
             // Count only the digits in current button text
             const currentDigits = lastStep.button.replace(/[^0-9]/g, '');
-            if (currentDigits.length >= 10) {
+            if (currentDigits.length >= 10 && this.isDigit(button)) {
                 // Don't append more digits - keep the current button text
                 newButtonText = lastStep.button;
             } else {
-                newButtonText = lastStep.button + formattedButton;
+                newButtonText = lastStep.button + button;
             }
         } else {
-            newButtonText = lastStep.button + formattedButton;
+            // Add space before operators/functions if there's existing content
+            newButtonText = lastStep.button ? lastStep.button + ' ' + button : button;
         }
         
         // Update the last step - append the button to the sequence
@@ -1665,7 +1662,7 @@ class HP12cCalculator {
             let descElement = lastStepElement.querySelector('.step-description');
             
             if (buttonElement) {
-                buttonElement.textContent = lastStep.button;
+                buttonElement.innerHTML = this.formatKeystrokeDisplay(lastStep.button);
             }
             if (resultElement) {
                 resultElement.textContent = lastStep.result;
@@ -1764,6 +1761,25 @@ class HP12cCalculator {
         return descriptions[functionUsed] || '';
     }
     
+    formatKeystrokeDisplay(buttonText) {
+        // Split button text by spaces to get individual keys
+        // Each key is already a complete unit (e.g., "ENTER", "f-REG", "1", "2", "3")
+        const keys = buttonText.split(' ').filter(key => key.length > 0);
+        
+        // Wrap each key in a span, add space between keys
+        let html = '';
+        keys.forEach((key, idx) => {
+            const isDigit = /^[0-9.]$/.test(key);
+            // Add space before non-digit keys (except first key)
+            if (idx > 0 && !isDigit) {
+                html += ' ';
+            }
+            html += `<span class="step-key">${key}</span>`;
+        });
+        
+        return html;
+    }
+
     renderStep(step) {
         const stepsContainer = document.getElementById('steps-container');
         
@@ -1773,10 +1789,11 @@ class HP12cCalculator {
         
         const stepElement = document.createElement('div');
         stepElement.className = 'step';
+        const formattedButton = this.formatKeystrokeDisplay(step.button);
         stepElement.innerHTML = `
             <div class="step-number">${step.number}</div>
             <div class="step-content">
-                <div class="step-button">${step.button}</div>
+                <div class="step-button">${formattedButton}</div>
                 ${step.description ? `<div class="step-description">${step.description}</div>` : ''}
             </div>
             <div class="step-result">${step.result}</div>

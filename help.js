@@ -124,7 +124,7 @@ const exampleData = {
                     "`25000` `g` `CFj` (year 3 return)",
                     "`f` `IRR` (calculate internal rate of return)"
                 ],
-                result: "11.79% annual return"
+                result: "8.90% annual return"
             },
             {
                 name: "Uneven Cash Flows with Repeated Values",

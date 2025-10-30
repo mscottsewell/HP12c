@@ -189,6 +189,7 @@ body {
     background: #eceef0;
     border-radius: 15px;
     padding: 25px;
+    padding-top: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     max-height: 90vh;
     display: flex;
@@ -199,7 +200,7 @@ body {
 .steps-section h2 {
     color: #2c3e50;
     margin-bottom: 20px;
-    margin-top: 25px;
+    margin-top: 19px;
     font-size: 1.4rem;
     text-align: center;
 }
@@ -293,6 +294,8 @@ body {
     flex: 1;
     font-family: 'Courier New', monospace;
     line-height: 1.6;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .steps-intro {
@@ -441,21 +444,21 @@ body {
 }
 
 /* Scrollbar styling for steps container */
-.steps-container::-webkit-scrollbar {
+#steps-container::-webkit-scrollbar {
     width: 8px;
 }
 
-.steps-container::-webkit-scrollbar-track {
+#steps-container::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 4px;
 }
 
-.steps-container::-webkit-scrollbar-thumb {
+#steps-container::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
 }
 
-.steps-container::-webkit-scrollbar-thumb:hover {
+#steps-container::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
 

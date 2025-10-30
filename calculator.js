@@ -1708,6 +1708,9 @@ class HP12cCalculator {
                 descElement.textContent = lastStep.description;
             }
         }
+        
+        // Scroll to keep the updated step visible
+        this.scrollToBottom();
     }
     
     getStepDescription(button, functionUsed, result) {

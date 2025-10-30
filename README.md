@@ -6,17 +6,33 @@ An educational web-based simulator of the HP12c Financial Calculator designed to
 
 ### 🧮 Full Calculator Functionality
 - **RPN (Reverse Polish Notation) Logic**: Authentic HP12c stack-based calculations
-- **Financial Functions**: PV, PMT, FV, NPV, IRR calculations
-- **Mathematical Functions**: Powers, roots, logarithms, trigonometry
-- **Statistical Functions**: Regression analysis, standard deviation
-- **Date Calculations**: Days between dates, date arithmetic
-- **Memory Registers**: 20 storage registers (.0-.9, R0-R9)
+- **Complete Financial Functions**: 
+  - Time Value of Money (TVM): Calculate n, i, PV, PMT, FV with Newton-Raphson methods
+  - Cash Flow Analysis: NPV and IRR with multiple cash flows
+  - Bond Pricing: Calculate bond price and yield to maturity
+  - Amortization: Principal and interest payment schedules
+  - Depreciation: Straight-line, SOYD, and declining balance methods
+- **Advanced Mathematical Functions**: Powers, roots, logarithms, exponentials
+- **Complete Statistical Suite**: 
+  - Linear regression with slope and intercept calculations
+  - Mean (arithmetic and weighted)
+  - Sample standard deviation
+  - Y and X estimation from regression line
+  - Full Σ+ and Σ- data point management
+- **Date Calculations**: 
+  - Date arithmetic (add/subtract days with day-of-week)
+  - Days between dates (actual and 30/360 bond basis)
+  - Support for M.DY and D.MY formats
+- **Memory Registers**: 20 storage registers (.0-.9, R0-R9) plus statistical registers
 
 ### 📚 Educational Features
 - **Step Recording**: Every button press is recorded in sequence
+- **CHS Smart Positioning**: Change Sign (CHS) always displays at end of number for clarity
 - **Visual Feedback**: Buttons highlight when pressed with smooth animations
 - **Function Indicators**: Shows when f or g functions are active
 - **Clear Documentation**: Each step shows button name, function, and result
+- **Interactive FAQ**: Built-in help system with real calculator examples
+- **Auto-scroll**: Steps panel automatically scrolls to show latest entry
 
 ### 🎯 Learning Benefits
 - **Exact Reproduction**: Students can follow the exact same steps on their physical calculator
@@ -27,13 +43,21 @@ An educational web-based simulator of the HP12c Financial Calculator designed to
 ## File Structure
 
 ```
-HP12c/
-├── index.html          # Main HTML structure with button overlays
-├── styles.css          # CSS styling and responsive design
-├── calculator.js       # Core calculator logic and step recording
+AmyCalc12c/
+├── index.html              # Main HTML structure with button overlays
+├── styles.css              # CSS styling and responsive design
+├── calculator.js           # Core calculator logic and step recording
+├── help.js                 # FAQ/Help system with interactive examples
+├── export-faq.js           # Tool to export FAQ to Markdown for editing
+├── import-faq.js           # Tool to import edited FAQ back to help.js
+├── faq-content.md          # Markdown version of FAQ (edit this, not help.js)
+├── FAQ-WORKFLOW.md         # Instructions for editing FAQ content
+├── CODE-ANALYSIS.md        # Technical analysis and improvement recommendations
+├── FUNCTIONS.md            # Complete function documentation with formulas and examples
+├── test-functions.html     # Automated test suite for all calculator functions
 ├── Assets/
-│   └── hp12c_web.png  # Calculator background image
-└── README.md          # This documentation
+│   └── AmyCalc_HP12c.png  # Calculator background image
+└── README.md               # This documentation
 ```
 
 ## Usage Instructions
@@ -190,23 +214,91 @@ Each button is precisely positioned over the calculator image using CSS absolute
 - Check browser console for JavaScript errors
 - Refresh page and try again
 
+#### Changes Not Showing in Browser
+- Hard refresh: Press `Ctrl+F5` (Windows) or `Cmd+Shift+R` (Mac)
+- Clear browser cache
+- Check that you're viewing the correct file (not a cached version)
+- Version numbers in HTML ensure cache-busting: `styles.css?v=47`
+
 ### Performance
 - Optimized for 60fps button animations
 - Minimal memory footprint
 - Efficient DOM manipulation
+- Auto-scroll keeps latest step visible
+
+## FAQ System
+
+### For Users
+- Click the **FAQ** button below the calculator
+- Browse categories or search for specific topics
+- Follow step-by-step examples for common calculations
+
+### For Editors (Updating FAQ Content)
+
+The FAQ system uses a bidirectional sync between `help.js` (JavaScript) and `faq-content.md` (Markdown):
+
+1. **To Edit FAQ Content:**
+   ```bash
+   node export-faq.js          # Export current FAQ to Markdown
+   # Edit faq-content.md in your text editor
+   node import-faq.js          # Import changes back to help.js
+   ```
+
+2. **Editing Guidelines:**
+   - Keep category key metadata unchanged: `[//]: # (Category Key: tvm)`
+   - Maintain backticks (\`) around button references in steps
+   - Follow existing format for examples
+
+3. **See FAQ-WORKFLOW.md** for detailed instructions
 
 ## Development
 
+### Project Status
+- **Core Functions**: ✅ Fully implemented (RPN, basic math, all TVM calculations)
+- **Financial Functions**: ✅ Complete (TVM, NPV, IRR, bonds, depreciation, amortization)
+- **Statistical Functions**: ✅ Fully implemented (regression, means, standard deviation)
+- **Date Functions**: ✅ Complete (date arithmetic, days between with 30/360)
+- **Program Mode**: ⚠️ Not implemented (PSE, BST, GTO, PRGM are placeholders)
+
+See **CODE-ANALYSIS.md** for detailed technical analysis and **FUNCTIONS.md** for complete function documentation with formulas and examples.
+
+### Testing
+
+A comprehensive test suite is available in `test-functions.html`:
+1. Open `test-functions.html` in your web browser
+2. Click "Run All Tests" to validate all implementations
+3. Tests cover:
+   - Financial TVM calculations (n, i, PV, PMT, FV)
+   - Statistical functions (regression, means, standard deviation)
+   - Date arithmetic and day counting
+   - Bond pricing and yield calculations
+   - All depreciation methods
+   - Amortization schedules
+   - NPV and IRR calculations
+
+All tests include known-good reference values from HP12c documentation.
+
 ### Customization
-- Button positions can be adjusted in CSS
+- Button positions can be adjusted in CSS (absolute positioning)
 - Additional functions can be added to calculator.js
-- Display formatting is configurable
+- Display formatting is configurable (localStorage persistence)
+- Decimal places: Press `f` then digit (0-9) to set display decimals
+
+### Special Features
+
+#### CHS (Change Sign) Positioning
+The CHS button has special handling to improve readability:
+- When entering `1` `2` `3` `CHS` `4` `5` `6`, displays as `123456 CHS`
+- CHS always appears at end of the number sequence in steps
+- Maintains proper negative sign in calculations and descriptions
 
 ### Extension Ideas
 - Sound effects for button presses
 - Keyboard shortcuts
 - Custom problem sets
 - Integration with LMS systems
+- Export calculation history
+- Save/load calculator state
 
 ## License
 

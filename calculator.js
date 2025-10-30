@@ -764,8 +764,38 @@ class HP12cCalculator {
     }
     
     calculateN() {
-        // Calculate n from other values (simplified - full implementation is complex)
-        this.setX(0);
+        /**
+         * Calculate number of periods (n) from PV, PMT, FV, and i
+         * Uses logarithmic formula when possible, iterative method otherwise
+         */
+        const rate = this.i / 100;
+        
+        if (rate === 0) {
+            // Simple case: no interest
+            if (this.pmt === 0) {
+                this.setX(0);
+            } else {
+                this.setX(-(this.pv + this.fv) / this.pmt);
+            }
+        } else {
+            // Use logarithmic formula
+            let pmtAdj = this.pmt;
+            if (this.beginMode) {
+                pmtAdj = this.pmt / (1 + rate);
+            }
+            
+            const numerator = pmtAdj - this.fv * rate;
+            const denominator = this.pv * rate + pmtAdj;
+            
+            if (denominator === 0 || numerator / denominator <= 0) {
+                this.setX(0);
+            } else {
+                const n = Math.log(numerator / denominator) / Math.log(1 + rate);
+                this.setX(n);
+            }
+        }
+        
+        this.n = this.getX();
         this.lastTVMWasCalculation = true;
     }
     
@@ -780,8 +810,83 @@ class HP12cCalculator {
     }
     
     calculateI() {
-        // Calculate i from other values (simplified - requires iterative solution)
-        this.setX(0);
+        /**
+         * Calculate interest rate (i) from n, PV, PMT, and FV
+         * Uses Newton-Raphson iterative method
+         */
+        if (this.n === 0) {
+            this.setX(0);
+            this.lastTVMWasCalculation = true;
+            return;
+        }
+        
+        // Better initial guess: simple interest approximation
+        // For typical loans: i ≈ (PMT * n - PV) / (PV * n)
+        let i = 0.01; // 1% initial guess (safer than 10% for large n)
+        if (this.pv !== 0 && this.n > 0) {
+            let simpleGuess = Math.abs((this.pmt * this.n + this.fv - this.pv) / (this.pv * this.n));
+            if (simpleGuess > 0 && simpleGuess < 0.5) {
+                i = simpleGuess;
+            }
+        }
+        
+        const maxIterations = 100;
+        const tolerance = 0.00001;
+        
+        for (let iter = 0; iter < maxIterations; iter++) {
+            let factor = Math.pow(1 + i, this.n);
+            
+            // Calculate NPV = PV + PMT*annuity + FV/(1+i)^n
+            // We want to find i where NPV = 0
+            let npv;
+            if (i === 0) {
+                npv = this.pv + this.pmt * this.n + this.fv;
+            } else {
+                let annuityFactor = (factor - 1) / (i * factor);
+                if (this.beginMode) {
+                    annuityFactor = annuityFactor * (1 + i);
+                }
+                npv = this.pv + this.pmt * annuityFactor + this.fv / factor;
+            }
+            
+            // Calculate derivative for Newton-Raphson
+            const delta = 0.00001;
+            const iPlus = i + delta;
+            const factorPlus = Math.pow(1 + iPlus, this.n);
+            let npvPlus;
+            if (iPlus === 0) {
+                npvPlus = this.pv + this.pmt * this.n + this.fv;
+            } else {
+                let annuityFactorPlus = (factorPlus - 1) / (iPlus * factorPlus);
+                if (this.beginMode) {
+                    annuityFactorPlus = annuityFactorPlus * (1 + iPlus);
+                }
+                npvPlus = this.pv + this.pmt * annuityFactorPlus + this.fv / factorPlus;
+            }
+            
+            const derivative = (npvPlus - npv) / delta;
+            
+            // Check convergence
+            if (Math.abs(npv) < tolerance) {
+                this.setX(i * 100); // Return as percentage
+                this.i = this.getX();
+                this.lastTVMWasCalculation = true;
+                return;
+            }
+            
+            // Newton-Raphson update: i_new = i_old - f(i)/f'(i)
+            if (derivative !== 0) {
+                i = i - npv / derivative;
+            }
+            
+            // Keep i in reasonable bounds
+            if (i < -0.99) i = -0.99;
+            if (i > 10) i = 10;
+        }
+        
+        // Return best guess even if not fully converged
+        this.setX(i * 100);
+        this.i = this.getX();
         this.lastTVMWasCalculation = true;
     }
     
@@ -998,17 +1103,53 @@ class HP12cCalculator {
     
     // Statistics
     sigmaPlus() {
-        // Simplified implementation
-        this.memory[11] = (this.memory[11] || 0) + 1; // n
-        this.memory[12] = (this.memory[12] || 0) + this.getX(); // sum of x
-        this.memory[13] = (this.memory[13] || 0) + this.stack[1]; // sum of y
+        /**
+         * Add data point to statistics
+         * X register = x value, Y register = y value
+         * Stores: n, Σx, Σy, Σx², Σy², Σxy in registers
+         */
+        const x = this.getX();
+        const y = this.stack[1];
+        
+        // Store in stats array for later calculations
+        this.stats.push({x: x, y: y});
+        
+        // Update statistical registers (using memory registers 11-16)
+        this.memory[11] = (this.memory[11] || 0) + 1;      // n (count)
+        this.memory[12] = (this.memory[12] || 0) + x;      // Σx
+        this.memory[13] = (this.memory[13] || 0) + y;      // Σy
+        this.memory[14] = (this.memory[14] || 0) + x * x;  // Σx²
+        this.memory[15] = (this.memory[15] || 0) + y * y;  // Σy²
+        this.memory[16] = (this.memory[16] || 0) + x * y;  // Σxy
+        
+        // Display updated count
+        this.setX(this.memory[11]);
     }
     
     sigmaMinus() {
-        // Remove from statistics
-        this.memory[11] = Math.max(0, (this.memory[11] || 0) - 1);
-        this.memory[12] = (this.memory[12] || 0) - this.getX();
-        this.memory[13] = (this.memory[13] || 0) - this.stack[1];
+        /**
+         * Remove data point from statistics
+         * X register = x value, Y register = y value to remove
+         */
+        const x = this.getX();
+        const y = this.stack[1];
+        
+        // Remove from stats array
+        const index = this.stats.findIndex(point => point.x === x && point.y === y);
+        if (index !== -1) {
+            this.stats.splice(index, 1);
+        }
+        
+        // Update statistical registers
+        this.memory[11] = Math.max(0, (this.memory[11] || 0) - 1);     // n
+        this.memory[12] = (this.memory[12] || 0) - x;                   // Σx
+        this.memory[13] = (this.memory[13] || 0) - y;                   // Σy
+        this.memory[14] = (this.memory[14] || 0) - x * x;               // Σx²
+        this.memory[15] = (this.memory[15] || 0) - y * y;               // Σy²
+        this.memory[16] = (this.memory[16] || 0) - x * y;               // Σxy
+        
+        // Display updated count
+        this.setX(this.memory[11]);
     }
     
     // Clear functions
@@ -1173,18 +1314,107 @@ class HP12cCalculator {
     
     // Date functions (simplified)
     date() {
-        const today = new Date();
-        const dateStr = today.toLocaleDateString('en-US');
-        this.display = dateStr;
+        /**
+         * Calculate future or past date based on days in X register
+         * Enter: date in Y (M.DDYYYY or DD.MMYYYY), days in X
+         * Returns: new date in X register, day of week in Y (1=Mon, 7=Sun)
+         */
+        const days = Math.floor(this.getX());
+        const dateValue = this.stack[1];
+        
+        // Parse date based on format
+        let month, day, year;
+        if (this.dateFormat === 'MDY') {
+            // M.DDYYYY format
+            month = Math.floor(dateValue);
+            const decimal = dateValue - month;
+            const ddyyyy = Math.round(decimal * 1000000);
+            day = Math.floor(ddyyyy / 10000);
+            year = ddyyyy % 10000;
+        } else {
+            // D.MMYYYY format (DMY)
+            day = Math.floor(dateValue);
+            const decimal = dateValue - day;
+            const mmyyyy = Math.round(decimal * 1000000);
+            month = Math.floor(mmyyyy / 10000);
+            year = mmyyyy % 10000;
+        }
+        
+        // Create date and add days
+        const baseDate = new Date(year, month - 1, day);
+        baseDate.setDate(baseDate.getDate() + days);
+        
+        // Format result
+        const newMonth = baseDate.getMonth() + 1;
+        const newDay = baseDate.getDate();
+        const newYear = baseDate.getFullYear();
+        
+        let result;
+        if (this.dateFormat === 'MDY') {
+            result = newMonth + (newDay * 10000 + newYear) / 1000000;
+        } else {
+            result = newDay + (newMonth * 10000 + newYear) / 1000000;
+        }
+        
+        // Calculate day of week (1=Monday, 7=Sunday)
+        const dayOfWeek = baseDate.getDay();
+        const hp12cDay = dayOfWeek === 0 ? 7 : dayOfWeek;
+        
+        this.stack[1] = hp12cDay;
+        this.setX(result);
     }
     
     daysBetween() {
-        // Simplified implementation
-        const date1 = new Date(this.stack[1]);
-        const date2 = new Date(this.getX());
-        const diffTime = Math.abs(date2 - date1);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        this.setX(diffDays);
+        /**
+         * Calculate days between two dates
+         * Enter: earlier date in Y, later date in X (M.DDYYYY or DD.MMYYYY format)
+         * Returns: actual days in X register, 30/360 days in Y register
+         */
+        const date1Value = this.stack[1];
+        const date2Value = this.getX();
+        
+        // Parse first date
+        let month1, day1, year1;
+        if (this.dateFormat === 'MDY') {
+            month1 = Math.floor(date1Value);
+            const decimal1 = date1Value - month1;
+            const ddyyyy1 = Math.round(decimal1 * 1000000);
+            day1 = Math.floor(ddyyyy1 / 10000);
+            year1 = ddyyyy1 % 10000;
+        } else {
+            day1 = Math.floor(date1Value);
+            const decimal1 = date1Value - day1;
+            const mmyyyy1 = Math.round(decimal1 * 1000000);
+            month1 = Math.floor(mmyyyy1 / 10000);
+            year1 = mmyyyy1 % 10000;
+        }
+        
+        // Parse second date
+        let month2, day2, year2;
+        if (this.dateFormat === 'MDY') {
+            month2 = Math.floor(date2Value);
+            const decimal2 = date2Value - month2;
+            const ddyyyy2 = Math.round(decimal2 * 1000000);
+            day2 = Math.floor(ddyyyy2 / 10000);
+            year2 = ddyyyy2 % 10000;
+        } else {
+            day2 = Math.floor(date2Value);
+            const decimal2 = date2Value - day2;
+            const mmyyyy2 = Math.round(decimal2 * 1000000);
+            month2 = Math.floor(mmyyyy2 / 10000);
+            year2 = mmyyyy2 % 10000;
+        }
+        
+        // Calculate actual days
+        const firstDate = new Date(year1, month1 - 1, day1);
+        const secondDate = new Date(year2, month2 - 1, day2);
+        const actualDays = Math.round((secondDate - firstDate) / (1000 * 60 * 60 * 24));
+        
+        // Calculate 30/360 days (bond basis)
+        const days360 = (year2 - year1) * 360 + (month2 - month1) * 30 + (day2 - day1);
+        
+        this.stack[1] = days360;
+        this.setX(actualDays);
     }
     
     // Math functions - g-shift
@@ -1256,45 +1486,166 @@ class HP12cCalculator {
     
     // Statistical functions
     meanWeighted() {
-        // Weighted mean - requires statistics data
-        if (!this.stats || this.stats.length === 0) {
+        /**
+         * Calculate weighted mean where y values are weights
+         * Returns x̄w = Σ(x·y) / Σy
+         * Also returns ȳ in Y register
+         */
+        const n = this.memory[11] || 0;
+        if (n === 0) {
             this.setX(0);
             return;
         }
-        // Simplified: just return mean
-        const sum = this.stats.reduce((a, b) => a + b, 0);
-        this.setX(sum / this.stats.length);
+        
+        const sumY = this.memory[13] || 0;
+        const sumXY = this.memory[16] || 0;
+        
+        if (sumY === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        // Weighted mean of x
+        const xMeanWeighted = sumXY / sumY;
+        
+        // Mean of y (standard arithmetic mean)
+        const yMean = sumY / n;
+        
+        // Set results in stack
+        this.stack[1] = yMean;  // ȳ in Y register
+        this.setX(xMeanWeighted); // x̄w in X register
     }
     
     meanLinearReg() {
-        // Mean for linear regression
-        if (!this.stats || this.stats.length === 0) {
+        /**
+         * Calculate arithmetic means for linear regression
+         * Returns x̄ in X register, ȳ in Y register
+         */
+        const n = this.memory[11] || 0;
+        if (n === 0) {
             this.setX(0);
             return;
         }
-        const sum = this.stats.reduce((a, b) => a + b, 0);
-        this.setX(sum / this.stats.length);
+        
+        const sumX = this.memory[12] || 0;
+        const sumY = this.memory[13] || 0;
+        
+        const xMean = sumX / n;
+        const yMean = sumY / n;
+        
+        // Set results in stack
+        this.stack[1] = yMean;  // ȳ in Y register
+        this.setX(xMean);       // x̄ in X register
     }
     
     yEstimate() {
-        // Y estimate from linear regression - simplified
-        this.setX(0);
-    }
-    
-    standardDeviation() {
-        // Standard deviation
-        if (!this.stats || this.stats.length < 2) {
+        /**
+         * Estimate y value from x using linear regression: ŷ = a + bx
+         * X register contains the x value for estimation
+         * Returns ŷ in X register, slope m in Y register
+         */
+        const n = this.memory[11] || 0;
+        if (n < 2) {
             this.setX(0);
             return;
         }
-        const mean = this.stats.reduce((a, b) => a + b, 0) / this.stats.length;
-        const variance = this.stats.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (this.stats.length - 1);
-        this.setX(Math.sqrt(variance));
+        
+        const sumX = this.memory[12] || 0;
+        const sumY = this.memory[13] || 0;
+        const sumX2 = this.memory[14] || 0;
+        const sumXY = this.memory[16] || 0;
+        
+        // Calculate slope (m) and intercept (b)
+        const denominator = n * sumX2 - sumX * sumX;
+        if (denominator === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        const m = (n * sumXY - sumX * sumY) / denominator;  // slope
+        const b = (sumY - m * sumX) / n;                     // intercept
+        
+        // Get x value from X register
+        const x = this.getX();
+        
+        // Calculate ŷ = b + mx
+        const yEstimate = b + m * x;
+        
+        // Set results in stack
+        this.stack[1] = m;        // slope in Y register
+        this.setX(yEstimate);     // ŷ in X register
+    }
+    
+    standardDeviation() {
+        /**
+         * Calculate sample standard deviations
+         * Returns sx in X register, sy in Y register
+         * Uses sample standard deviation formula (n-1 denominator)
+         */
+        const n = this.memory[11] || 0;
+        if (n < 2) {
+            this.setX(0);
+            return;
+        }
+        
+        const sumX = this.memory[12] || 0;
+        const sumY = this.memory[13] || 0;
+        const sumX2 = this.memory[14] || 0;
+        const sumY2 = this.memory[15] || 0;
+        
+        // Sample standard deviation: s = sqrt((Σx² - (Σx)²/n) / (n-1))
+        const varianceX = (sumX2 - (sumX * sumX) / n) / (n - 1);
+        const varianceY = (sumY2 - (sumY * sumY) / n) / (n - 1);
+        
+        const sx = Math.sqrt(Math.max(0, varianceX));
+        const sy = Math.sqrt(Math.max(0, varianceY));
+        
+        // Set results in stack
+        this.stack[1] = sy;  // sy in Y register
+        this.setX(sx);       // sx in X register
     }
     
     xEstimate() {
-        // X estimate from linear regression - simplified
-        this.setX(0);
+        /**
+         * Estimate x value from y using linear regression: x̂ = (y - a) / b
+         * Y register contains the y value for estimation
+         * Returns x̂ in X register, 1/slope in Y register
+         */
+        const n = this.memory[11] || 0;
+        if (n < 2) {
+            this.setX(0);
+            return;
+        }
+        
+        const sumX = this.memory[12] || 0;
+        const sumY = this.memory[13] || 0;
+        const sumX2 = this.memory[14] || 0;
+        const sumXY = this.memory[16] || 0;
+        
+        // Calculate slope (m) and intercept (b)
+        const denominator = n * sumX2 - sumX * sumX;
+        if (denominator === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        const m = (n * sumXY - sumX * sumY) / denominator;  // slope
+        const b = (sumY - m * sumX) / n;                     // intercept
+        
+        if (m === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        // Get y value from X register
+        const y = this.getX();
+        
+        // Calculate x̂ = (y - b) / m
+        const xEstimate = (y - b) / m;
+        
+        // Set results in stack
+        this.stack[1] = 1 / m;     // 1/slope in Y register
+        this.setX(xEstimate);      // x̂ in X register
     }
     
     // Conversion functions
@@ -1406,16 +1757,98 @@ class HP12cCalculator {
     
     // Bond functions (simplified implementations)
     bondPrice() {
-        // Bond price calculation - simplified
-        // Requires: settlement date, maturity date, coupon rate, yield
-        this.setX(0);
-        this.addStep('Calculate bond price', '[PRICE]');
+        /**
+         * Calculate bond price given yield
+         * Uses financial registers:
+         * n = periods to maturity
+         * i = yield to maturity (annual %)
+         * PMT = coupon payment per period
+         * FV = face value (redemption value)
+         * Returns price as % of par
+         */
+        if (this.n === 0) {
+            this.setX(100);
+            return;
+        }
+        
+        const yieldPerPeriod = this.i / 100;
+        
+        if (yieldPerPeriod === 0) {
+            // If yield is zero, price = redemption + all coupon payments
+            this.setX(this.fv + this.pmt * this.n);
+        } else {
+            // Present value of coupon payments (annuity)
+            const pvCoupons = this.pmt * ((1 - Math.pow(1 + yieldPerPeriod, -this.n)) / yieldPerPeriod);
+            
+            // Present value of redemption value
+            const pvRedemption = this.fv / Math.pow(1 + yieldPerPeriod, this.n);
+            
+            // Total price
+            const price = pvCoupons + pvRedemption;
+            this.setX(price);
+        }
     }
     
     bondYTM() {
-        // Bond yield to maturity - simplified
-        this.setX(0);
-        this.addStep('Calculate bond YTM', '[YTM]');
+        /**
+         * Calculate yield to maturity given bond price
+         * Uses financial registers:
+         * n = periods to maturity
+         * PV = price (negative)
+         * PMT = coupon payment per period
+         * FV = face value (redemption value)
+         * Returns YTM as annual percentage
+         */
+        if (this.n === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        // Use Newton-Raphson method to solve for yield
+        let ytm = 0.05; // Initial guess: 5%
+        const maxIterations = 100;
+        const tolerance = 0.000001;
+        
+        for (let iter = 0; iter < maxIterations; iter++) {
+            // Calculate price at current yield guess
+            let price;
+            if (ytm === 0) {
+                price = this.fv + this.pmt * this.n;
+            } else {
+                const pvCoupons = this.pmt * ((1 - Math.pow(1 + ytm, -this.n)) / ytm);
+                const pvRedemption = this.fv / Math.pow(1 + ytm, this.n);
+                price = pvCoupons + pvRedemption;
+            }
+            
+            // Calculate derivative (price sensitivity to yield)
+            const delta = 0.0001;
+            const ytmPlus = ytm + delta;
+            const pvCouponsPlus = this.pmt * ((1 - Math.pow(1 + ytmPlus, -this.n)) / ytmPlus);
+            const pvRedemptionPlus = this.fv / Math.pow(1 + ytmPlus, this.n);
+            const pricePlus = pvCouponsPlus + pvRedemptionPlus;
+            
+            const derivative = (pricePlus - price) / delta;
+            
+            // Check convergence
+            if (Math.abs(price + this.pv) < tolerance) {
+                this.setX(ytm * 100); // Return as percentage
+                this.i = this.getX();
+                return;
+            }
+            
+            // Newton-Raphson update
+            if (derivative !== 0) {
+                ytm = ytm - (price + this.pv) / derivative;
+            }
+            
+            // Keep yield in reasonable bounds
+            if (ytm < -0.99) ytm = -0.99;
+            if (ytm > 5) ytm = 5;
+        }
+        
+        // Return best guess
+        this.setX(ytm * 100);
+        this.i = this.getX();
     }
     
     // Depreciation functions (simplified implementations)
@@ -1429,32 +1862,170 @@ class HP12cCalculator {
         }
         const depreciation = (this.pv - this.fv) / this.n;
         this.setX(depreciation);
-        this.addStep('Calculate straight-line depreciation', '[SL]');
     }
     
     sumOfYearsDepreciation() {
-        // Sum of years digits depreciation - simplified
-        this.setX(0);
-        this.addStep('Calculate SOYD depreciation', '[SOYD]');
+        /**
+         * Sum-of-Years'-Digits depreciation
+         * Uses financial registers:
+         * PV = cost (initial value)
+         * FV = salvage value
+         * n = useful life in periods
+         * X register = period number for calculation
+         * Returns depreciation for that period in X, remaining book value in Y
+         */
+        const period = Math.floor(this.getX());
+        
+        if (period < 1 || period > this.n || this.n === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        const depreciableBase = this.pv - this.fv;
+        const sumOfYears = (this.n * (this.n + 1)) / 2;
+        const yearsRemaining = this.n - period + 1;
+        
+        // Depreciation for this period
+        const depreciation = (depreciableBase * yearsRemaining) / sumOfYears;
+        
+        // Calculate accumulated depreciation up to this period
+        let accumulated = 0;
+        for (let i = 1; i <= period; i++) {
+            const yr = this.n - i + 1;
+            accumulated += (depreciableBase * yr) / sumOfYears;
+        }
+        
+        // Remaining book value
+        const bookValue = this.pv - accumulated;
+        
+        this.stack[1] = bookValue;
+        this.setX(depreciation);
     }
     
     decliningBalanceDepreciation() {
-        // Declining balance depreciation - simplified
-        this.setX(0);
-        this.addStep('Calculate declining balance depreciation', '[DB]');
+        /**
+         * Declining Balance depreciation
+         * Uses financial registers:
+         * PV = cost (initial value)
+         * FV = salvage value
+         * n = useful life in periods
+         * i = depreciation rate (e.g., 200 for double-declining)
+         * X register = period number for calculation
+         * Returns depreciation for that period in X, remaining book value in Y
+         * 
+         * Note: HP12c uses rate = (i/100) / n as the per-period rate
+         */
+        const period = Math.floor(this.getX());
+        
+        if (period < 1 || period > this.n || this.n === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        const rate = (this.i / 100) / this.n; // Per-period rate: (i/100)/n
+        let bookValue = this.pv;
+        let depreciation = 0;
+        
+        // Calculate depreciation for each year up to the specified period
+        for (let yr = 1; yr <= period; yr++) {
+            depreciation = bookValue * rate;
+            
+            // Don't depreciate below salvage value
+            if (bookValue - depreciation < this.fv) {
+                depreciation = bookValue - this.fv;
+            }
+            
+            bookValue -= depreciation;
+        }
+        
+        this.stack[1] = bookValue;
+        this.setX(depreciation);
     }
     
     // Amortization functions (simplified)
     amortization() {
-        // Amortization calculation - simplified
-        this.setX(0);
-        this.addStep('Calculate amortization', '[AMORT]');
+        /**
+         * Calculate amortization for a range of payments
+         * Enter: starting payment number in Y, ending payment number in X
+         * Returns: principal paid in X, interest paid in Y, remaining balance in Z
+         * Uses TVM registers: n, i, PV, PMT, FV
+         */
+        const startPmt = Math.floor(this.stack[1]);
+        const endPmt = Math.floor(this.getX());
+        
+        if (startPmt < 1 || endPmt < startPmt || endPmt > this.n) {
+            this.setX(0);
+            return;
+        }
+        
+        const rate = this.i / 100;
+        let balance = this.pv;
+        let totalInterest = 0;
+        let totalPrincipal = 0;
+        
+        // Calculate balance at start of amortization period
+        for (let pmt = 1; pmt < startPmt; pmt++) {
+            const interest = balance * rate;
+            const principal = -this.pmt - interest;
+            balance += principal;
+        }
+        
+        // Calculate amortization for the specified range
+        for (let pmt = startPmt; pmt <= endPmt; pmt++) {
+            const interest = balance * rate;
+            let principal = -this.pmt - interest;
+            
+            // Handle final payment adjustment
+            if (Math.abs(balance + principal) < 0.01) {
+                principal = -balance;
+            }
+            
+            totalInterest += interest;
+            totalPrincipal += principal;
+            balance += principal;
+        }
+        
+        // Return results in stack (all positive values)
+        this.stack[2] = Math.abs(balance);      // Z: remaining balance
+        this.stack[1] = Math.abs(totalInterest); // Y: total interest paid
+        this.setX(Math.abs(totalPrincipal));     // X: total principal paid
     }
     
     amortizationInterest() {
-        // Amortization interest - simplified
-        this.setX(0);
-        this.addStep('Calculate amortization interest', '[INT]');
+        /**
+         * Calculate interest portion of amortization
+         * Uses same inputs as amortization() but returns interest details
+         * Enter: starting payment number in Y, ending payment number in X
+         * Returns: total interest in X register
+         */
+        const startPmt = Math.floor(this.stack[1]);
+        const endPmt = Math.floor(this.getX());
+        
+        if (startPmt < 1 || endPmt < startPmt || endPmt > this.n) {
+            this.setX(0);
+            return;
+        }
+        
+        const rate = this.i / 100;
+        let balance = this.pv;
+        let totalInterest = 0;
+        
+        // Calculate balance at start of period
+        for (let pmt = 1; pmt < startPmt; pmt++) {
+            const interest = balance * rate;
+            const principal = -this.pmt - interest;
+            balance += principal;
+        }
+        
+        // Calculate interest for the specified range
+        for (let pmt = startPmt; pmt <= endPmt; pmt++) {
+            const interest = balance * rate;
+            const principal = -this.pmt - interest;
+            totalInterest += interest;
+            balance += principal;
+        }
+        
+        this.setX(-totalInterest);
     }
     
     // Display and formatting

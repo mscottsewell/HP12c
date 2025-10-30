@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP12c Function Tests</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-case {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+        }
+        .test-pass {
+            border-left-color: #4CAF50;
+        }
+        .test-fail {
+            border-left-color: #f44336;
+        }
+        .test-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .test-result {
+            margin-top: 5px;
+            font-family: monospace;
+        }
+        .pass { color: #4CAF50; }
+        .fail { color: #f44336; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HP12c Calculator Function Tests</h1>
+    <div>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    <div id="results"></div>
+
+    <!-- Hidden DOM elements needed by calculator.js -->
+    <div style="display: none;">
+        <div id="display-screen"></div>
+        <div id="f-indicator"></div>
+        <div id="g-indicator"></div>
+        <div id="begin-indicator"></div>
+        <div id="steps-container"></div>
+        <div id="reg-n"></div>
+        <div id="reg-i"></div>
+        <div id="reg-pv"></div>
+        <div id="reg-pmt"></div>
+        <div id="reg-fv"></div>
+        <div id="financial-register-group"></div>
+        <div id="storage-registers"></div>
+        <div id="storage-register-group"></div>
+    </div>
+
+    <script src="calculator.js?v=63"></script>
+    <script>
+        let testResults = [];
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            testResults = [];
+        }
+
+        function assertClose(actual, expected, tolerance = 0.01, message = '', inputs = '') {
+            const diff = Math.abs(actual - expected);
+            const pass = diff <= tolerance;
+            testResults.push({
+                pass: pass,
+                message: message,
+                expected: expected,
+                actual: actual,
+                diff: diff,
+                inputs: inputs
+            });
+            return pass;
+        }
+
+        function displayResults(sectionName) {
+            const resultsDiv = document.getElementById('results');
+            const section = document.createElement('div');
+            section.className = 'test-section';
+            
+            const title = document.createElement('h2');
+            title.textContent = sectionName;
+            section.appendChild(title);
+
+            testResults.forEach(result => {
+                const testDiv = document.createElement('div');
+                testDiv.className = result.pass ? 'test-case test-pass' : 'test-case test-fail';
+                
+                const name = document.createElement('div');
+                name.className = 'test-name';
+                name.textContent = result.message;
+                testDiv.appendChild(name);
+
+                if (result.inputs) {
+                    const inputsText = document.createElement('div');
+                    inputsText.style.fontSize = '0.9em';
+                    inputsText.style.color = '#666';
+                    inputsText.style.marginTop = '3px';
+                    inputsText.textContent = 'Inputs: ' + result.inputs;
+                    testDiv.appendChild(inputsText);
+                }
+
+                const resultText = document.createElement('div');
+                resultText.className = 'test-result';
+                resultText.innerHTML = `
+                    <span class="${result.pass ? 'pass' : 'fail'}">${result.pass ? 'PASS' : 'FAIL'}</span>
+                    Expected: ${result.expected.toFixed(6)} | 
+                    Actual: ${result.actual.toFixed(6)} | 
+                    Diff: ${result.diff.toFixed(6)}
+                `;
+                testDiv.appendChild(resultText);
+
+                section.appendChild(testDiv);
+            });
+
+            resultsDiv.appendChild(section);
+            testResults = [];
+        }
+
+        function testFinancialFunctions() {
+            console.log('Testing Financial Functions...');
+            const calc = new HP12cCalculator();
+
+            // Test 1: Calculate N (number of periods)
+            // Loan: $10,000 at 1% per period, payment $300/period
+            // HP12c sign convention: loan received (PV) positive, payments negative
+            calc.stack[0] = 10000;
+            calc.storePV();
+            calc.stack[0] = 1;
+            calc.storeI();
+            calc.stack[0] = -300;
+            calc.storePMT();
+            calc.stack[0] = 0;
+            calc.storeFV();
+            calc.calculateN();
+            assertClose(calc.getX(), 40.75, 0.1, 'Calculate N: Loan periods', 'PV=10000, i=1%, PMT=-300, FV=0');
+
+            // Test 2: Calculate I (interest rate)
+            // Note: END mode (not BEGIN). For PV=10000, PMT=-300, n=40, FV=0, i ≈ 0.92%
+            calc.beginMode = false; // Ensure END mode
+            calc.stack[0] = 40;
+            calc.storeN();
+            calc.stack[0] = 10000;
+            calc.storePV();
+            calc.stack[0] = -300;
+            calc.storePMT();
+            calc.stack[0] = 0;
+            calc.storeFV();
+            calc.calculateI();
+            assertClose(calc.getX(), 0.92, 0.02, 'Calculate I: Interest rate (END mode)', 'n=40, PV=10000, PMT=-300, FV=0');
+
+            displayResults('Financial Functions (TVM)');
+        }
+
+        function testStatisticalFunctions() {
+            console.log('Testing Statistical Functions...');
+            const calc = new HP12cCalculator();
+
+            // Add data points: (2,3), (4,5), (6,7), (8,9)
+            calc.stack[1] = 3;
+            calc.stack[0] = 2;
+            calc.sigmaPlus();
+            
+            calc.stack[1] = 5;
+            calc.stack[0] = 4;
+            calc.sigmaPlus();
+            
+            calc.stack[1] = 7;
+            calc.stack[0] = 6;
+            calc.sigmaPlus();
+            
+            calc.stack[1] = 9;
+            calc.stack[0] = 8;
+            calc.sigmaPlus();
+
+            // Test mean
+            calc.meanLinearReg();
+            assertClose(calc.getX(), 5.0, 0.01, 'Mean of X values', 'Data: (2,3), (4,5), (6,7), (8,9)');
+            assertClose(calc.stack[1], 6.0, 0.01, 'Mean of Y values', 'Data: (2,3), (4,5), (6,7), (8,9)');
+
+            // Test standard deviation
+            calc.standardDeviation();
+            assertClose(calc.getX(), 2.582, 0.01, 'Standard deviation of X', 'Data: (2,3), (4,5), (6,7), (8,9)');
+            assertClose(calc.stack[1], 2.582, 0.01, 'Standard deviation of Y', 'Data: (2,3), (4,5), (6,7), (8,9)');
+
+            // Test linear regression estimate
+            calc.stack[0] = 10;
+            calc.yEstimate();
+            assertClose(calc.getX(), 11.0, 0.01, 'Y estimate for x=10', 'x=10, regression from (2,3), (4,5), (6,7), (8,9)');
+
+            displayResults('Statistical Functions');
+        }
+
+        function testDateFunctions() {
+            console.log('Testing Date Functions...');
+            const calc = new HP12cCalculator();
+            calc.dateFormat = 'MDY';
+
+            // Test days between dates
+            // Jan 15, 2024 to Mar 20, 2024
+            calc.stack[1] = 1.152024; // 1.152024 = M.DDYYYY
+            calc.stack[0] = 3.202024;
+            calc.daysBetween();
+            assertClose(calc.getX(), 65, 1, 'Days between dates', 'From: 1.152024 (Jan 15, 2024), To: 3.202024 (Mar 20, 2024)');
+
+            // Test date calculation
+            // Jan 1, 2024 + 30 days
+            calc.stack[1] = 1.012024;
+            calc.stack[0] = 30;
+            calc.date();
+            assertClose(calc.getX(), 1.312024, 0.001, 'Date calculation', 'Start: 1.012024 (Jan 1, 2024) + 30 days');
+
+            displayResults('Date Functions');
+        }
+
+        function testBondFunctions() {
+            console.log('Testing Bond Functions...');
+            const calc = new HP12cCalculator();
+
+            // Bond with 10 periods, 5% coupon ($50/period), $1000 face value, 6% yield
+            calc.stack[0] = 10;
+            calc.storeN();
+            calc.stack[0] = 6;
+            calc.storeI();
+            calc.stack[0] = 50;
+            calc.storePMT();
+            calc.stack[0] = 1000;
+            calc.storeFV();
+            calc.bondPrice();
+            assertClose(calc.getX(), 926.40, 5, 'Bond price', 'n=10, i=6%, PMT=50, FV=1000');
+
+            // Calculate YTM from price
+            calc.stack[0] = -926.40;
+            calc.storePV();
+            calc.bondYTM();
+            assertClose(calc.getX(), 6.0, 0.1, 'Bond YTM', 'n=10, PV=-926.40, PMT=50, FV=1000');
+
+            displayResults('Bond Functions');
+        }
+
+        function testDepreciationFunctions() {
+            console.log('Testing Depreciation Functions...');
+            const calc = new HP12cCalculator();
+
+            // Asset: $10,000 cost, $1,000 salvage, 5 year life
+            calc.stack[0] = 10000;
+            calc.storePV();
+            calc.stack[0] = 1000;
+            calc.storeFV();
+            calc.stack[0] = 5;
+            calc.storeN();
+
+            // Test straight-line depreciation
+            calc.straightLineDepreciation();
+            assertClose(calc.getX(), 1800, 1, 'Straight-line depreciation', 'PV=10000 (cost), FV=1000 (salvage), n=5 (life)');
+
+            // Test sum-of-years depreciation for year 1
+            calc.stack[0] = 1;
+            calc.sumOfYearsDepreciation();
+            assertClose(calc.getX(), 3000, 10, 'SOYD year 1', 'PV=10000, FV=1000, n=5, period=1');
+
+            // Test declining balance depreciation (200% = double-declining)
+            calc.stack[0] = 200;
+            calc.storeI();
+            calc.stack[0] = 1;
+            calc.decliningBalanceDepreciation();
+            assertClose(calc.getX(), 4000, 10, 'DB year 1 double-declining', 'PV=10000, FV=1000, n=5, i=200%, period=1');
+
+            displayResults('Depreciation Functions');
+        }
+
+        function testAmortizationFunctions() {
+            console.log('Testing Amortization Functions...');
+            const calc = new HP12cCalculator();
+
+            // Loan: $100,000 at 6% annual (0.5% monthly), 30 years (360 months)
+            calc.stack[0] = 360;
+            calc.storeN();
+            calc.stack[0] = 0.5;
+            calc.storeI();
+            calc.stack[0] = 100000;
+            calc.storePV();
+            calc.stack[0] = 0;
+            calc.storeFV();
+            calc.calculatePMT();
+            
+            const monthlyPayment = Math.abs(calc.getX());
+            assertClose(monthlyPayment, 599.55, 5, 'Monthly payment', 'n=360, i=0.5%, PV=100000, FV=0');
+
+            // Test amortization for first payment
+            calc.stack[1] = 1;
+            calc.stack[0] = 1;
+            calc.amortization();
+            const principal1 = calc.getX();
+            const interest1 = calc.stack[1];
+            assertClose(interest1, 500, 5, 'First payment interest', 'Payment 1 of loan: n=360, i=0.5%, PV=100000');
+            assertClose(principal1, 99.55, 5, 'First payment principal', 'Payment 1 of loan: n=360, i=0.5%, PV=100000');
+
+            displayResults('Amortization Functions');
+        }
+
+        function testCashFlowFunctions() {
+            console.log('Testing Cash Flow Functions...');
+            const calc = new HP12cCalculator();
+
+            // Cash flows: CF0=-1000, CF1=300, CF2=400, CF3=500
+            // Interest rate: 10%
+            calc.stack[0] = -1000;
+            calc.storeCFo();
+            
+            calc.stack[0] = 300;
+            calc.storeCFj();
+            
+            calc.stack[0] = 400;
+            calc.storeCFj();
+            
+            calc.stack[0] = 500;
+            calc.storeCFj();
+            
+            calc.stack[0] = 10;
+            calc.storeI();
+            
+            // Calculate NPV
+            calc.calculateNPV();
+            assertClose(calc.getX(), -21.04, 1, 'NPV at 10%', 'CF0=-1000, CF1=300, CF2=400, CF3=500, i=10%');
+
+            // Calculate IRR
+            calc.stack[0] = -1000;
+            calc.storeCFo();
+            calc.stack[0] = 300;
+            calc.storeCFj();
+            calc.stack[0] = 400;
+            calc.storeCFj();
+            calc.stack[0] = 500;
+            calc.storeCFj();
+            calc.calculateIRR();
+            assertClose(calc.getX(), 8.9, 0.5, 'IRR', 'CF0=-1000, CF1=300, CF2=400, CF3=500');
+
+            displayResults('Cash Flow Functions (NPV/IRR)');
+        }
+
+        function runAllTests() {
+            console.log('Starting tests...');
+            clearResults();
+            try {
+                testFinancialFunctions();
+                testStatisticalFunctions();
+                testDateFunctions();
+                testBondFunctions();
+                testDepreciationFunctions();
+                testAmortizationFunctions();
+                testCashFlowFunctions();
+                console.log('All tests completed!');
+            } catch (error) {
+                console.error('Test error:', error);
+                document.getElementById('results').innerHTML = '<div class="test-section"><h2 style="color: red;">Error: ' + error.message + '</h2><pre>' + error.stack + '</pre></div>';
+            }
+        }
+
+        // Auto-run tests on page load
+        window.onload = function() {
+            console.log('HP12c Function Tests Loaded');
+            console.log('HP12cCalculator available:', typeof HP12cCalculator !== 'undefined');
+        };
+    </script>
+</body>
+</html>

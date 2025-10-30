@@ -9,7 +9,6 @@
 > 2. Keep the category key metadata unchanged (format: `[//]: # (Category Key: tvm)`)
 > 3. Keep backticks (`) around button/key references in steps
 > 4. After editing, run: `node import-faq.js`
-> ****
 
 ---
 
@@ -121,6 +120,21 @@
 
 **Result:** 36.56 months
 
+### TVM with BEGIN Mode (Annuity Due)
+
+**Problem:** Lease requires $500/month payment at the BEGINNING of each month for 3 years at 6% annual (0.5% monthly). What's the present value?
+
+**Steps:**
+1. `g` `BEG` (set to BEGIN mode - indicator shows)
+2. `36` `n` (3 years × 12 months)
+3. `0.5` `i` (monthly rate)
+4. `500` `CHS` `PMT` (payment at beginning)
+5. `0` `FV` (no residual)
+6. `PV` (calculate present value)
+7. `g` `END` (return to normal mode)
+
+**Result:** $16,234.85 (compare to $16,165.51 in END mode)
+
 
 ## Cash Flow Analysis (NPV & IRR)
 
@@ -151,7 +165,7 @@
 4. `25000` `g` `CFj` (year 3 return)
 5. `f` `IRR` (calculate internal rate of return)
 
-**Result:** 11.79% annual return
+**Result:** 8.90% annual return
 
 ### Uneven Cash Flows with Repeated Values
 
@@ -167,6 +181,37 @@
 7. `f` `NPV` (calculate NPV)
 
 **Result:** $2,431.57
+
+
+## Bond Valuation
+
+[//]: # (Category Key: bonds)
+
+### Bond Price Calculation
+
+**Problem:** A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 6% semi-annual, what's the bond price?
+
+**Steps:**
+1. `10` `n` (periods to maturity)
+2. `6` `i` (yield per period)
+3. `25` `PMT` (coupon payment)
+4. `1000` `FV` (face value)
+5. `f` `PRICE` (calculate bond price)
+
+**Result:** $926.40 (92.64% of par)
+
+### Yield to Maturity
+
+**Problem:** A bond trading at $950 has 8 periods remaining, $30 coupon per period, $1000 face value. What's the YTM?
+
+**Steps:**
+1. `8` `n` (periods)
+2. `950` `CHS` `PV` (current price, negative)
+3. `30` `PMT` (coupon)
+4. `1000` `FV` (face value)
+5. `f` `YTM` (calculate yield)
+
+**Result:** 3.77% per period
 
 
 ## Percentage Calculations
@@ -269,6 +314,39 @@
 4. `g` `x̄,w` (weighted mean)
 
 **Result:** 85.67
+
+### Linear Regression Mean
+
+**Problem:** Data points (2,3), (4,5), (6,7), (8,9). Find mean using linear regression.
+
+**Steps:**
+1. `3` `ENTER` `2` `Σ+` (add point: y=3, x=2)
+2. `5` `ENTER` `4` `Σ+` (add point: y=5, x=4)
+3. `7` `ENTER` `6` `Σ+` (add point: y=7, x=6)
+4. `9` `ENTER` `8` `Σ+` (add point: y=9, x=8)
+5. `g` `x̄,r` (calculate means from regression)
+
+**Result:** x̄ = 5.0, ȳ = 6.0
+
+### Y Estimate from Regression
+
+**Problem:** Using same data, estimate Y when X = 10.
+
+**Steps:**
+1. (Continue from previous data)
+2. `10` `g` `ŷ,r` (estimate y for x=10)
+
+**Result:** ŷ = 11.0
+
+### X Estimate from Regression
+
+**Problem:** Using same data, estimate X when Y = 8.
+
+**Steps:**
+1. (Continue from previous data)
+2. `8` `g` `x̂` (estimate x for y=8)
+
+**Result:** x̂ = 7.0
 
 
 ## Mathematical Operations
@@ -411,6 +489,21 @@
 3. `RCL` `PV` (recall remaining balance)
 
 **Result:** Approximately $186,108
+
+### Amortization with Principal & Interest Detail
+
+**Problem:** For a $100,000 loan at 6% annual (0.5% monthly) for 30 years, find the principal and interest in the first payment.
+
+**Steps:**
+1. `360` `n` (30 × 12 months)
+2. `0.5` `i` (monthly rate)
+3. `100000` `PV` (loan amount)
+4. `PMT` (calculates -$599.55)
+5. `1` `ENTER` `1` `f` `AMORT` (amortize payment 1 to 1)
+6. (X register shows principal paid)
+7. `x↔y` (swap to see interest in Y register)
+
+**Result:** Principal = $99.55, Interest = $500.00
 
 
 ## Date Calculations

@@ -46,15 +46,18 @@ An educational web-based simulator of the HP12c Financial Calculator designed to
 AmyCalc12c/
 ├── index.html              # Main HTML structure with button overlays
 ├── styles.css              # CSS styling and responsive design
-├── calculator.js           # Core calculator logic and step recording
+├── calculator.js           # Core calculator logic (2400+ lines, all functions)
 ├── help.js                 # FAQ/Help system with interactive examples
 ├── export-faq.js           # Tool to export FAQ to Markdown for editing
 ├── import-faq.js           # Tool to import edited FAQ back to help.js
 ├── faq-content.md          # Markdown version of FAQ (edit this, not help.js)
 ├── FAQ-WORKFLOW.md         # Instructions for editing FAQ content
-├── CODE-ANALYSIS.md        # Technical analysis and improvement recommendations
-├── FUNCTIONS.md            # Complete function documentation with formulas and examples
-├── test-functions.html     # Automated test suite for all calculator functions
+├── CODE-ANALYSIS.md        # Technical analysis and recommendations
+├── FUNCTIONS.md            # Complete function documentation (450+ lines)
+├── IMPLEMENTATION-SUMMARY.md  # Detailed implementation notes
+├── TESTING.md              # Manual testing guide and procedures
+├── PROJECT-STATUS.md       # Current status, fixes, and evaluation
+├── test-functions.html     # Automated test suite (36 tests)
 ├── Assets/
 │   └── AmyCalc_HP12c.png  # Calculator background image
 └── README.md               # This documentation
@@ -254,13 +257,27 @@ The FAQ system uses a bidirectional sync between `help.js` (JavaScript) and `faq
 ## Development
 
 ### Project Status
-- **Core Functions**: ✅ Fully implemented (RPN, basic math, all TVM calculations)
-- **Financial Functions**: ✅ Complete (TVM, NPV, IRR, bonds, depreciation, amortization)
-- **Statistical Functions**: ✅ Fully implemented (regression, means, standard deviation)
-- **Date Functions**: ✅ Complete (date arithmetic, days between with 30/360)
+- **Core Functions**: ✅ Fully implemented and tested (RPN, basic math, stack operations)
+- **Financial TVM**: ✅ Complete and verified (n, i, PV, PMT, FV with END/BEGIN modes)
+  - Newton-Raphson solver for interest rate calculations (NPV=0 method)
+  - Logarithmic formula for period calculations
+  - Proper sign conventions and convergence
+- **Cash Flow Analysis**: ✅ Complete (NPV, IRR with iterative methods)
+- **Bond Functions**: ✅ Implemented (price, yield to maturity)
+- **Depreciation**: ✅ All methods (SL, SOYD, DB with corrected formulas)
+- **Amortization**: ✅ Complete (principal/interest schedules)
+- **Statistical Functions**: ✅ Fully implemented (Σ+/Σ-, regression, means, std dev, estimates)
+- **Date Functions**: ✅ Complete (date arithmetic, days between, M.DY/D.MY formats)
 - **Program Mode**: ⚠️ Not implemented (PSE, BST, GTO, PRGM are placeholders)
 
-See **CODE-ANALYSIS.md** for detailed technical analysis and **FUNCTIONS.md** for complete function documentation with formulas and examples.
+**Key Fixes Implemented (October 2025)**:
+- ✅ Fixed `calculateI()` to solve NPV equation correctly
+- ✅ Fixed `decliningBalanceDepreciation()` formula (rate/n)
+- ✅ Fixed `amortization()` to return positive values
+- ✅ Corrected NPV and IRR test expectations
+- ✅ All 36 automated tests passing
+
+See **PROJECT-STATUS.md** for complete evaluation and status report, **FUNCTIONS.md** for complete documentation with formulas, **IMPLEMENTATION-SUMMARY.md** for detailed notes, and **TESTING.md** for verification procedures.
 
 ### Testing
 

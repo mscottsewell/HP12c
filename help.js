@@ -95,6 +95,20 @@ const exampleData = {
                     "`n` (calculate periods)"
                 ],
                 result: "36.56 months"
+            },
+            {
+                name: "TVM with BEGIN Mode (Annuity Due)",
+                problem: "Lease requires $500/month payment at the BEGINNING of each month for 3 years at 6% annual (0.5% monthly). What's the present value?",
+                steps: [
+                    "`g` `BEG` (set to BEGIN mode - indicator shows)",
+                    "`36` `n` (3 years × 12 months)",
+                    "`0.5` `i` (monthly rate)",
+                    "`500` `CHS` `PMT` (payment at beginning)",
+                    "`0` `FV` (no residual)",
+                    "`PV` (calculate present value)",
+                    "`g` `END` (return to normal mode)"
+                ],
+                result: "$16,234.85 (compare to $16,165.51 in END mode)"
             }
         ]
     },
@@ -139,6 +153,35 @@ const exampleData = {
                     "`f` `NPV` (calculate NPV)"
                 ],
                 result: "$2,431.57"
+            }
+        ]
+    },
+    bonds: {
+        title: "Bond Valuation",
+        examples: [
+            {
+                name: "Bond Price Calculation",
+                problem: "A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 6% semi-annual, what's the bond price?",
+                steps: [
+                    "`10` `n` (periods to maturity)",
+                    "`6` `i` (yield per period)",
+                    "`25` `PMT` (coupon payment)",
+                    "`1000` `FV` (face value)",
+                    "`f` `PRICE` (calculate bond price)"
+                ],
+                result: "$926.40 (92.64% of par)"
+            },
+            {
+                name: "Yield to Maturity",
+                problem: "A bond trading at $950 has 8 periods remaining, $30 coupon per period, $1000 face value. What's the YTM?",
+                steps: [
+                    "`8` `n` (periods)",
+                    "`950` `CHS` `PV` (current price, negative)",
+                    "`30` `PMT` (coupon)",
+                    "`1000` `FV` (face value)",
+                    "`f` `YTM` (calculate yield)"
+                ],
+                result: "3.77% per period"
             }
         ]
     },
@@ -233,6 +276,36 @@ const exampleData = {
                     "`g` `x̄,w` (weighted mean)"
                 ],
                 result: "85.67"
+            },
+            {
+                name: "Linear Regression Mean",
+                problem: "Data points (2,3), (4,5), (6,7), (8,9). Find mean using linear regression.",
+                steps: [
+                    "`3` `ENTER` `2` `Σ+` (add point: y=3, x=2)",
+                    "`5` `ENTER` `4` `Σ+` (add point: y=5, x=4)",
+                    "`7` `ENTER` `6` `Σ+` (add point: y=7, x=6)",
+                    "`9` `ENTER` `8` `Σ+` (add point: y=9, x=8)",
+                    "`g` `x̄,r` (calculate means from regression)"
+                ],
+                result: "x̄ = 5.0, ȳ = 6.0"
+            },
+            {
+                name: "Y Estimate from Regression",
+                problem: "Using same data, estimate Y when X = 10.",
+                steps: [
+                    "(Continue from previous data)",
+                    "`10` `g` `ŷ,r` (estimate y for x=10)"
+                ],
+                result: "ŷ = 11.0"
+            },
+            {
+                name: "X Estimate from Regression",
+                problem: "Using same data, estimate X when Y = 8.",
+                steps: [
+                    "(Continue from previous data)",
+                    "`8` `g` `x̂` (estimate x for y=8)"
+                ],
+                result: "x̂ = 7.0"
             }
         ]
     },
@@ -363,6 +436,20 @@ const exampleData = {
                     "`RCL` `PV` (recall remaining balance)"
                 ],
                 result: "Approximately $186,108"
+            },
+            {
+                name: "Amortization with Principal & Interest Detail",
+                problem: "For a $100,000 loan at 6% annual (0.5% monthly) for 30 years, find the principal and interest in the first payment.",
+                steps: [
+                    "`360` `n` (30 × 12 months)",
+                    "`0.5` `i` (monthly rate)",
+                    "`100000` `PV` (loan amount)",
+                    "`PMT` (calculates -$599.55)",
+                    "`1` `ENTER` `1` `f` `AMORT` (amortize payment 1 to 1)",
+                    "(X register shows principal paid)",
+                    "`x↔y` (swap to see interest in Y register)"
+                ],
+                result: "Principal = $99.55, Interest = $500.00"
             }
         ]
     },
@@ -391,6 +478,7 @@ const exampleData = {
         ]
     }
 };
+
 
 
 

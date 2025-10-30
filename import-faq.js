@@ -122,7 +122,7 @@ function generateExampleDataCode(exampleData) {
     let code = 'const exampleData = {\n';
     
     // Maintain order
-    const categoryOrder = ['tips', 'tvm', 'cashflow', 'percentage', 'statistics', 'math', 'depreciation', 'amortization', 'dates'];
+    const categoryOrder = ['tips', 'tvm', 'cashflow', 'bonds', 'percentage', 'statistics', 'math', 'depreciation', 'amortization', 'dates'];
     
     categoryOrder.forEach((key, index) => {
         const category = exampleData[key];

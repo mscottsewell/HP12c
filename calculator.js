@@ -1637,7 +1637,35 @@ class HP12cCalculator {
                 // Don't append more digits - keep the current button text
                 newButtonText = lastStep.button;
             } else {
-                newButtonText = lastStep.button + button;
+                // Special handling for CHS - always keep it at end of digit sequence
+                if (button === 'CHS') {
+                    // Remove any existing CHS from the button text
+                    let baseText = lastStep.button.replace(/ CHS/g, '').replace(/CHS/g, '');
+                    // Extract digits portion (before any operators)
+                    const parts = baseText.split(' ').filter(p => p.length > 0);
+                    
+                    if (parts.length > 0) {
+                        // First part contains the digits, append CHS with space after digits
+                        const digitPart = parts[0];
+                        parts[0] = digitPart + ' CHS';
+                        newButtonText = parts.join(' ');
+                    } else {
+                        newButtonText = 'CHS';
+                    }
+                } else if (lastStep.button.includes('CHS')) {
+                    // Adding a digit when CHS already exists - insert digit before CHS
+                    let baseText = lastStep.button.replace(/ CHS/g, '').replace(/CHS/g, '');
+                    // Find where to insert the digit (before operators)
+                    const parts = baseText.split(' ').filter(p => p.length > 0);
+                    if (parts.length > 0) {
+                        parts[0] = parts[0] + button + ' CHS';
+                        newButtonText = parts.join(' ');
+                    } else {
+                        newButtonText = button + ' CHS';
+                    }
+                } else {
+                    newButtonText = lastStep.button + button;
+                }
             }
         } else {
             // Add space before operators/functions if there's existing content
@@ -1690,13 +1718,23 @@ class HP12cCalculator {
         const value = (isTVMButton || isStorageOperation) ? result : '';
         
         // Also extract number from button text for other operations
-        // Button text like "100[×]" (no spaces after our update)
-        const cleanButton = button.replace(/\s+/g, ''); // Remove all spaces
-        const numberMatch = cleanButton.match(/^([\d.]+)/);
+        // Button text like "123 CHS +" or "100 ×"
+        const cleanButton = button.replace(/\s+/g, ' ').trim(); // Normalize spaces
+        
+        // Check if CHS is present in the button text
+        const hasCHS = cleanButton.includes('CHS');
+        
+        // Extract the number portion (before CHS or operators)
+        let numberMatch = cleanButton.match(/^([\d.]+)/);
         let numberValue = numberMatch ? numberMatch[1] : '';
+        
         // Add thousands separators to the number value for display
         if (numberValue) {
             numberValue = this.addThousandsSeparator(numberValue);
+            // Add negative sign if CHS is present
+            if (hasCHS) {
+                numberValue = '-' + numberValue;
+            }
         }
         
         const descriptions = {
@@ -1766,7 +1804,7 @@ class HP12cCalculator {
         // Each key is already a complete unit (e.g., "ENTER", "f-REG", "1", "2", "3")
         const keys = buttonText.split(' ').filter(key => key.length > 0);
         
-        // Wrap each key in a span, add space between keys
+        // Process each key
         let html = '';
         keys.forEach((key, idx) => {
             const isDigit = /^[0-9.]$/.test(key);

@@ -15,9 +15,9 @@ body {
 
 .container {
     display: flex;
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 30px;
     gap: 30px;
     min-height: 100vh;
 }
@@ -27,8 +27,8 @@ body {
     flex: 2;
     background: white;
     border-radius: 15px;
-    padding: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 1, 1);
     height: fit-content;
 }
 
@@ -42,7 +42,7 @@ body {
 
 .calculator-container {
     position: relative;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -69,15 +69,15 @@ body {
     display: flex;
     justify-content: space-between;
     font-size: 0.65rem;
-    color: #4a6b2a;
-    margin-top: 3px;
+    color: #18220d;
+    margin-top: -5px;
     padding: 0 6px;
     font-weight: bold;
     background: transparent;
 }
 
 .indicator {
-    opacity: 0.15;
+    opacity: 0.2;
     transition: opacity 0.3s;
 }
 
@@ -252,7 +252,7 @@ body {
     border-radius: 15px;
     padding: 25px;
     padding-top: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 1, 1);
     max-height: 90vh;
     display: flex;
     flex-direction: column;

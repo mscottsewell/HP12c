@@ -1475,16 +1475,18 @@ class HP12cCalculator {
     // Date formats
     setDateFormatDMY() {
         this.dateFormat = 'DMY';
-        this.addStep('Set date format to D.MY', 'D.MY');
-        this.display = 'D.MY';
-        setTimeout(() => this.updateDisplay(), 1000);
+        const indicator = document.getElementById('dmy-indicator');
+        if (indicator) {
+            indicator.classList.add('active');
+        }
     }
     
     setDateFormatMDY() {
         this.dateFormat = 'MDY';
-        this.addStep('Set date format to M.DY', 'M.DY');
-        this.display = 'M.DY';
-        setTimeout(() => this.updateDisplay(), 1000);
+        const indicator = document.getElementById('dmy-indicator');
+        if (indicator) {
+            indicator.classList.remove('active');
+        }
     }
     
     // Statistical functions

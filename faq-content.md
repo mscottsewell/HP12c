@@ -213,6 +213,19 @@
 
 **Result:** 3.77% per period
 
+### Yield to Call
+
+**Problem:** A callable bond has 12 periods until call date, currently trading at $1,050, pays $35 coupon per period, and has a call price of $1,020. What's the yield to call?
+
+**Steps:**
+1. `12` `n` (periods to call date)
+2. `1050` `CHS` `PV` (current price, negative)
+3. `35` `PMT` (coupon payment)
+4. `1020` `FV` (call price)
+5. `f-YTM` (calculate yield to call)
+
+**Result:** 2.96% per period
+
 
 ## Percentage Calculations
 

@@ -182,6 +182,18 @@ const exampleData = {
                     "`f-YTM` (calculate yield)"
                 ],
                 result: "3.77% per period"
+            },
+            {
+                name: "Yield to Call",
+                problem: "A callable bond has 12 periods until call date, currently trading at $1,050, pays $35 coupon per period, and has a call price of $1,020. What's the yield to call?",
+                steps: [
+                    "`12` `n` (periods to call date)",
+                    "`1050` `CHS` `PV` (current price, negative)",
+                    "`35` `PMT` (coupon payment)",
+                    "`1020` `FV` (call price)",
+                    "`f-YTM` (calculate yield to call)"
+                ],
+                result: "2.96% per period"
             }
         ]
     },
@@ -478,6 +490,7 @@ const exampleData = {
         ]
     }
 };
+
 
 
 

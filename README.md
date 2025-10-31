@@ -1,6 +1,6 @@
 # HP12c Financial Calculator Simulator
 
-An educational web-based simulator of the HP12c Financial Calculator designed to help students learn how to use their real HP12c calculators. The simulator provides an exact replica of the calculator interface with a step-by-step recording system.
+A web-based educational simulator of the HP12c Financial Calculator with full RPN functionality, comprehensive financial calculations, and an interactive step-by-step recording system. Perfect for learning calculator operations before using the physical device.
 
 ## Features
 
@@ -46,29 +46,29 @@ An educational web-based simulator of the HP12c Financial Calculator designed to
 AmyCalc12c/
 ├── index.html              # Main HTML structure with button overlays
 ├── styles.css              # CSS styling and responsive design
-├── calculator.js           # Core calculator logic (2400+ lines, all functions)
-├── help.js                 # FAQ/Help system with interactive examples
-├── export-faq.js           # Tool to export FAQ to Markdown for editing
-├── import-faq.js           # Tool to import edited FAQ back to help.js
-├── faq-content.md          # Markdown version of FAQ (edit this, not help.js)
-├── FAQ-WORKFLOW.md         # Instructions for editing FAQ content
-├── CODE-ANALYSIS.md        # Technical analysis and recommendations
-├── FUNCTIONS.md            # Complete function documentation (450+ lines)
-├── IMPLEMENTATION-SUMMARY.md  # Detailed implementation notes
-├── TESTING.md              # Manual testing guide and procedures
-├── PROJECT-STATUS.md       # Current status, fixes, and evaluation
+├── calculator.js           # Core calculator logic (2400+ lines)
+├── help.js                 # FAQ system (auto-generated from faq-content.md)
+├── export-faq.js           # Export help.js to Markdown for editing
+├── import-faq.js           # Import edited Markdown back to help.js
+├── faq-content.md          # Markdown FAQ source (edit this, not help.js)
+├── FUNCTIONS.md            # Complete function documentation
 ├── test-functions.html     # Automated test suite (36 tests)
 ├── Assets/
 │   └── AmyCalc_HP12c.png  # Calculator background image
-└── README.md               # This documentation
+└── README.md               # This file
 ```
 
-## Usage Instructions
+## Quick Start
 
-### Starting the Calculator
-1. Open `index.html` in a web browser
-2. The calculator will initialize with display showing "0.00"
-3. Click any button to begin calculations
+1. **Run Locally**: Open `index.html` in any modern web browser
+2. **Or Use Web Server**: 
+   ```bash
+   python -m http.server 8000
+   # Navigate to http://localhost:8000
+   ```
+3. The calculator initializes showing `0.00` - click any button to begin
+
+## Usage Instructions
 
 ### Basic Operations
 
@@ -161,25 +161,34 @@ PMT             (Calculate payment = $1,264.14)
 - Modern CSS support
 - Local file access (for image loading)
 
-## Educational Implementation
+## Educational Use
 
-### Classroom Use
-1. **Projection**: Display on classroom screen/projector
-2. **Individual Practice**: Students use on their devices
-3. **Homework**: Export steps for take-home practice
-4. **Assessment**: Verify student button sequences
+### For Instructors
+- **Live Demonstrations**: Project on classroom screen
+- **Step-by-Step Teaching**: Every button press is visible and recorded
+- **Export Sequences**: Save calculation steps for handouts
+- **Homework Assignments**: Students can practice without physical calculator
+- **Assessment**: Verify students understand correct button sequences
 
-### Learning Objectives
-- Master RPN calculation logic
-- Understand financial function relationships
-- Develop muscle memory for button locations
-- Build confidence with calculator operations
+### For Students
+- **Risk-Free Practice**: Learn without fear of damaging equipment
+- **Visual Learning**: See button layout and relationships
+- **Muscle Memory**: Develop familiarity before using physical device
+- **Self-Paced**: Practice anywhere with just a web browser
+- **Reference Tool**: Built-in FAQ with 55+ worked examples
 
-### Teaching Tips
-- Start with basic arithmetic to introduce RPN
-- Demonstrate stack operations visually
-- Use real-world financial examples
-- Encourage students to verify with physical calculator
+### Learning Path
+1. **Start with Basic Arithmetic**: Get comfortable with RPN logic
+2. **Practice Stack Operations**: Understand ENTER, stack lift, drop
+3. **Learn TVM Functions**: Master loan and savings calculations
+4. **Explore Cash Flows**: Work with NPV and IRR for investments
+5. **Advanced Topics**: Statistics, bonds, depreciation
+
+### Recommended Workflow
+1. Watch instructor demonstration on simulator
+2. Follow exact button sequence on physical HP-12c
+3. Export steps from simulator for reference
+4. Practice independently to build confidence
 
 ## Technical Implementation
 
@@ -198,133 +207,168 @@ PMT             (Calculate payment = $1,264.14)
 ### Button Mapping
 Each button is precisely positioned over the calculator image using CSS absolute positioning. The coordinate system ensures perfect alignment across different screen sizes.
 
+## Browser Compatibility
+
+### Supported Browsers
+- Chrome/Chromium 80+
+- Firefox 75+
+- Safari 13+
+- Edge 80+
+
+### Requirements
+- JavaScript enabled
+- Modern CSS support (transforms, animations)
+- Local file access (for image loading)
+
 ## Troubleshooting
 
-### Common Issues
+### Display Shows "Error"
+- Invalid operation detected (e.g., division by zero)
+- **Solution**: Press `ON` to clear and reset
 
-#### Buttons Not Responding
-- Check JavaScript console for errors
-- Verify image has loaded completely
-- Ensure browser JavaScript is enabled
-
-#### Display Shows "Error"
-- Calculator detected invalid operation
-- Press `ON` to reset
-- Check for division by zero
-
-#### Steps Not Recording
-- Verify steps container is visible
+### Buttons Not Responding
 - Check browser console for JavaScript errors
-- Refresh page and try again
+- Verify calculator image has loaded
+- Ensure JavaScript is enabled in browser
+- **Solution**: Refresh page (Ctrl+F5 / Cmd+Shift+R)
 
-#### Changes Not Showing in Browser
-- Hard refresh: Press `Ctrl+F5` (Windows) or `Cmd+Shift+R` (Mac)
-- Clear browser cache
-- Check that you're viewing the correct file (not a cached version)
-- Version numbers in HTML ensure cache-busting: `styles.css?v=47`
+### Changes Not Appearing
+- Browser may be serving cached version
+- **Solution**: Hard refresh (Ctrl+F5 on Windows, Cmd+Shift+R on Mac)
+- Check version numbers in HTML: `styles.css?v=74`, `help.js?v=76`
 
-### Performance
-- Optimized for 60fps button animations
-- Minimal memory footprint
-- Efficient DOM manipulation
-- Auto-scroll keeps latest step visible
+### Steps Not Recording
+- Check that steps panel is visible
+- Look for console errors
+- **Solution**: Refresh page and retry
+
+### Performance Issues
+- Calculator optimized for 60fps animations
+- Uses efficient DOM manipulation
+- Auto-scrolls to latest step
+- **Solution**: Close other browser tabs if sluggish
 
 ## FAQ System
 
-### For Users
-- Click the **FAQ** button below the calculator
-- Browse categories or search for specific topics
-- Follow step-by-step examples for common calculations
+### Using the Built-in Help
+- Click **FAQ** button to access comprehensive examples
+- 10 categories with 55+ worked problems:
+  - 💰 Time Value of Money - Basics
+  - 🏦 Loans & Financing  
+  - 📈 Investment Analysis (IRR, NPV, Leased Fee)
+  - 📑 Bond Valuation
+  - 💯 Percentage Calculations
+  - 📊 Statistical Calculations
+  - 🔢 Mathematical Operations
+  - 📉 Depreciation Calculations
+  - 📅 Date Calculations
+  - 💡 Practice Tips
 
-### For Editors (Updating FAQ Content)
+### Editing FAQ Content
 
-The FAQ system uses a bidirectional sync between `help.js` (JavaScript) and `faq-content.md` (Markdown):
+**To update examples:**
 
-1. **To Edit FAQ Content:**
+1. **Export current FAQ to Markdown:**
    ```bash
-   node export-faq.js          # Export current FAQ to Markdown
-   # Edit faq-content.md in your text editor
-   node import-faq.js          # Import changes back to help.js
+   node export-faq.js
    ```
 
-2. **Editing Guidelines:**
-   - Keep category key metadata unchanged: `[//]: # (Category Key: tvm)`
-   - Maintain backticks (\`) around button references in steps
-   - Follow existing format for examples
+2. **Edit `faq-content.md`** in any text editor
+   - Keep category metadata: `[//]: # (Category Key: tvm)`
+   - Use backticks (\`) around button names in steps
+   - Follow existing format for consistency
 
-3. **See FAQ-WORKFLOW.md** for detailed instructions
+3. **Import changes back:**
+   ```bash
+   node import-faq.js
+   ```
+
+4. **Update cache version** in `index.html`:
+   ```html
+   <script src="help.js?v=77"></script>
+   ```
+
+**Important:** All FAQ examples have been verified against HP-12C calculations for mathematical accuracy.
 
 ## Development
 
-### Project Status
-- **Core Functions**: ✅ Fully implemented and tested (RPN, basic math, stack operations)
-- **Financial TVM**: ✅ Complete and verified (n, i, PV, PMT, FV with END/BEGIN modes)
-  - Newton-Raphson solver for interest rate calculations (NPV=0 method)
-  - Logarithmic formula for period calculations
-  - Proper sign conventions and convergence
-- **Cash Flow Analysis**: ✅ Complete (NPV, IRR with iterative methods)
-- **Bond Functions**: ✅ Implemented (price, yield to maturity)
-- **Depreciation**: ✅ All methods (SL, SOYD, DB with corrected formulas)
-- **Amortization**: ✅ Complete (principal/interest schedules)
-- **Statistical Functions**: ✅ Fully implemented (Σ+/Σ-, regression, means, std dev, estimates)
-- **Date Functions**: ✅ Complete (date arithmetic, days between, M.DY/D.MY formats)
-- **Program Mode**: ⚠️ Not implemented (PSE, BST, GTO, PRGM are placeholders)
-
-**Key Fixes Implemented (October 2025)**:
-- ✅ Fixed `calculateI()` to solve NPV equation correctly
-- ✅ Fixed `decliningBalanceDepreciation()` formula (rate/n)
-- ✅ Fixed `amortization()` to return positive values
-- ✅ Corrected NPV and IRR test expectations
-- ✅ All 36 automated tests passing
-
-See **PROJECT-STATUS.md** for complete evaluation and status report, **FUNCTIONS.md** for complete documentation with formulas, **IMPLEMENTATION-SUMMARY.md** for detailed notes, and **TESTING.md** for verification procedures.
-
 ### Testing
 
-A comprehensive test suite is available in `test-functions.html`:
-1. Open `test-functions.html` in your web browser
-2. Click "Run All Tests" to validate all implementations
-3. Tests cover:
-   - Financial TVM calculations (n, i, PV, PMT, FV)
-   - Statistical functions (regression, means, standard deviation)
-   - Date arithmetic and day counting
-   - Bond pricing and yield calculations
-   - All depreciation methods
-   - Amortization schedules
-   - NPV and IRR calculations
+**Automated Test Suite** (`test-functions.html`):
+- 36 comprehensive tests covering all calculator functions
+- All tests passing ✅
+- Validates against HP12c reference values
 
-All tests include known-good reference values from HP12c documentation.
+**To run tests:**
+1. Open `test-functions.html` in browser
+2. Click "Run All Tests"
 
-### Customization
-- Button positions can be adjusted in CSS (absolute positioning)
-- Additional functions can be added to calculator.js
-- Display formatting is configurable (localStorage persistence)
-- Decimal places: Press `f` then digit (0-9) to set display decimals
+**Test Coverage:**
+- Financial TVM (n, i, PV, PMT, FV)
+- Cash flow analysis (NPV, IRR)
+- Statistical functions (regression, mean, std dev)
+- Date arithmetic and day counting
+- Bond pricing and yield
+- All depreciation methods
+- Amortization schedules
 
-### Special Features
+### Implementation Status
 
-#### CHS (Change Sign) Positioning
-The CHS button has special handling to improve readability:
-- When entering `1` `2` `3` `CHS` `4` `5` `6`, displays as `123456 CHS`
-- CHS always appears at end of the number sequence in steps
-- Maintains proper negative sign in calculations and descriptions
+| Feature | Status | Notes |
+|---------|--------|-------|
+| RPN Stack Operations | ✅ Complete | Four-register stack (X, Y, Z, T) |
+| Basic Math | ✅ Complete | +, −, ×, ÷, powers, roots, logs |
+| Financial TVM | ✅ Complete | Newton-Raphson solver, END/BEGIN modes |
+| Cash Flow (NPV/IRR) | ✅ Complete | Iterative methods for complex flows |
+| Bond Functions | ✅ Complete | Price and yield to maturity |
+| Depreciation | ✅ Complete | SL, SOYD, DB with corrected formulas |
+| Amortization | ✅ Complete | Principal/interest schedules |
+| Statistics | ✅ Complete | Linear regression, Σ operations |
+| Date Functions | ✅ Complete | M.DY/D.MY formats, day counting |
+| Memory Registers | ✅ Complete | 20 storage registers |
+| Program Mode | ❌ Not Implemented | PSE, BST, GTO, PRGM placeholders |
 
-### Extension Ideas
-- Sound effects for button presses
-- Keyboard shortcuts
-- Custom problem sets
-- Integration with LMS systems
-- Export calculation history
-- Save/load calculator state
+**Recent Fixes (October 2025):**
+- Fixed interest rate calculation (NPV=0 solver)
+- Corrected depreciation formulas
+- Fixed amortization sign conventions
+- Verified all FAQ examples for mathematical accuracy (55 problems)
 
-## License
+See **FUNCTIONS.md** for complete documentation with formulas.
 
-This project is designed for educational use. The HP12c is a trademark of HP Inc. This simulator is not affiliated with or endorsed by HP Inc.
+### Customization & Extension
 
-## Support
+**Display Settings:**
+- Press `f` + digit (0-9) to set decimal places
+- Settings persist in localStorage
 
-For educational institutions interested in customizing this simulator for their curriculum, please refer to the source code comments for detailed implementation notes.
+**Button Positioning:**
+- Adjust coordinates in CSS (absolute positioning over image)
+- Each button precisely aligned with background image
+
+**Adding Functions:**
+- Extend `calculator.js` with new operations
+- Update button handlers in event listeners
+- Add corresponding tests to `test-functions.html`
+
+**Extension Ideas:**
+- Keyboard shortcuts for button presses
+- Sound effects for tactile feedback
+- Custom problem sets for specific courses
+- LMS integration for homework tracking
+- Calculation history export/import
+- Save/restore calculator state
+
+## License & Disclaimer
+
+This project is designed for educational use to help students learn HP-12c calculator operations. 
+
+**Trademark Notice**: HP12c is a trademark of HP Inc. This simulator is an independent educational tool and is not affiliated with, endorsed by, or sponsored by HP Inc.
+
+**Educational Purpose**: This simulator replicates essential HP-12c functions for learning purposes. While comprehensive and mathematically verified, always verify critical financial calculations with the actual HP-12c calculator or professional financial software.
+
+**No Warranty**: This software is provided "as is" without warranty of any kind. Use for educational purposes only.
 
 ---
 
-**Note**: This simulator replicates the essential functions of the HP12c for educational purposes. While comprehensive, it may not include every advanced feature of the physical calculator. Always verify critical calculations with the actual HP12c calculator.
+**For Support**: Refer to source code comments for implementation details. All FAQ examples have been verified for mathematical accuracy against HP-12c calculations.

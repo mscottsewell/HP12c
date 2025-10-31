@@ -123,24 +123,50 @@ body {
 
 .calc-btn {
     position: absolute;
-    background: transparent;
-    border: 1px solid transparent;
+    background: #4a4a4a;
+    border: 2px solid #000;
     cursor: pointer;
     border-radius: 8px;
     width: 7%;
     height: 9%;
-    font-size: 0.8rem;
+    font-size: 1.25rem;
     font-weight: bold;
-    color: transparent;
+    color: #fff;
     transition: all 0.3s ease;
     z-index: 5;
     transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    line-height: 1;
+}
+
+.calc-btn .primary-label {
+    flex: 0 0 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.calc-btn .g-label {
+    font-size: 0.75rem;
+    color: #4dabf7;
+    font-weight: 600;
+    background: #2a2a2a;
+    width: 100%;
+    flex: 0 0 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 6px 6px;
 }
 
 .calc-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.6);
 }
 
 .calc-btn:active {
@@ -148,25 +174,37 @@ body {
 }
 
 .calc-btn.f-active {
-    background: rgba(255, 165, 0, 0.2);
     box-shadow: 0 0 15px rgba(255, 165, 0, 0.8);
-    border: 1px solid rgba(255, 165, 0, 0.5);
+    border: 2px solid rgba(255, 165, 0, 0.5);
 }
 
 .calc-btn.g-active {
-    background: rgba(0, 191, 255, 0.2);
     box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
-    border: 1px solid rgba(0, 191, 255, 0.5);
+    border: 2px solid rgba(0, 191, 255, 0.5);
 }
 
 .f-key:hover, .f-key.active {
-    background: rgba(255, 165, 0, 0.3);
     box-shadow: 0 0 20px rgba(255, 165, 0, 1), 0 0 30px rgba(255, 165, 0, 0.6);
 }
 
+.f-key {
+    background: #ff8c00;
+}
+
+.f-key .g-label {
+    background: #cc6600;
+}
+
 .g-key:hover, .g-key.active {
-    background: rgba(0, 191, 255, 0.3);
     box-shadow: 0 0 20px rgba(0, 191, 255, 1), 0 0 30px rgba(0, 191, 255, 0.6);
+}
+
+.g-key {
+    background: #4dabf7;
+}
+
+.g-key .g-label {
+    background: #1c7ed6;
 }
 
 /* Enter button styling (rectangular) */
@@ -174,6 +212,30 @@ body {
     width: 7%;
     height: 25%;
     border-radius: 8px;
+}
+
+.calc-btn[data-key="enter"] .primary-label {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    letter-spacing: -0.1em;
+    flex: 1 1 auto;
+}
+
+.calc-btn[data-key="enter"] .g-label {
+    flex: 0 0 19%;
+}
+
+/* ON button styling */
+.calc-btn[data-key="on"] {
+    justify-content: center;
+}
+
+.calc-btn[data-key="on"] .primary-label {
+    flex: 1 1 auto;
+}
+
+.calc-btn[data-key="on"] .g-label {
+    display: none;
 }
 
 /* Zero button styling (wider) */

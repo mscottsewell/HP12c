@@ -100,13 +100,13 @@ const exampleData = {
                 name: "TVM with BEGIN Mode (Annuity Due)",
                 problem: "Lease requires $500/month payment at the BEGINNING of each month for 3 years at 6% annual (0.5% monthly). What's the present value?",
                 steps: [
-                    "`g` `BEG` (set to BEGIN mode - indicator shows)",
+                    "`g-BEG` (set to BEGIN mode - indicator shows)",
                     "`36` `n` (3 years × 12 months)",
                     "`0.5` `i` (monthly rate)",
                     "`500` `CHS` `PMT` (payment at beginning)",
                     "`0` `FV` (no residual)",
                     "`PV` (calculate present value)",
-                    "`g` `END` (return to normal mode)"
+                    "`g-END` (return to normal mode)"
                 ],
                 result: "$16,234.85 (compare to $16,165.51 in END mode)"
             }
@@ -119,12 +119,12 @@ const exampleData = {
                 name: "Net Present Value (NPV)",
                 problem: "Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate",
                 steps: [
-                    "`1000` `CHS` `g` `CFo` (initial cash flow)",
-                    "`300` `g` `CFj` (first year cash flow)",
-                    "`400` `g` `CFj` (second year cash flow)",
-                    "`500` `g` `CFj` (third year cash flow)",
+                    "`1000` `CHS` `g-CFo` (initial cash flow)",
+                    "`300` `g-CFj` (first year cash flow)",
+                    "`400` `g-CFj` (second year cash flow)",
+                    "`500` `g-CFj` (third year cash flow)",
                     "`10` `i` (discount rate)",
-                    "`f` `NPV` (calculate net present value)"
+                    "`f-NPV` (calculate net present value)"
                 ],
                 result: "$47.67"
             },
@@ -132,11 +132,11 @@ const exampleData = {
                 name: "Internal Rate of Return (IRR)",
                 problem: "Find IRR for project: Initial -$50,000, Year 1: $15,000, Year 2: $20,000, Year 3: $25,000",
                 steps: [
-                    "`50000` `CHS` `g` `CFo` (initial investment)",
-                    "`15000` `g` `CFj` (year 1 return)",
-                    "`20000` `g` `CFj` (year 2 return)",
-                    "`25000` `g` `CFj` (year 3 return)",
-                    "`f` `IRR` (calculate internal rate of return)"
+                    "`50000` `CHS` `g-CFo` (initial investment)",
+                    "`15000` `g-CFj` (year 1 return)",
+                    "`20000` `g-CFj` (year 2 return)",
+                    "`25000` `g-CFj` (year 3 return)",
+                    "`f-IRR` (calculate internal rate of return)"
                 ],
                 result: "8.90% annual return"
             },
@@ -144,13 +144,13 @@ const exampleData = {
                 name: "Uneven Cash Flows with Repeated Values",
                 problem: "Initial -$100,000, Years 1-3: $20,000 each, Years 4-5: $30,000 each. Find NPV at 8%.",
                 steps: [
-                    "`100000` `CHS` `g` `CFo` (initial investment)",
-                    "`20000` `g` `CFj` (cash flow)",
-                    "`3` `g` `Nj` (repeat 3 times)",
-                    "`30000` `g` `CFj` (cash flow)",
-                    "`2` `g` `Nj` (repeat 2 times)",
+                    "`100000` `CHS` `g-CFo` (initial investment)",
+                    "`20000` `g-CFj` (cash flow)",
+                    "`3` `g-Nj` (repeat 3 times)",
+                    "`30000` `g-CFj` (cash flow)",
+                    "`2` `g-Nj` (repeat 2 times)",
                     "`8` `i` (discount rate)",
-                    "`f` `NPV` (calculate NPV)"
+                    "`f-NPV` (calculate NPV)"
                 ],
                 result: "$2,431.57"
             }
@@ -167,7 +167,7 @@ const exampleData = {
                     "`6` `i` (yield per period)",
                     "`25` `PMT` (coupon payment)",
                     "`1000` `FV` (face value)",
-                    "`f` `PRICE` (calculate bond price)"
+                    "`f-PRICE` (calculate bond price)"
                 ],
                 result: "$926.40 (92.64% of par)"
             },
@@ -179,7 +179,7 @@ const exampleData = {
                     "`950` `CHS` `PV` (current price, negative)",
                     "`30` `PMT` (coupon)",
                     "`1000` `FV` (face value)",
-                    "`f` `YTM` (calculate yield)"
+                    "`f-YTM` (calculate yield)"
                 ],
                 result: "3.77% per period"
             }
@@ -249,7 +249,7 @@ const exampleData = {
                     "`20` `Σ+` (add to data set)",
                     "`25` `Σ+` (add to data set)",
                     "`30` `Σ+` (add to data set)",
-                    "`g` `x̄` (calculate mean)"
+                    "`g-x̄` (calculate mean)"
                 ],
                 result: "20"
             },
@@ -262,7 +262,7 @@ const exampleData = {
                     "`15` `Σ+` (add to data set)",
                     "`20` `Σ+` (add to data set)",
                     "`25` `Σ+` (add to data set)",
-                    "`g` `s` (standard deviation)"
+                    "`g-s` (standard deviation)"
                 ],
                 result: "7.91"
             },
@@ -273,7 +273,7 @@ const exampleData = {
                     "`85` `ENTER` `3` `Σ+` (score, weight)",
                     "`90` `ENTER` `2` `Σ+` (score, weight)",
                     "`78` `ENTER` `1` `Σ+` (score, weight)",
-                    "`g` `x̄,w` (weighted mean)"
+                    "`g-x̄,w` (weighted mean)"
                 ],
                 result: "85.67"
             },
@@ -285,7 +285,7 @@ const exampleData = {
                     "`5` `ENTER` `4` `Σ+` (add point: y=5, x=4)",
                     "`7` `ENTER` `6` `Σ+` (add point: y=7, x=6)",
                     "`9` `ENTER` `8` `Σ+` (add point: y=9, x=8)",
-                    "`g` `x̄,r` (calculate means from regression)"
+                    "`g-x̄,r` (calculate means from regression)"
                 ],
                 result: "x̄ = 5.0, ȳ = 6.0"
             },
@@ -294,7 +294,7 @@ const exampleData = {
                 problem: "Using same data, estimate Y when X = 10.",
                 steps: [
                     "(Continue from previous data)",
-                    "`10` `g` `ŷ,r` (estimate y for x=10)"
+                    "`10` `g-ŷ,r` (estimate y for x=10)"
                 ],
                 result: "ŷ = 11.0"
             },
@@ -303,7 +303,7 @@ const exampleData = {
                 problem: "Using same data, estimate X when Y = 8.",
                 steps: [
                     "(Continue from previous data)",
-                    "`8` `g` `x̂` (estimate x for y=8)"
+                    "`8` `g-x̂` (estimate x for y=8)"
                 ],
                 result: "x̂ = 7.0"
             }
@@ -325,7 +325,7 @@ const exampleData = {
                 name: "Square Root",
                 problem: "Find the square root of 144",
                 steps: [
-                    "`144` `g` `√x` (calculate square root)"
+                    "`144` `g-√x` (calculate square root)"
                 ],
                 result: "12"
             },
@@ -333,7 +333,7 @@ const exampleData = {
                 name: "Factorial",
                 problem: "Calculate 5! (5 factorial)",
                 steps: [
-                    "`5` `g` `n!` (calculate factorial)"
+                    "`5` `g-n!` (calculate factorial)"
                 ],
                 result: "120"
             },
@@ -341,7 +341,7 @@ const exampleData = {
                 name: "Natural Logarithm",
                 problem: "Find ln(100)",
                 steps: [
-                    "`100` `g` `LN` (calculate natural log)"
+                    "`100` `g-LN` (calculate natural log)"
                 ],
                 result: "4.61"
             },
@@ -349,7 +349,7 @@ const exampleData = {
                 name: "Exponential (e^x)",
                 problem: "Calculate e²",
                 steps: [
-                    "`2` `g` `e^x` (calculate e to the power)"
+                    "`2` `g-e^x` (calculate e to the power)"
                 ],
                 result: "7.39"
             },
@@ -382,7 +382,7 @@ const exampleData = {
                 steps: [
                     "`50000` `ENTER` (cost)",
                     "`5000` `ENTER` (salvage)",
-                    "`10` `f` `SL` (straight-line)"
+                    "`10` `f-SL` (straight-line)"
                 ],
                 result: "$4,500 per year"
             },
@@ -393,7 +393,7 @@ const exampleData = {
                     "`50000` `ENTER` (cost)",
                     "`5000` `ENTER` (salvage)",
                     "`10` `ENTER` (life)",
-                    "`1` `f` `SOYD` (year 1)"
+                    "`1` `f-SOYD` (year 1)"
                 ],
                 result: "$8,181.82"
             },
@@ -404,7 +404,7 @@ const exampleData = {
                     "`30000` `ENTER` (cost)",
                     "`3000` `ENTER` (salvage)",
                     "`5` `ENTER` (life)",
-                    "`1` `f` `DB` (year 1)"
+                    "`1` `f-DB` (year 1)"
                 ],
                 result: "$12,000"
             }
@@ -421,7 +421,7 @@ const exampleData = {
                     "`6` `ENTER` `12` `÷` `i` (monthly rate)",
                     "`200000` `PV` (loan amount)",
                     "`PMT` (get payment first)",
-                    "`1` `f` `AMORT` (amortize period 1)",
+                    "`1` `f-AMORT` (amortize period 1)",
                     "`x↔y` (view principal)",
                     "`RCL` `n` (recall for interest - from memory)"
                 ],
@@ -432,7 +432,7 @@ const exampleData = {
                 problem: "After 5 years of payments on above loan, what's the remaining balance?",
                 steps: [
                     "(Continue from previous example)",
-                    "`60` `f` `AMORT` (amortize 60 payments)",
+                    "`60` `f-AMORT` (amortize 60 payments)",
                     "`RCL` `PV` (recall remaining balance)"
                 ],
                 result: "Approximately $186,108"
@@ -445,7 +445,7 @@ const exampleData = {
                     "`0.5` `i` (monthly rate)",
                     "`100000` `PV` (loan amount)",
                     "`PMT` (calculates -$599.55)",
-                    "`1` `ENTER` `1` `f` `AMORT` (amortize payment 1 to 1)",
+                    "`1` `ENTER` `1` `f-AMORT` (amortize payment 1 to 1)",
                     "(X register shows principal paid)",
                     "`x↔y` (swap to see interest in Y register)"
                 ],
@@ -460,9 +460,9 @@ const exampleData = {
                 name: "Days Between Dates",
                 problem: "How many days between January 15, 2024 and March 30, 2024?",
                 steps: [
-                    "`g` `M.DY` (set date format)",
+                    "`g-M.DY` (set date format)",
                     "`1.152024` `ENTER` (first date)",
-                    "`3.302024` `g` `ΔDYS` (second date, calculate days)"
+                    "`3.302024` `g-ΔDYS` (second date, calculate days)"
                 ],
                 result: "75 days (actual), interest calculation varies"
             },
@@ -471,13 +471,14 @@ const exampleData = {
                 problem: "What date is 90 days after February 15, 2024?",
                 steps: [
                     "`2.152024` `ENTER` (start date)",
-                    "`90` `g` `DATE` (number of days, calculate future date)"
+                    "`90` `g-DATE` (number of days, calculate future date)"
                 ],
                 result: "5.152024 (May 15, 2024)"
             }
         ]
     }
 };
+
 
 
 

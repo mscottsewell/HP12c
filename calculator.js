@@ -142,9 +142,11 @@ class HP12cCalculator {
         // For operations that modify existing steps, use current display to show the result
         // For TVM storage operations, use the value before execution (what was stored)
         // For new standalone operations, use the value before execution
+        // For swap operations, use the value after the swap
         const isTVMCalculation = this.lastTVMWasCalculation && ['n', 'i', 'pv', 'pmt', 'fv'].includes(key);
         const isCalculationFunction = ['NPV', 'IRR'].includes(functionUsed);
-        const stepDisplayValue = (isTVMCalculation || isCalculationFunction) ? this.display : 
+        const isSwapOperation = functionUsed === 'x↔y';
+        const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display : 
                                  ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution);
         
         // Don't record steps for f and g key presses, CLRG, or CLx
@@ -750,6 +752,7 @@ class HP12cCalculator {
         this.stack[0] = this.stack[1];
         this.stack[1] = temp;
         this.display = this.formatNumber(this.stack[0]);
+        this.updateDisplay();
     }
     
     // Financial functions
@@ -2461,4 +2464,16 @@ class HP12cCalculator {
 document.addEventListener('DOMContentLoaded', () => {
     window.calculator = new HP12cCalculator();
     console.log('HP12c Calculator initialized');
+    
+    // Add g-shift labels to buttons
+    const buttons = document.querySelectorAll('.calc-btn');
+    buttons.forEach(button => {
+        const gFunction = button.getAttribute('data-g');
+        const primaryLabel = button.textContent;
+        if (gFunction && gFunction.trim() !== '') {
+            button.innerHTML = `<span class="primary-label">${primaryLabel}</span><span class="g-label">${gFunction}</span>`;
+        } else {
+            button.innerHTML = `<span class="primary-label">${primaryLabel}</span><span class="g-label">&nbsp;</span>`;
+        }
+    });
 });

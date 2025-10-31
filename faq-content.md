@@ -125,13 +125,13 @@
 **Problem:** Lease requires $500/month payment at the BEGINNING of each month for 3 years at 6% annual (0.5% monthly). What's the present value?
 
 **Steps:**
-1. `g` `BEG` (set to BEGIN mode - indicator shows)
+1. `g-BEG` (set to BEGIN mode - indicator shows)
 2. `36` `n` (3 years × 12 months)
 3. `0.5` `i` (monthly rate)
 4. `500` `CHS` `PMT` (payment at beginning)
 5. `0` `FV` (no residual)
 6. `PV` (calculate present value)
-7. `g` `END` (return to normal mode)
+7. `g-END` (return to normal mode)
 
 **Result:** $16,234.85 (compare to $16,165.51 in END mode)
 
@@ -145,12 +145,12 @@
 **Problem:** Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate
 
 **Steps:**
-1. `1000` `CHS` `g` `CFo` (initial cash flow)
-2. `300` `g` `CFj` (first year cash flow)
-3. `400` `g` `CFj` (second year cash flow)
-4. `500` `g` `CFj` (third year cash flow)
+1. `1000` `CHS` `g-CFo` (initial cash flow)
+2. `300` `g-CFj` (first year cash flow)
+3. `400` `g-CFj` (second year cash flow)
+4. `500` `g-CFj` (third year cash flow)
 5. `10` `i` (discount rate)
-6. `f` `NPV` (calculate net present value)
+6. `f-NPV` (calculate net present value)
 
 **Result:** $47.67
 
@@ -159,11 +159,11 @@
 **Problem:** Find IRR for project: Initial -$50,000, Year 1: $15,000, Year 2: $20,000, Year 3: $25,000
 
 **Steps:**
-1. `50000` `CHS` `g` `CFo` (initial investment)
-2. `15000` `g` `CFj` (year 1 return)
-3. `20000` `g` `CFj` (year 2 return)
-4. `25000` `g` `CFj` (year 3 return)
-5. `f` `IRR` (calculate internal rate of return)
+1. `50000` `CHS` `g-CFo` (initial investment)
+2. `15000` `g-CFj` (year 1 return)
+3. `20000` `g-CFj` (year 2 return)
+4. `25000` `g-CFj` (year 3 return)
+5. `f-IRR` (calculate internal rate of return)
 
 **Result:** 8.90% annual return
 
@@ -172,13 +172,13 @@
 **Problem:** Initial -$100,000, Years 1-3: $20,000 each, Years 4-5: $30,000 each. Find NPV at 8%.
 
 **Steps:**
-1. `100000` `CHS` `g` `CFo` (initial investment)
-2. `20000` `g` `CFj` (cash flow)
-3. `3` `g` `Nj` (repeat 3 times)
-4. `30000` `g` `CFj` (cash flow)
-5. `2` `g` `Nj` (repeat 2 times)
+1. `100000` `CHS` `g-CFo` (initial investment)
+2. `20000` `g-CFj` (cash flow)
+3. `3` `g-Nj` (repeat 3 times)
+4. `30000` `g-CFj` (cash flow)
+5. `2` `g-Nj` (repeat 2 times)
 6. `8` `i` (discount rate)
-7. `f` `NPV` (calculate NPV)
+7. `f-NPV` (calculate NPV)
 
 **Result:** $2,431.57
 
@@ -196,7 +196,7 @@
 2. `6` `i` (yield per period)
 3. `25` `PMT` (coupon payment)
 4. `1000` `FV` (face value)
-5. `f` `PRICE` (calculate bond price)
+5. `f-PRICE` (calculate bond price)
 
 **Result:** $926.40 (92.64% of par)
 
@@ -209,7 +209,7 @@
 2. `950` `CHS` `PV` (current price, negative)
 3. `30` `PMT` (coupon)
 4. `1000` `FV` (face value)
-5. `f` `YTM` (calculate yield)
+5. `f-YTM` (calculate yield)
 
 **Result:** 3.77% per period
 
@@ -285,7 +285,7 @@
 3. `20` `Σ+` (add to data set)
 4. `25` `Σ+` (add to data set)
 5. `30` `Σ+` (add to data set)
-6. `g` `x̄` (calculate mean)
+6. `g-x̄` (calculate mean)
 
 **Result:** 20
 
@@ -299,7 +299,7 @@
 3. `15` `Σ+` (add to data set)
 4. `20` `Σ+` (add to data set)
 5. `25` `Σ+` (add to data set)
-6. `g` `s` (standard deviation)
+6. `g-s` (standard deviation)
 
 **Result:** 7.91
 
@@ -311,7 +311,7 @@
 1. `85` `ENTER` `3` `Σ+` (score, weight)
 2. `90` `ENTER` `2` `Σ+` (score, weight)
 3. `78` `ENTER` `1` `Σ+` (score, weight)
-4. `g` `x̄,w` (weighted mean)
+4. `g-x̄,w` (weighted mean)
 
 **Result:** 85.67
 
@@ -324,7 +324,7 @@
 2. `5` `ENTER` `4` `Σ+` (add point: y=5, x=4)
 3. `7` `ENTER` `6` `Σ+` (add point: y=7, x=6)
 4. `9` `ENTER` `8` `Σ+` (add point: y=9, x=8)
-5. `g` `x̄,r` (calculate means from regression)
+5. `g-x̄,r` (calculate means from regression)
 
 **Result:** x̄ = 5.0, ȳ = 6.0
 
@@ -334,7 +334,7 @@
 
 **Steps:**
 1. (Continue from previous data)
-2. `10` `g` `ŷ,r` (estimate y for x=10)
+2. `10` `g-ŷ,r` (estimate y for x=10)
 
 **Result:** ŷ = 11.0
 
@@ -344,7 +344,7 @@
 
 **Steps:**
 1. (Continue from previous data)
-2. `8` `g` `x̂` (estimate x for y=8)
+2. `8` `g-x̂` (estimate x for y=8)
 
 **Result:** x̂ = 7.0
 
@@ -368,7 +368,7 @@
 **Problem:** Find the square root of 144
 
 **Steps:**
-1. `144` `g` `√x` (calculate square root)
+1. `144` `g-√x` (calculate square root)
 
 **Result:** 12
 
@@ -377,7 +377,7 @@
 **Problem:** Calculate 5! (5 factorial)
 
 **Steps:**
-1. `5` `g` `n!` (calculate factorial)
+1. `5` `g-n!` (calculate factorial)
 
 **Result:** 120
 
@@ -386,7 +386,7 @@
 **Problem:** Find ln(100)
 
 **Steps:**
-1. `100` `g` `LN` (calculate natural log)
+1. `100` `g-LN` (calculate natural log)
 
 **Result:** 4.61
 
@@ -395,7 +395,7 @@
 **Problem:** Calculate e²
 
 **Steps:**
-1. `2` `g` `e^x` (calculate e to the power)
+1. `2` `g-e^x` (calculate e to the power)
 
 **Result:** 7.39
 
@@ -431,7 +431,7 @@
 **Steps:**
 1. `50000` `ENTER` (cost)
 2. `5000` `ENTER` (salvage)
-3. `10` `f` `SL` (straight-line)
+3. `10` `f-SL` (straight-line)
 
 **Result:** $4,500 per year
 
@@ -443,7 +443,7 @@
 1. `50000` `ENTER` (cost)
 2. `5000` `ENTER` (salvage)
 3. `10` `ENTER` (life)
-4. `1` `f` `SOYD` (year 1)
+4. `1` `f-SOYD` (year 1)
 
 **Result:** $8,181.82
 
@@ -455,7 +455,7 @@
 1. `30000` `ENTER` (cost)
 2. `3000` `ENTER` (salvage)
 3. `5` `ENTER` (life)
-4. `1` `f` `DB` (year 1)
+4. `1` `f-DB` (year 1)
 
 **Result:** $12,000
 
@@ -473,7 +473,7 @@
 2. `6` `ENTER` `12` `÷` `i` (monthly rate)
 3. `200000` `PV` (loan amount)
 4. `PMT` (get payment first)
-5. `1` `f` `AMORT` (amortize period 1)
+5. `1` `f-AMORT` (amortize period 1)
 6. `x↔y` (view principal)
 7. `RCL` `n` (recall for interest - from memory)
 
@@ -485,7 +485,7 @@
 
 **Steps:**
 1. (Continue from previous example)
-2. `60` `f` `AMORT` (amortize 60 payments)
+2. `60` `f-AMORT` (amortize 60 payments)
 3. `RCL` `PV` (recall remaining balance)
 
 **Result:** Approximately $186,108
@@ -499,7 +499,7 @@
 2. `0.5` `i` (monthly rate)
 3. `100000` `PV` (loan amount)
 4. `PMT` (calculates -$599.55)
-5. `1` `ENTER` `1` `f` `AMORT` (amortize payment 1 to 1)
+5. `1` `ENTER` `1` `f-AMORT` (amortize payment 1 to 1)
 6. (X register shows principal paid)
 7. `x↔y` (swap to see interest in Y register)
 
@@ -515,9 +515,9 @@
 **Problem:** How many days between January 15, 2024 and March 30, 2024?
 
 **Steps:**
-1. `g` `M.DY` (set date format)
+1. `g-M.DY` (set date format)
 2. `1.152024` `ENTER` (first date)
-3. `3.302024` `g` `ΔDYS` (second date, calculate days)
+3. `3.302024` `g-ΔDYS` (second date, calculate days)
 
 **Result:** 75 days (actual), interest calculation varies
 
@@ -527,7 +527,7 @@
 
 **Steps:**
 1. `2.152024` `ENTER` (start date)
-2. `90` `g` `DATE` (number of days, calculate future date)
+2. `90` `g-DATE` (number of days, calculate future date)
 
 **Result:** 5.152024 (May 15, 2024)
 

@@ -1,10 +1,6 @@
 // HP12c Help System - Examples and Documentation
 
 const exampleData = {
-    tips: {
-        title: "Practice Tips & Common Errors",
-        examples: [] // This is handled differently in the HTML
-    },
     tvm: {
         title: "Time Value of Money - Basics",
         examples: [
@@ -120,44 +116,67 @@ const exampleData = {
             }
         ]
     },
-    bonds: {
-        title: "Bond Valuation",
+    math: {
+        title: "Mathematical Operations",
         examples: [
             {
-                name: "Bond Price Calculation",
-                problem: "A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 3% per semi-annual period (6% annual), what's the bond price?",
+                name: "Power Calculation",
+                problem: "Calculate 3⁴",
                 steps: [
-                    "`10` `n` (periods to maturity)",
-                    "`3` `i` (yield per period - semi-annual)",
-                    "`25` `PMT` (coupon payment)",
-                    "`1000` `FV` (face value)",
-                    "`f-PRICE` (calculate bond price)"
+                    "`3` `ENTER` (base)",
+                    "`4` `y^x` (exponent, calculate power)"
                 ],
-                result: "$957.35 (95.74% of par)"
+                result: "81"
             },
             {
-                name: "Yield to Maturity",
-                problem: "A bond trading at $950 has 8 periods remaining, $30 coupon per period, $1000 face value. What's the YTM?",
+                name: "Square Root",
+                problem: "Find the square root of 144",
                 steps: [
-                    "`8` `n` (periods)",
-                    "`950` `CHS` `PV` (current price, negative)",
-                    "`30` `PMT` (coupon)",
-                    "`1000` `FV` (face value)",
-                    "`f-YTM` (calculate yield)"
+                    "`144` `g-√x` (calculate square root)"
                 ],
-                result: "3.77% per period"
+                result: "12"
             },
             {
-                name: "Yield to Call",
-                problem: "A callable bond has 12 periods until call date, currently trading at $1,050, pays $35 coupon per period, and has a call price of $1,020. What's the yield to call?",
+                name: "Factorial",
+                problem: "Calculate 5! (5 factorial)",
                 steps: [
-                    "`12` `n` (periods to call date)",
-                    "`1050` `CHS` `PV` (current price, negative)",
-                    "`35` `PMT` (coupon payment)",
-                    "`1020` `FV` (call price)",
-                    "`f-YTM` (calculate yield to call)"
+                    "`5` `g-n!` (calculate factorial)"
                 ],
-                result: "2.96% per period"
+                result: "120"
+            },
+            {
+                name: "Natural Logarithm",
+                problem: "Find ln(100)",
+                steps: [
+                    "`100` `g-LN` (calculate natural log)"
+                ],
+                result: "4.61"
+            },
+            {
+                name: "Exponential (e^x)",
+                problem: "Calculate e²",
+                steps: [
+                    "`2` `g-e^x` (calculate e to the power)"
+                ],
+                result: "7.39"
+            },
+            {
+                name: "Reciprocal",
+                problem: "Find 1/8",
+                steps: [
+                    "`8` `1/x` (calculate reciprocal)"
+                ],
+                result: "0.125"
+            },
+            {
+                name: "Compound Calculation",
+                problem: "Calculate (15 + 25) × (8 - 3)",
+                steps: [
+                    "`15` `ENTER` `25` `+` (first sum = 40)",
+                    "`8` `ENTER` `3` `-` (second difference = 5)",
+                    "`×` (multiply results)"
+                ],
+                result: "200"
             }
         ]
     },
@@ -252,100 +271,127 @@ const exampleData = {
                     "`g-x̄,w` (weighted mean)"
                 ],
                 result: "85.67"
-            },
-            {
-                name: "Linear Regression Mean",
-                problem: "Data points (2,3), (4,5), (6,7), (8,9). Find mean using linear regression.",
-                steps: [
-                    "`3` `ENTER` `2` `Σ+` (add point: y=3, x=2)",
-                    "`5` `ENTER` `4` `Σ+` (add point: y=5, x=4)",
-                    "`7` `ENTER` `6` `Σ+` (add point: y=7, x=6)",
-                    "`9` `ENTER` `8` `Σ+` (add point: y=9, x=8)",
-                    "`g-x̄,r` (calculate means from regression)"
-                ],
-                result: "x̄ = 5.0, ȳ = 6.0"
-            },
-            {
-                name: "Y Estimate from Regression",
-                problem: "Using same data, estimate Y when X = 10.",
-                steps: [
-                    "(Continue from previous data)",
-                    "`10` `g-ŷ,r` (estimate y for x=10)"
-                ],
-                result: "ŷ = 11.0"
-            },
-            {
-                name: "X Estimate from Regression",
-                problem: "Using same data, estimate X when Y = 8.",
-                steps: [
-                    "(Continue from previous data)",
-                    "`8` `g-x̂` (estimate x for y=8)"
-                ],
-                result: "x̂ = 7.0"
             }
         ]
     },
-    math: {
-        title: "Mathematical Operations",
+    dates: {
+        title: "Date Calculations",
         examples: [
             {
-                name: "Power Calculation",
-                problem: "Calculate 3⁴",
+                name: "Days Between Dates",
+                problem: "How many days between January 15, 2024 and March 30, 2024?",
                 steps: [
-                    "`3` `ENTER` (base)",
-                    "`4` `y^x` (exponent, calculate power)"
+                    "`g-M.DY` (set date format)",
+                    "`1.152024` `ENTER` (first date)",
+                    "`3.302024` `g-ΔDYS` (second date, calculate days)"
                 ],
-                result: "81"
+                result: "75 days (actual), interest calculation varies"
             },
             {
-                name: "Square Root",
-                problem: "Find the square root of 144",
+                name: "Future Date",
+                problem: "What date is 90 days after February 15, 2024?",
                 steps: [
-                    "`144` `g-√x` (calculate square root)"
+                    "`2.152024` `ENTER` (start date)",
+                    "`90` `g-DATE` (number of days, calculate future date)"
                 ],
-                result: "12"
+                result: "5.152024 (May 15, 2024)"
+            }
+        ]
+    },
+    loans: {
+        title: "Loans & Financing",
+        examples: [
+            {
+                name: "Mortgage Payment Calculation",
+                problem: "Calculate the monthly payment for a $300,000 mortgage at 4.5% annual interest for 30 years.",
+                steps: [
+                    "`360` `n` (30 years × 12 months = 360 payments)",
+                    "`4.5` `ENTER` `12` `÷` `i` (4.5% ÷ 12 = monthly rate)",
+                    "`300000` `PV` (loan amount)",
+                    "`PMT` (calculate payment)"
+                ],
+                result: "$-1,520.06 (negative indicates cash outflow)"
             },
             {
-                name: "Factorial",
-                problem: "Calculate 5! (5 factorial)",
+                name: "Car Loan Payment",
+                problem: "Calculate monthly payment on a $25,000 car loan at 5.9% APR for 5 years.",
                 steps: [
-                    "`5` `g-n!` (calculate factorial)"
+                    "`60` `n` (5 years × 12 months)",
+                    "`5.9` `ENTER` `12` `÷` `i` (monthly rate)",
+                    "`25000` `PV` (loan amount)",
+                    "`PMT` (calculate payment)"
                 ],
-                result: "120"
+                result: "$-483.15"
             },
             {
-                name: "Natural Logarithm",
-                problem: "Find ln(100)",
+                name: "Loan Payoff Time",
+                problem: "How long to pay off $15,000 at 12% annual interest with $500 monthly payments?",
                 steps: [
-                    "`100` `g-LN` (calculate natural log)"
+                    "`12` `ENTER` `12` `÷` `i` (monthly rate)",
+                    "`15000` `PV` (loan amount)",
+                    "`500` `CHS` `PMT` (monthly payment, negative)",
+                    "`n` (calculate periods)"
                 ],
-                result: "4.61"
+                result: "36.56 months"
+            }
+        ]
+    },
+    investment: {
+        title: "Investment Analysis",
+        examples: [
+            {
+                name: "Internal Rate of Return (Level Income)",
+                problem: "A property is purchased for $500,000 and generates annual net income of $40,000. After 10 years it is sold for $650,000. What is the IRR?",
+                steps: [
+                    "`500000` `CHS` `g-CFo` (initial investment)",
+                    "`40000` `g-CFj` (annual income)",
+                    "`9` `g-Nj` (repeat 9 times for years 1-9)",
+                    "`40000` `ENTER` `650000` `+` `g-CFj` (year 10: income + sale)",
+                    "`f-IRR` (calculate IRR)"
+                ],
+                result: "9.89% annual return"
             },
             {
-                name: "Exponential (e^x)",
-                problem: "Calculate e²",
+                name: "Net Present Value (NPV)",
+                problem: "Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate",
                 steps: [
-                    "`2` `g-e^x` (calculate e to the power)"
+                    "`1000` `CHS` `g-CFo` (initial cash flow)",
+                    "`300` `g-CFj` (first year cash flow)",
+                    "`400` `g-CFj` (second year cash flow)",
+                    "`500` `g-CFj` (third year cash flow)",
+                    "`10` `i` (discount rate)",
+                    "`f-NPV` (calculate net present value)"
                 ],
-                result: "7.39"
+                result: "$-21.04"
+            }
+        ]
+    },
+    bonds: {
+        title: "Bond Valuation",
+        examples: [
+            {
+                name: "Bond Price Calculation",
+                problem: "A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 3% per semi-annual period (6% annual), what's the bond price?",
+                steps: [
+                    "`10` `n` (periods to maturity)",
+                    "`3` `i` (yield per period - semi-annual)",
+                    "`25` `PMT` (coupon payment)",
+                    "`1000` `FV` (face value)",
+                    "`f-PRICE` (calculate bond price)"
+                ],
+                result: "$957.35 (95.74% of par)"
             },
             {
-                name: "Reciprocal",
-                problem: "Find 1/8",
+                name: "Yield to Maturity",
+                problem: "A bond trading at $950 has 8 periods remaining, $30 coupon per period, $1000 face value. What's the YTM?",
                 steps: [
-                    "`8` `1/x` (calculate reciprocal)"
+                    "`8` `n` (periods)",
+                    "`950` `CHS` `PV` (current price, negative)",
+                    "`30` `PMT` (coupon)",
+                    "`1000` `FV` (face value)",
+                    "`f-YTM` (calculate yield)"
                 ],
-                result: "0.125"
-            },
-            {
-                name: "Compound Calculation",
-                problem: "Calculate (15 + 25) × (8 - 3)",
-                steps: [
-                    "`15` `ENTER` `25` `+` (first sum = 40)",
-                    "`8` `ENTER` `3` `-` (second difference = 5)",
-                    "`×` (multiply results)"
-                ],
-                result: "200"
+                result: "3.77% per period"
             }
         ]
     },
@@ -386,31 +432,19 @@ const exampleData = {
             }
         ]
     },
-    dates: {
-        title: "Date Calculations",
-        examples: [
-            {
-                name: "Days Between Dates",
-                problem: "How many days between January 15, 2024 and March 30, 2024?",
-                steps: [
-                    "`g-M.DY` (set date format)",
-                    "`1.152024` `ENTER` (first date)",
-                    "`3.302024` `g-ΔDYS` (second date, calculate days)"
-                ],
-                result: "75 days (actual), interest calculation varies"
-            },
-            {
-                name: "Future Date",
-                problem: "What date is 90 days after February 15, 2024?",
-                steps: [
-                    "`2.152024` `ENTER` (start date)",
-                    "`90` `g-DATE` (number of days, calculate future date)"
-                ],
-                result: "5.152024 (May 15, 2024)"
-            }
-        ]
+    tips: {
+        title: "Practice Tips & Common Errors",
+        examples: [] // This is handled differently in the HTML
     }
 };
+
+
+
+
+
+
+
+
 
 
 

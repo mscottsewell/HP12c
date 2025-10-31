@@ -143,6 +143,21 @@ body {
     line-height: 1;
 }
 
+/* F-shift label positioned above the button */
+.calc-btn::before {
+    content: attr(data-f);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.4rem, 0.85vw, 0.65rem);
+    color: #ff8c42;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    pointer-events: none;
+}
+
 .calc-btn .primary-label {
     flex: 0 0 55%;
     display: flex;
@@ -178,11 +193,55 @@ body {
 .calc-btn.f-active {
     box-shadow: 0 0 15px rgba(255, 165, 0, 0.8);
     border: 2px solid rgba(255, 165, 0, 0.5);
+    background: #1a1a1a;
+}
+
+/* When f-shift is active, hide primary label and g-label, show only f function */
+.calc-btn.f-active .primary-label {
+    display: none;
+}
+
+.calc-btn.f-active .g-label {
+    display: none;
+}
+
+.calc-btn.f-active::after {
+    content: attr(data-f);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.7rem, 1.4vw, 1.4rem);
+    color: #ff8c42;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
 .calc-btn.g-active {
     box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
     border: 2px solid rgba(0, 191, 255, 0.5);
+    background: #1a1a1a;
+}
+
+/* When g-shift is active, hide primary label and g-label, show only g function */
+.calc-btn.g-active .primary-label {
+    display: none;
+}
+
+.calc-btn.g-active .g-label {
+    display: none;
+}
+
+.calc-btn.g-active::after {
+    content: attr(data-g);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.7rem, 1.4vw, 1.4rem);
+    color: #e7f5ff;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
 .f-key:hover, .f-key.active {
@@ -581,7 +640,7 @@ body {
 
 #help-content {
     min-height: 200px;
-    max-height: 500px;
+    max-height: 600px;
     overflow-y: auto;
     padding: 15px;
     background: #f8f9fa;
@@ -706,6 +765,8 @@ body {
 .help-categories {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: column;
+    grid-template-rows: repeat(5, auto);
     gap: 10px;
     margin-top: 15px;
 }

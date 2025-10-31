@@ -65,7 +65,7 @@ function exportFAQ() {
     markdown += '---\n\n';
     
     // Export each category in order
-    const categoryOrder = ['tips', 'tvm', 'cashflow', 'percentage', 'statistics', 'math', 'depreciation', 'amortization', 'dates'];
+    const categoryOrder = ['tvm', 'math', 'percentage', 'statistics', 'dates', 'loans', 'investment', 'bonds', 'depreciation', 'tips'];
     
     categoryOrder.forEach(key => {
         if (exampleData[key]) {

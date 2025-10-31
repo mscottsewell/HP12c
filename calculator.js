@@ -149,9 +149,16 @@ class HP12cCalculator {
         const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display : 
                                  ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution);
         
-        // Don't record steps for f and g key presses, CLRG, or CLx
+        // Don't record steps for f and g key presses, CLRG, CLx, or ON
         if (key === 'f' || key === 'g') {
             // Don't reset lastStepWasNumber - f and g are just modifiers
+            this.updateDisplay();
+            return;
+        }
+        
+        // Don't add a step for ON - it just clears everything
+        if (key === 'ON' || functionUsed === 'ON') {
+            this.lastStepWasNumber = false;
             this.updateDisplay();
             return;
         }

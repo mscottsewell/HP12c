@@ -6,18 +6,40 @@ const exampleData = {
         examples: [] // This is handled differently in the HTML
     },
     tvm: {
-        title: "Time Value of Money (TVM)",
+        title: "Time Value of Money - Basics",
         examples: [
             {
-                name: "Mortgage Payment Calculation",
-                problem: "Calculate the monthly payment for a $300,000 mortgage at 4.5% annual interest for 30 years.",
+                name: "Future Value of $1.00",
+                problem: "If $1,000 is deposited in an account earning 6% per year, what will the account balance be at the end of 8 years?",
                 steps: [
-                    "`360` `n` (30 years × 12 months = 360 payments)",
-                    "`4.5` `ENTER` `12` `÷` `i` (4.5% ÷ 12 = monthly rate)",
-                    "`300000` `PV` (loan amount)",
-                    "`PMT` (calculate payment)"
+                    "`8` `n` (8 years)",
+                    "`6` `i` (6% annual interest)",
+                    "`1000` `CHS` `PV` (initial deposit, negative for cash outflow)",
+                    "`FV` (calculate future value)"
                 ],
-                result: "$-1,520.06 (negative indicates cash outflow)"
+                result: "$1,593.85"
+            },
+            {
+                name: "Present Value of $1.00",
+                problem: "What is the present value of the right to receive $11,000 in four years at a discount rate of 10% per year?",
+                steps: [
+                    "`4` `n` (4 years)",
+                    "`10` `i` (10% discount rate)",
+                    "`11000` `FV` (future amount to receive)",
+                    "`PV` (calculate present value)"
+                ],
+                result: "$-7,513.15 (negative = amount you'd pay today)"
+            },
+            {
+                name: "Future Value of $1.00 Per Period",
+                problem: "What will be the value of an Individual Retirement Account in 30 years assuming deposits of $2,000 are made at the end of each year and the account earns 7.5% per year?",
+                steps: [
+                    "`30` `n` (30 years)",
+                    "`7.5` `i` (7.5% annual interest)",
+                    "`2000` `CHS` `PMT` (annual deposit, negative)",
+                    "`FV` (calculate future value)"
+                ],
+                result: "$206,798.81"
             },
             {
                 name: "Future Value of Investment",
@@ -31,15 +53,26 @@ const exampleData = {
                 result: "$38,696.84"
             },
             {
-                name: "Present Value of Annuity",
-                problem: "What's the present value of receiving $1,000 per year for 10 years at 6% discount rate?",
+                name: "Present Value of Annuity (Annual Payments)",
+                problem: "What is the present value of the right to receive a payment of $36,000 at the end of every year for 15 years at a discount rate of 8%?",
                 steps: [
-                    "`10` `n` (10 payments)",
-                    "`6` `i` (6% discount rate)",
-                    "`1000` `PMT` (annual payment)",
+                    "`15` `n` (15 payments)",
+                    "`8` `i` (8% discount rate)",
+                    "`36000` `PMT` (annual payment)",
                     "`PV` (calculate present value)"
                 ],
-                result: "$-7,360.09"
+                result: "$-308,131.19"
+            },
+            {
+                name: "Present Value of Annuity (Monthly Payments)",
+                problem: "What is the present value of the right to receive a payment of $3,000 at the end of every month for 15 years at a discount rate of 8% per year?",
+                steps: [
+                    "`180` `n` (15 years × 12 months)",
+                    "`8` `ENTER` `12` `÷` `i` (8% ÷ 12 = monthly rate)",
+                    "`3000` `PMT` (monthly payment)",
+                    "`PV` (calculate present value)"
+                ],
+                result: "$-313,921.78"
             },
             {
                 name: "Compound Interest - Time Calculation",
@@ -64,95 +97,26 @@ const exampleData = {
                 result: "7.18% annual interest rate"
             },
             {
-                name: "Car Loan Payment",
-                problem: "Calculate monthly payment on a $25,000 car loan at 5.9% APR for 5 years.",
+                name: "Sinking Fund Factor",
+                problem: "How much must be deposited at the end of each month into an account that earns 6% interest to have an account balance of $50,000 at the end of 10 years?",
                 steps: [
-                    "`60` `n` (5 years × 12 months)",
-                    "`5.9` `ENTER` `12` `÷` `i` (monthly rate)",
-                    "`25000` `PV` (loan amount)",
+                    "`120` `n` (10 years × 12 months)",
+                    "`6` `ENTER` `12` `÷` `i` (monthly rate)",
+                    "`50000` `FV` (target amount)",
                     "`PMT` (calculate payment)"
                 ],
-                result: "$-483.15"
+                result: "$-305.10 per month"
             },
             {
                 name: "Retirement Savings Goal",
-                problem: "How much must you save monthly to accumulate $1,000,000 in 30 years at 8% annual return?",
+                problem: "To have $1,000,000 in 25 years with 8% annual return, how much to invest annually?",
                 steps: [
-                    "`360` `n` (30 years × 12 months)",
-                    "`8` `ENTER` `12` `÷` `i` (monthly rate)",
-                    "`1000000` `FV` (target amount)",
-                    "`PMT` (calculate payment)"
+                    "`25` `n` (25 years)",
+                    "`8` `i` (8% annual interest)",
+                    "`1000000` `FV` (retirement goal)",
+                    "`PMT` (calculate annual payment)"
                 ],
-                result: "$-670.98 per month"
-            },
-            {
-                name: "Loan Payoff Time",
-                problem: "How long to pay off $15,000 at 12% annual interest with $500 monthly payments?",
-                steps: [
-                    "`12` `ENTER` `12` `÷` `i` (monthly rate)",
-                    "`15000` `PV` (loan amount)",
-                    "`500` `CHS` `PMT` (monthly payment, negative)",
-                    "`n` (calculate periods)"
-                ],
-                result: "36.56 months"
-            },
-            {
-                name: "TVM with BEGIN Mode (Annuity Due)",
-                problem: "Lease requires $500/month payment at the BEGINNING of each month for 3 years at 6% annual (0.5% monthly). What's the present value?",
-                steps: [
-                    "`g-BEG` (set to BEGIN mode - indicator shows)",
-                    "`36` `n` (3 years × 12 months)",
-                    "`0.5` `i` (monthly rate)",
-                    "`500` `CHS` `PMT` (payment at beginning)",
-                    "`0` `FV` (no residual)",
-                    "`PV` (calculate present value)",
-                    "`g-END` (return to normal mode)"
-                ],
-                result: "$16,234.85 (compare to $16,165.51 in END mode)"
-            }
-        ]
-    },
-    cashflow: {
-        title: "Cash Flow Analysis (NPV & IRR)",
-        examples: [
-            {
-                name: "Net Present Value (NPV)",
-                problem: "Calculate NPV of cash flows: Initial -$1000, Year 1: $300, Year 2: $400, Year 3: $500 at 10% discount rate",
-                steps: [
-                    "`1000` `CHS` `g-CFo` (initial cash flow)",
-                    "`300` `g-CFj` (first year cash flow)",
-                    "`400` `g-CFj` (second year cash flow)",
-                    "`500` `g-CFj` (third year cash flow)",
-                    "`10` `i` (discount rate)",
-                    "`f-NPV` (calculate net present value)"
-                ],
-                result: "$47.67"
-            },
-            {
-                name: "Internal Rate of Return (IRR)",
-                problem: "Find IRR for project: Initial -$50,000, Year 1: $15,000, Year 2: $20,000, Year 3: $25,000",
-                steps: [
-                    "`50000` `CHS` `g-CFo` (initial investment)",
-                    "`15000` `g-CFj` (year 1 return)",
-                    "`20000` `g-CFj` (year 2 return)",
-                    "`25000` `g-CFj` (year 3 return)",
-                    "`f-IRR` (calculate internal rate of return)"
-                ],
-                result: "8.90% annual return"
-            },
-            {
-                name: "Uneven Cash Flows with Repeated Values",
-                problem: "Initial -$100,000, Years 1-3: $20,000 each, Years 4-5: $30,000 each. Find NPV at 8%.",
-                steps: [
-                    "`100000` `CHS` `g-CFo` (initial investment)",
-                    "`20000` `g-CFj` (cash flow)",
-                    "`3` `g-Nj` (repeat 3 times)",
-                    "`30000` `g-CFj` (cash flow)",
-                    "`2` `g-Nj` (repeat 2 times)",
-                    "`8` `i` (discount rate)",
-                    "`f-NPV` (calculate NPV)"
-                ],
-                result: "$2,431.57"
+                result: "$-13,678.78 per year"
             }
         ]
     },
@@ -161,15 +125,15 @@ const exampleData = {
         examples: [
             {
                 name: "Bond Price Calculation",
-                problem: "A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 6% semi-annual, what's the bond price?",
+                problem: "A bond has 10 semi-annual periods remaining, pays $25 coupon per period, $1000 face value. If market yield is 3% per semi-annual period (6% annual), what's the bond price?",
                 steps: [
                     "`10` `n` (periods to maturity)",
-                    "`6` `i` (yield per period)",
+                    "`3` `i` (yield per period - semi-annual)",
                     "`25` `PMT` (coupon payment)",
                     "`1000` `FV` (face value)",
                     "`f-PRICE` (calculate bond price)"
                 ],
-                result: "$926.40 (92.64% of par)"
+                result: "$957.35 (95.74% of par)"
             },
             {
                 name: "Yield to Maturity",
@@ -422,49 +386,6 @@ const exampleData = {
             }
         ]
     },
-    amortization: {
-        title: "Amortization",
-        examples: [
-            {
-                name: "Loan Amortization",
-                problem: "$200,000 loan at 6% for 30 years. How much principal and interest in first year?",
-                steps: [
-                    "`360` `n` (30 × 12 months)",
-                    "`6` `ENTER` `12` `÷` `i` (monthly rate)",
-                    "`200000` `PV` (loan amount)",
-                    "`PMT` (get payment first)",
-                    "`1` `f-AMORT` (amortize period 1)",
-                    "`x↔y` (view principal)",
-                    "`RCL` `n` (recall for interest - from memory)"
-                ],
-                result: "Payment: $-1,199.10"
-            },
-            {
-                name: "Remaining Balance",
-                problem: "After 5 years of payments on above loan, what's the remaining balance?",
-                steps: [
-                    "(Continue from previous example)",
-                    "`60` `f-AMORT` (amortize 60 payments)",
-                    "`RCL` `PV` (recall remaining balance)"
-                ],
-                result: "Approximately $186,108"
-            },
-            {
-                name: "Amortization with Principal & Interest Detail",
-                problem: "For a $100,000 loan at 6% annual (0.5% monthly) for 30 years, find the principal and interest in the first payment.",
-                steps: [
-                    "`360` `n` (30 × 12 months)",
-                    "`0.5` `i` (monthly rate)",
-                    "`100000` `PV` (loan amount)",
-                    "`PMT` (calculates -$599.55)",
-                    "`1` `ENTER` `1` `f-AMORT` (amortize payment 1 to 1)",
-                    "(X register shows principal paid)",
-                    "`x↔y` (swap to see interest in Y register)"
-                ],
-                result: "Principal = $99.55, Interest = $500.00"
-            }
-        ]
-    },
     dates: {
         title: "Date Calculations",
         examples: [
@@ -490,6 +411,15 @@ const exampleData = {
         ]
     }
 };
+
+
+
+
+
+
+
+
+
 
 
 

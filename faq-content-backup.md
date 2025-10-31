@@ -58,7 +58,7 @@
 3. `2000` `CHS` `PMT` (annual deposit, negative)
 4. `FV` (calculate future value)
 
-**Result:** $206,798.81
+**Result:** $227,331.20
 
 ### Future Value of Investment
 
@@ -94,7 +94,7 @@
 3. `3000` `PMT` (monthly payment)
 4. `PV` (calculate present value)
 
-**Result:** $-313,921.78
+**Result:** $-313,549.21
 
 ### Compound Interest - Time Calculation
 
@@ -119,30 +119,6 @@
 4. `i` (calculate interest rate)
 
 **Result:** 7.18% annual interest rate
-
-### Sinking Fund Factor
-
-**Problem:** How much must be deposited at the end of each month into an account that earns 6% interest to have an account balance of $50,000 at the end of 10 years?
-
-**Steps:**
-1. `120` `n` (10 years × 12 months)
-2. `6` `ENTER` `12` `÷` `i` (monthly rate)
-3. `50000` `FV` (target amount)
-4. `PMT` (calculate payment)
-
-**Result:** $-305.10 per month
-
-### Retirement Savings Goal
-
-**Problem:** To have $1,000,000 in 25 years with 8% annual return, how much to invest annually?
-
-**Steps:**
-1. `25` `n` (25 years)
-2. `8` `i` (8% annual interest)
-3. `1000000` `FV` (retirement goal)
-4. `PMT` (calculate annual payment)
-
-**Result:** $-13,678.78 per year
 
 
 ## Loans & Financing
@@ -195,7 +171,7 @@
 3. `850` `CHS` `PMT` (monthly payment, negative)
 4. `n` (calculate remaining periods)
 
-**Result:** 89.23 months (7.44 years)
+**Result:** 95.14 months (7.93 years)
 
 ### Partial Payment Factor (Installment to Amortize $1.00)
 
@@ -221,7 +197,7 @@
 5. `120` `f-AMORT` (amortize 120 payments = 10 years)
 6. `RCL` `PV` (recall remaining balance)
 
-**Result:** $108,056.19
+**Result:** $105,237.74
 
 ### Mortgage Yield with Points
 
@@ -313,62 +289,7 @@
 
 [//]: # (Category Key: investment)
 
-### Internal Rate of Return (Level Income)
-
-**Problem:** A property is purchased for $500,000 and generates annual net income of $40,000. After 10 years it is sold for $650,000. What is the IRR?
-
-**Steps:**
-1. `500000` `CHS` `g-CFo` (initial investment)
-2. `40000` `g-CFj` (annual income)
-3. `9` `g-Nj` (repeat 9 times for years 1-9)
-4. `40000` `ENTER` `650000` `+` `g-CFj` (year 10: income + sale)
-5. `f-IRR` (calculate IRR)
-
-**Result:** 9.89% annual return
-
-### Internal Rate of Return (Non-Level Income)
-
-**Problem:** Property purchased for $400,000. Income: Y1=$25,000, Y2=$28,000, Y3=$30,000, Y4=$32,000, Y5=$35,000+sale at $475,000. Find IRR.
-
-**Steps:**
-1. `400000` `CHS` `g-CFo` (initial investment)
-2. `25000` `g-CFj` (year 1)
-3. `28000` `g-CFj` (year 2)
-4. `30000` `g-CFj` (year 3)
-5. `32000` `g-CFj` (year 4)
-6. `35000` `ENTER` `475000` `+` `g-CFj` (year 5)
-7. `f-IRR` (calculate IRR)
-
-**Result:** 10.47% annual return
-
-### Leased Fee Valuation (Level Income)
-
-**Problem:** Property generates $60,000/year for 8 years, then reverts at $800,000. At 9% discount rate, what's the present value?
-
-**Steps:**
-1. `0` `g-CFo` (no initial investment)
-2. `60000` `g-CFj` (annual income)
-3. `7` `g-Nj` (repeat 7 times)
-4. `60000` `ENTER` `800000` `+` `g-CFj` (year 8)
-5. `9` `i` (discount rate)
-6. `f-NPV` (calculate present value)
-
-**Result:** $733,582.17
-
-### Leased Fee Valuation (Non-Level Income)
-
-**Problem:** Income stream: Y1=$50,000, Y2=$55,000, Y3=$60,000, Y4=$65,000+reversion $700,000. Discount at 8.5%. Find PV.
-
-**Steps:**
-1. `0` `g-CFo` (no initial investment)
-2. `50000` `g-CFj` (year 1)
-3. `55000` `g-CFj` (year 2)
-4. `60000` `g-CFj` (year 3)
-5. `65000` `ENTER` `700000` `+` `g-CFj` (year 4)
-6. `8.5` `i` (discount rate)
-7. `f-NPV` (calculate PV)
-
-**Result:** $691,781.80
+[//]: # (Category Key: cashflow)
 
 ### Net Present Value (NPV)
 
@@ -410,7 +331,7 @@
 6. `8` `i` (discount rate)
 7. `f-NPV` (calculate NPV)
 
-**Result:** $-5,989.67
+**Result:** $2,431.57
 
 
 ## Bond Valuation

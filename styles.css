@@ -310,10 +310,9 @@ body {
     flex: 1;
     background: #eceef0;
     border-radius: 15px;
-    padding: 25px;
-    padding-top: 10px;
+    padding: 10px 25px 10px 25px;
     box-shadow: 0 10px 30px rgba(0, 0, 1, 1);
-    max-height: 90vh;
+    max-height: calc(100vh - 30px);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -498,7 +497,7 @@ body {
 /* Responsive Design */
 @media (max-width: 1200px) {
     .steps-section {
-        max-height: 400px;
+        max-height: calc(100vh - 30px);
     }
 }
 

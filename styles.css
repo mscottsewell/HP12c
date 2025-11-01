@@ -68,7 +68,7 @@ body {
 .display-indicators {
     display: flex;
     justify-content: space-between;
-    font-size: 0.65rem;
+    font-size: clamp(0.5rem, 1vw, 0.75rem);
     color: #18220d;
     margin-top: -5px;
     padding: 0 6px;
@@ -90,8 +90,8 @@ body {
     background: transparent;
     color: #000;
     font-family: 'Share Tech Mono', 'Courier New', monospace;
-    font-size: 2.4rem;
-    font-weight: 400;
+    font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+    font-weight: 500;
     text-align: left;
     padding: 4px 8px;
     border-radius: 2px;
@@ -99,9 +99,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 1px rgba(0,0,0,0.3);
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 2px rgba(0,0,0,0.4);
     overflow: hidden;
     white-space: nowrap;
     max-width: 100%;
@@ -498,11 +497,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .container {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
     .steps-section {
         max-height: 400px;
     }
@@ -510,6 +504,8 @@ body {
 
 @media (max-width: 768px) {
     .container {
+        flex-direction: column;
+        gap: 20px;
         padding: 10px;
     }
     
@@ -527,16 +523,18 @@ body {
     }
     
     .calculator-image {
-        width: 120%;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .calculator-image-container {
+        max-width: 600px;
+        margin: 0 auto;
     }
     
     .calc-btn {
         width: 6%;
         height: 8%;
-    }
-    
-    .display-screen {
-        font-size: 0.9rem;
     }
 }
 

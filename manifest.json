@@ -2,7 +2,7 @@
   "name": "HP 12C Financial Calculator",
   "short_name": "HP 12C",
   "description": "A fully functional HP 12C financial calculator simulator",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#004262",
   "theme_color": "#004262",

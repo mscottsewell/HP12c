@@ -1,12 +1,12 @@
 const CACHE_NAME = 'hp12c-calculator-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/calculator.js',
-  '/help.js',
-  '/Assets/AmyCalc_HP_12c_Background.png',
-  '/Assets/college-logo.svg'
+  './',
+  './index.html',
+  './styles.css',
+  './calculator.js',
+  './help.js',
+  './Assets/AmyCalc_HP_12c_Background.png',
+  './Assets/college-logo.svg'
 ];
 
 // Install event - cache resources

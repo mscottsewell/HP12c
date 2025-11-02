@@ -1,0 +1,32 @@
+{
+  "name": "HP 12C Financial Calculator",
+  "short_name": "HP 12C",
+  "description": "A fully functional HP 12C financial calculator simulator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#004262",
+  "theme_color": "#004262",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "Assets/college-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "Assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"],
+  "screenshots": []
+}

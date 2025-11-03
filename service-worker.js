@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hp12c-calculator-v1';
+const CACHE_NAME = 'hp12c-calculator-v2';
 const urlsToCache = [
   './',
   './index.html',

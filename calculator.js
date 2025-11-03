@@ -144,7 +144,7 @@ class HP12cCalculator {
         // For new standalone operations, use the value before execution
         // For swap operations, use the value after the swap
         const isTVMCalculation = this.lastTVMWasCalculation && ['n', 'i', 'pv', 'pmt', 'fv'].includes(key);
-        const isCalculationFunction = ['NPV', 'IRR'].includes(functionUsed);
+        const isCalculationFunction = ['NPV', 'IRR', 'ΔDYS', 'DATE'].includes(functionUsed);
         const isSwapOperation = functionUsed === 'x↔y';
         const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display : 
                                  ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution);
@@ -178,17 +178,29 @@ class HP12cCalculator {
             return;
         }
         
-        if (isNumberEntry && this.lastStepWasNumber) {
-            // Update the last step instead of creating a new one
+        // Special functions that should always appear as separate steps
+        const isSpecialFunction = ['D.MY', 'M.DY', 'ΔDYS'].includes(functionUsed);
+        
+        // Check if last step was a special function (to prevent grouping numbers with it)
+        const lastStepButton = this.steps.length > 0 ? (this.steps[this.steps.length - 1].button || '') : '';
+        const lastStepWasSpecial = lastStepButton.includes('g-D.MY') || lastStepButton.includes('g-M.DY') || lastStepButton.includes('g-ΔDYS');
+        
+        if (isSpecialFunction) {
+            // Always create a new step for special functions
+            this.addStep(displayButton, functionUsed, stepDisplayValue);
+            this.lastStepWasNumber = false;
+        } else if (isNumberEntry && this.lastStepWasNumber && !lastStepWasSpecial) {
+            // Update the last step instead of creating a new one (but not if last was special)
             this.updateLastStep(displayButton, functionUsed, this.display);
-        } else if (isOperatorOrStorage && this.lastStepWasNumber) {
-            // Append operator/storage to the number entry on same row
+            this.lastStepWasNumber = true;
+        } else if (isOperatorOrStorage && this.lastStepWasNumber && !lastStepWasSpecial) {
+            // Append operator/storage to the number entry on same row (but not if last was special)
             this.updateLastStep(displayButton, functionUsed, stepDisplayValue);
             this.lastStepWasNumber = false;  // Reset so next operation starts new row
         } else {
             this.addStep(displayButton, functionUsed, stepDisplayValue);
+            this.lastStepWasNumber = isNumberEntry;
         }
-        this.lastStepWasNumber = isNumberEntry;
         
         // Update display
         this.updateDisplay();
@@ -224,13 +236,15 @@ class HP12cCalculator {
             return;
         }
         
-        if (func === 'decimal' || key === 'decimal') {
+        // Decimal only works when using primary function (not f/g functions)
+        if (func === '.' || (func === 'decimal' && key === 'decimal')) {
             this.enterDecimal();
             this.updateDisplay();
             return;
         }
         
-        if (func === 'EEX' || key === 'eex') {
+        // EEX only works when using primary function (not f/g functions)
+        if (func === 'EEX' || (func === 'eex' && key === 'eex')) {
             this.enterExponent();
             this.updateDisplay();
             return;
@@ -1380,8 +1394,9 @@ class HP12cCalculator {
          * Enter: earlier date in Y, later date in X (M.DDYYYY or DD.MMYYYY format)
          * Returns: actual days in X register, 30/360 days in Y register
          */
+        // Use raw stack values, not getX() which might use typed display
         const date1Value = this.stack[1];
-        const date2Value = this.getX();
+        const date2Value = this.stack[0];
         
         // Parse first date
         let month1, day1, year1;
@@ -1391,7 +1406,7 @@ class HP12cCalculator {
             const ddyyyy1 = Math.round(decimal1 * 1000000);
             day1 = Math.floor(ddyyyy1 / 10000);
             year1 = ddyyyy1 % 10000;
-        } else {
+        } else { // D.MY format
             day1 = Math.floor(date1Value);
             const decimal1 = date1Value - day1;
             const mmyyyy1 = Math.round(decimal1 * 1000000);
@@ -1407,7 +1422,7 @@ class HP12cCalculator {
             const ddyyyy2 = Math.round(decimal2 * 1000000);
             day2 = Math.floor(ddyyyy2 / 10000);
             year2 = ddyyyy2 % 10000;
-        } else {
+        } else { // D.MY format
             day2 = Math.floor(date2Value);
             const decimal2 = date2Value - day2;
             const mmyyyy2 = Math.round(decimal2 * 1000000);
@@ -2379,7 +2394,11 @@ class HP12cCalculator {
             'DB': 'declining balance depreciation',
             'AMORT': 'amortization',
             'INT': 'amortization interest',
-            'Σ': 'sum statistics'
+            'Σ': 'sum statistics',
+            'D.MY': 'set date format D.MY',
+            'M.DY': 'set date format M.DY',
+            'ΔDYS': 'calculate days between dates',
+            'DATE': 'calculate future/past date'
         };
         
         return descriptions[functionUsed] || '';

@@ -1,6 +1,7 @@
 # HP12c Financial Calculator Simulator
 
 A web-based educational simulator of the HP12c Financial Calculator with full RPN functionality, comprehensive financial calculations, and an interactive step-by-step recording system. Perfect for learning calculator operations before using the physical device.
+<img width="1889" height="1445" alt="image" src="https://github.com/user-attachments/assets/feab38dd-5f6c-4d89-80d6-690c37f92ec4" />
 
 ## Features
 

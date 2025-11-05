@@ -75,7 +75,7 @@
 3. `36000` `PMT` (annual payment)
 4. `PV` (calculate present value)
 
-**Result:** $-308,131.19
+**Result:** $-308,141.24 (negative = amount you'd pay today)
 
 ### Present Value of Annuity (Monthly Payments)
 
@@ -87,7 +87,7 @@
 3. `3000` `PMT` (monthly payment)
 4. `PV` (calculate present value)
 
-**Result:** $-313,921.78
+**Result:** $-313,921.78 (negative = amount you'd pay today)
 
 ### Compound Interest - Time Calculation
 
@@ -115,7 +115,7 @@
 
 ### Sinking Fund Factor
 
-**Problem:** How much must be deposited at the end of each month into an account that earns 6% interest to have an account balance of $50,000 at the end of 10 years?
+**Problem:** How much must be deposited at the end of each month into an account that earns 6% annual interest to have an account balance of $50,000 at the end of 10 years?
 
 **Steps:**
 1. `120` `n` (10 years × 12 months)
@@ -308,7 +308,7 @@
 3. `78` `ENTER` `1` `Σ+` (score, weight)
 4. `g-x̄,w` (weighted mean)
 
-**Result:** 85.67
+**Result:** 85.50
 
 
 ## Date Calculations
@@ -458,7 +458,7 @@
 
 ### Sum-of-Years-Digits (SOYD)
 
-**Problem:** Same asset, find first year depreciation using SOYD method.
+**Problem:** Asset costs $50,000, salvage value $5,000, useful life 10 years. Find first year depreciation using SOYD method.
 
 **Steps:**
 1. `50000` `ENTER` (cost)
@@ -470,7 +470,7 @@
 
 ### Declining Balance (DB)
 
-**Problem:** Asset $30,000, salvage $3,000, 5 years, 200% declining balance. Year 1 depreciation?
+**Problem:** Asset costs $30,000, salvage value $3,000, useful life 5 years, 200% declining balance. Find Year 1 depreciation?
 
 **Steps:**
 1. `30000` `ENTER` (cost)

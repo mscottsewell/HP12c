@@ -57,7 +57,7 @@ const exampleData = {
                     "`36000` `PMT` (annual payment)",
                     "`PV` (calculate present value)"
                 ],
-                result: "$-308,131.19"
+                result: "$-308,141.24 (negative = amount you'd pay today)"
             },
             {
                 name: "Present Value of Annuity (Monthly Payments)",
@@ -68,7 +68,7 @@ const exampleData = {
                     "`3000` `PMT` (monthly payment)",
                     "`PV` (calculate present value)"
                 ],
-                result: "$-313,921.78"
+                result: "$-313,921.78 (negative = amount you'd pay today)"
             },
             {
                 name: "Compound Interest - Time Calculation",
@@ -94,7 +94,7 @@ const exampleData = {
             },
             {
                 name: "Sinking Fund Factor",
-                problem: "How much must be deposited at the end of each month into an account that earns 6% interest to have an account balance of $50,000 at the end of 10 years?",
+                problem: "How much must be deposited at the end of each month into an account that earns 6% annual interest to have an account balance of $50,000 at the end of 10 years?",
                 steps: [
                     "`120` `n` (10 years × 12 months)",
                     "`6` `ENTER` `12` `÷` `i` (monthly rate)",
@@ -270,7 +270,7 @@ const exampleData = {
                     "`78` `ENTER` `1` `Σ+` (score, weight)",
                     "`g-x̄,w` (weighted mean)"
                 ],
-                result: "85.67"
+                result: "85.50"
             }
         ]
     },
@@ -410,7 +410,7 @@ const exampleData = {
             },
             {
                 name: "Sum-of-Years-Digits (SOYD)",
-                problem: "Same asset, find first year depreciation using SOYD method.",
+                problem: "Asset costs $50,000, salvage value $5,000, useful life 10 years. Find first year depreciation using SOYD method.",
                 steps: [
                     "`50000` `ENTER` (cost)",
                     "`5000` `ENTER` (salvage)",
@@ -421,7 +421,7 @@ const exampleData = {
             },
             {
                 name: "Declining Balance (DB)",
-                problem: "Asset $30,000, salvage $3,000, 5 years, 200% declining balance. Year 1 depreciation?",
+                problem: "Asset costs $30,000, salvage value $3,000, useful life 5 years, 200% declining balance. Find Year 1 depreciation?",
                 steps: [
                     "`30000` `ENTER` (cost)",
                     "`3000` `ENTER` (salvage)",

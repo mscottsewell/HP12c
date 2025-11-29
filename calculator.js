@@ -1,51 +1,135 @@
 // HP12c Financial Calculator Simulator
+
+/**
+ * @typedef {Object} CalculatorStep
+ * @property {number} stepNum - The step number (1-based)
+ * @property {string} button - The button(s) pressed (e.g., "5", "f-NPV", "PV ENTER")
+ * @property {string} operation - Human-readable operation description
+ * @property {string} result - The formatted result value
+ */
+
+/**
+ * @typedef {Object} CashFlow
+ * @property {number} value - The cash flow amount
+ * @property {number} count - Number of times this cash flow repeats
+ */
+
+/**
+ * HP12c Financial Calculator Class
+ * Implements a full simulation of the HP12c financial calculator
+ * with RPN (Reverse Polish Notation) stack operations.
+ */
 class HP12cCalculator {
+    /**
+     * Creates a new HP12c Calculator instance
+     */
     constructor() {
-        this.stack = [0, 0, 0, 0]; // X, Y, Z, T registers (RPN stack)
-        this.memory = new Array(20).fill(0); // .0 to .9 and R0 to R9
+        /** @type {number[]} X, Y, Z, T registers (RPN stack) */
+        this.stack = [0, 0, 0, 0];
+        
+        /** @type {number[]} Storage registers .0-.9 and R0-R9 */
+        this.memory = new Array(20).fill(0);
         
         // Settings - load displayDecimals first before setting display
+        /** @type {boolean} Begin/End mode for annuity calculations */
         this.beginMode = false;
+        
+        /** @type {number} Number of decimal places to display (0-9) */
         // Load displayDecimals from localStorage, default to 4 if not set
         this.displayDecimals = localStorage.getItem('hp12c_displayDecimals') 
             ? parseInt(localStorage.getItem('hp12c_displayDecimals')) 
             : 4;
-        this.dateFormat = 'MDY'; // Default date format
-        this.programMode = false; // Program mode flag
-        this.stats = []; // Statistics data
+        
+        /** @type {'MDY'|'DMY'} Date format setting */
+        this.dateFormat = 'MDY';
+        
+        /** @type {boolean} Program mode flag */
+        this.programMode = false;
+        
+        /** @type {Array<{x: number, y: number}>} Statistics data pairs */
+        this.stats = [];
         
         // Now set display with correct decimal places
+        /** @type {string} Current display value as formatted string */
         this.display = (0).toFixed(this.displayDecimals);
+        
+        /** @type {boolean} Ready for new number entry */
         this.isNewNumber = true;
+        
+        /** @type {boolean} Currently typing a number */
         this.isTyping = false;
+        
+        /** @type {boolean} Decimal point has been entered */
         this.decimalEntered = false;
+        /** @type {boolean} Whether stack-lift is enabled for next digit */
+        this.stackLiftEnabled = true;
+        
+        /** @type {number} Last X register value (for LASTx recall) */
         this.lastX = 0;
         
         // Function key states
+        /** @type {boolean} f (gold) function key active */
         this.fActive = false;
+        
+        /** @type {boolean} g (blue) function key active */
         this.gActive = false;
         
-        // Financial registers
-        this.n = 0;    // Number of periods
-        this.i = 0;    // Interest rate per period
-        this.pv = 0;   // Present value
-        this.pmt = 0;  // Payment
-        this.fv = 0;   // Future value
+        // Financial registers (TVM)
+        /** @type {number} Number of periods */
+        this.n = 0;
+        
+        /** @type {number} Interest rate per period (percentage) */
+        this.i = 0;
+        
+        /** @type {number} Present value */
+        this.pv = 0;
+        
+        /** @type {number} Payment per period */
+        this.pmt = 0;
+        
+        /** @type {number} Future value */
+        this.fv = 0;
         
         // Cash flow registers
-        this.cashFlows = [];  // Array to store cash flows
-        this.cashFlowCounts = [];  // Array to store counts for each cash flow
+        /** @type {number[]} Array of cash flow values (CF0, CF1, ...) */
+        this.cashFlows = [];
+        
+        /** @type {number[]} Array of counts for each cash flow (Nj) */
+        this.cashFlowCounts = [];
         
         // Steps tracking
+        /** @type {CalculatorStep[]} Array of recorded calculation steps */
         this.steps = [];
+        
+        /** @type {number} Current step counter */
         this.stepCounter = 0;
+        
+        /** @type {boolean} Last step was a number entry */
         this.lastStepWasNumber = false;
+        
+        /** @type {boolean} Last TVM operation was a calculation (not storage) */
         this.lastTVMWasCalculation = false;
-        this.justCalculated = false; // Track if we just completed a calculation
-        this.previousStep = null; // Backup of step before it was modified (for CLx undo)
-        this.stepBackupSaved = false; // Track if we've already saved a backup for current step
+        
+        /** @type {boolean} Just completed a calculation */
+        this.justCalculated = false;
+        
+        /** @type {CalculatorStep|null} Backup of step before modification (for CLx undo) */
+        this.previousStep = null;
+        
+        /** @type {boolean} Already saved a backup for current step */
+        this.stepBackupSaved = false;
+
+        /** @type {('store'|'recall'|null)} Pending memory register operation */
+        this.waitingForRegister = null;
+
+        /** @type {boolean} User manually hid storage panel */
+        this.storagePanelHiddenByUser = false;
+
+        /** @type {{type:'store'|'recall', stepIndex:number, displayBefore:string}|null} Track in-progress memory step until digit chosen */
+        this.pendingMemory = null;
         
         // Double-tap detection for CLx
+        /** @type {string|null} Last key pressed (for double-tap detection) */
         this.lastKeyPressed = null;
         
         this.initializeEventListeners();
@@ -122,6 +206,12 @@ class HP12cCalculator {
             displayButton = 'g-' + gFunction;  // Combined display
             this.gActive = false;
             this.updateFunctionIndicators();
+        } else if (this.fActive && key === 'plus') {
+            // Special case: f-+ toggles stack debug
+            functionUsed = 'XYZT';
+            displayButton = 'f-XYZT';
+            this.fActive = false;
+            this.updateFunctionIndicators();
         }
         
         // Capture display value BEFORE executing the function
@@ -129,6 +219,40 @@ class HP12cCalculator {
         
         // Execute the function
         this.executeFunction(key, functionUsed);
+
+        // If STO/RCL pressed, mark pending memory operation to merge digit into same step
+        if (functionUsed === 'STO' || functionUsed === 'RCL') {
+            // We'll add/append step now (without digit) and finalize when digit arrives
+            // Record pending state so a subsequent digit updates this step instead of starting number entry
+            this.pendingMemory = { type: functionUsed === 'STO' ? 'store' : 'recall', stepIndex: this.steps.length, displayBefore: displayBeforeExecution };
+        }
+
+        // If this is the register digit immediately after STO/RCL, finalize before any step creation
+        if (this.pendingMemory && this.waitingForRegister === null && this.isDigit(key) && functionUsed === key) {
+            // Finalize pending STO/RCL step without creating a separate digit step
+            const pending = this.pendingMemory;
+            const stepObj = this.steps[pending.stepIndex];
+            if (stepObj) {
+                stepObj.button = stepObj.button + ' ' + key; // e.g., STO 1
+                if (pending.type === 'store') {
+                    stepObj.operation = `Store X to register .${key}`;
+                    stepObj.result = this.formatNumber(parseFloat(pending.displayBefore.replace(/,/g,'')) || this.getX());
+                } else {
+                    stepObj.operation = `Recall register .${key} to X`;
+                    stepObj.result = this.display; // after recall
+                }
+                // Re-render steps
+                const stepsContainer = document.getElementById('steps-container');
+                if (stepsContainer) {
+                    stepsContainer.innerHTML = '';
+                    this.steps.forEach(s => this.renderStep(s));
+                }
+            }
+            this.pendingMemory = null;
+            this.lastStepWasNumber = false; // next digit should start new step
+            this.updateDisplay();
+            return; // Skip normal step recording block
+        }
         
         // Record the step (group consecutive number entries and operations that follow them)
         const isNumberEntry = this.isDigit(key) || key === 'decimal' || key === 'eex' || key === 'chs';
@@ -177,6 +301,12 @@ class HP12cCalculator {
             this.updateDisplay();
             return;
         }
+
+        // Don't add a step for stack debug toggle (f-XYZT)
+        if (functionUsed === 'XYZT') {
+            this.updateDisplay();
+            return;
+        }
         
         // Special functions that should always appear as separate steps
         const isSpecialFunction = ['D.MY', 'M.DY', 'ΔDYS'].includes(functionUsed);
@@ -189,6 +319,11 @@ class HP12cCalculator {
             // Always create a new step for special functions
             this.addStep(displayButton, functionUsed, stepDisplayValue);
             this.lastStepWasNumber = false;
+        } else if (this.pendingMemory && (functionUsed === 'STO' || functionUsed === 'RCL')) {
+            // Create the base STO/RCL step now (will be completed after digit)
+            this.addStep(displayButton, functionUsed, displayBeforeExecution);
+            // Do NOT mark as number; keep lastStepWasNumber false but allow digit to update this step
+            this.lastStepWasNumber = false;
         } else if (isNumberEntry && this.lastStepWasNumber && !lastStepWasSpecial) {
             // Update the last step instead of creating a new one (but not if last was special)
             this.updateLastStep(displayButton, functionUsed, this.display);
@@ -200,6 +335,11 @@ class HP12cCalculator {
         } else {
             this.addStep(displayButton, functionUsed, stepDisplayValue);
             this.lastStepWasNumber = isNumberEntry;
+        }
+
+        // If user pressed something other than digit after STO/RCL, abort pending merge
+        if (this.pendingMemory && !(functionUsed === 'STO' || functionUsed === 'RCL')) {
+            this.pendingMemory = null;
         }
         
         // Update display
@@ -227,6 +367,19 @@ class HP12cCalculator {
                 this.clearAll();
                 this.lastKeyPressed = func;
                 return;
+        }
+
+        // If we're waiting for a memory register selection, treat digit as register, not number entry
+        if (this.waitingForRegister && this.isDigit(key)) {
+            const register = parseInt(key);
+            if (this.waitingForRegister === 'store') {
+                this.store(register);
+            } else if (this.waitingForRegister === 'recall') {
+                this.recall(register);
+            }
+            this.waitingForRegister = null;
+            // Do not enter number typing mode; just return so handleButtonPress can finalize step
+            return;
         }
         
         // Number entry - only if the function being executed is the primary (not an f/g function)
@@ -545,6 +698,11 @@ class HP12cCalculator {
                 this.clearPrefix();
                 break;
                 
+            // Debug toggle - f-shift
+            case 'XYZT':
+                this.toggleStackDebug();
+                break;
+                
             // Bond functions - f-shift
             case 'PRICE':
                 this.bondPrice();
@@ -581,10 +739,13 @@ class HP12cCalculator {
             const register = parseInt(key);
             if (this.waitingForRegister === 'store') {
                 this.store(register);
+                // Refresh memory panel to reflect new value
+                this.renderStorageRegisters();
             } else if (this.waitingForRegister === 'recall') {
                 this.recall(register);
             }
             this.waitingForRegister = null;
+            this.updateDisplay();
         }
     }
     
@@ -594,13 +755,17 @@ class HP12cCalculator {
     
     enterDigit(digit) {
         if (this.isNewNumber) {
-            // Lift stack when starting a new number after ENTER or operation
-            this.stack[3] = this.stack[2];
-            this.stack[2] = this.stack[1];
-            this.stack[1] = this.stack[0];
+            // Lift stack only when stack-lift is enabled (after operations). ENTER disables it.
+            if (this.stackLiftEnabled) {
+                this.stack[3] = this.stack[2];
+                this.stack[2] = this.stack[1];
+                this.stack[1] = this.stack[0];
+            }
             this.display = digit;
             this.isNewNumber = false;
             this.isTyping = true;
+            // Once typing begins, re-enable stack-lift for subsequent number entries
+            this.stackLiftEnabled = true;
         } else {
             if (this.display.length < 10) {
                 this.display = this.display === '0' ? digit : this.display + digit;
@@ -629,13 +794,23 @@ class HP12cCalculator {
     
     // Stack operations
     enter() {
+        // HP12C ENTER duplicates X into Y without altering X
         const value = this.getX();
-        this.pushStack(value);
+        // If user was typing, commit the typed value to X before duplicating
+        if (this.isTyping) {
+            this.stack[0] = value;
+        }
+        // Shift stack and duplicate X into Y
+        this.stack[3] = this.stack[2];
+        this.stack[2] = this.stack[1];
+        this.stack[1] = this.stack[0];
         this.isNewNumber = true;
         this.isTyping = false;
         this.decimalEntered = false;
+        // After ENTER, HP12C disables stack-lift for the next digit
+        this.stackLiftEnabled = false;
         // Format the display with proper decimal places
-        this.display = this.formatNumber(value);
+        this.display = this.formatNumber(this.stack[0]);
     }
     
     pushStack(value) {
@@ -671,6 +846,8 @@ class HP12cCalculator {
         this.isTyping = false;
         this.decimalEntered = false;
         this.justCalculated = true; // Mark that we just calculated
+        // Results of operations enable stack-lift for the next digit entry
+        this.stackLiftEnabled = true;
     }
     
     // Basic arithmetic operations
@@ -1119,10 +1296,21 @@ class HP12cCalculator {
     // Memory operations
     store(register) {
         this.memory[register] = this.getX();
+        // Auto-show storage panel if a value is stored and user has not hidden it
+        if (!this.storagePanelHiddenByUser) {
+            this.autoShowMemoryPanel();
+        }
     }
     
     recall(register) {
-        this.setX(this.memory[register]);
+        // RCL lifts the stack before placing recalled value in X
+        const value = this.memory[register];
+        // Lift stack
+        this.stack[3] = this.stack[2];
+        this.stack[2] = this.stack[1];
+        this.stack[1] = this.stack[0];
+        // Set the recalled value and enable stack-lift for next entry
+        this.setX(value);
     }
     
     // Statistics
@@ -1483,9 +1671,55 @@ class HP12cCalculator {
     
     // Memory and display
     showMemory() {
-        // Show memory status - simplified version
-        this.display = 'MEM OK';
-        setTimeout(() => this.updateDisplay(), 1000);
+        // Toggle and render storage registers (.0-.9 and R0-R9)
+        const group = document.getElementById('storage-register-group');
+        if (group) {
+            group.style.display = '';
+            this.storagePanelHiddenByUser = false;
+        }
+        this.renderStorageRegisters();
+        this.updateDisplay();
+    }
+
+    renderStorageRegisters() {
+        const container = document.getElementById('storage-registers');
+        if (!container) return;
+        // Build a compact grid: registers 0-9 and 10-19
+        const format = (v) => this.formatNumber(v || 0);
+        let html = '';
+        for (let r = 0; r < 10; r++) {
+            html += `<div class="register-item"><span class="register-label">.${r}:</span><span>${format(this.memory[r])}</span></div>`;
+        }
+        for (let r = 10; r < 20; r++) {
+            html += `<div class="register-item"><span class="register-label">R${r-10}:</span><span>${format(this.memory[r])}</span></div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    autoShowMemoryPanel() {
+        const group = document.getElementById('storage-register-group');
+        if (!group) return;
+        const hasNonZero = this.memory.some(v => v !== 0);
+        if (hasNonZero && group.style.display === 'none') {
+            group.style.display = '';
+            this.renderStorageRegisters();
+        }
+    }
+
+    toggleStorageRegisters() {
+        const group = document.getElementById('storage-register-group');
+        const btn = document.getElementById('toggle-storage-btn');
+        if (!group || !btn) return;
+        if (group.style.display === 'none') {
+            group.style.display = '';
+            this.storagePanelHiddenByUser = false;
+            btn.textContent = 'Hide';
+            this.renderStorageRegisters();
+        } else {
+            group.style.display = 'none';
+            this.storagePanelHiddenByUser = true;
+            btn.textContent = 'Show';
+        }
     }
     
     round() {
@@ -2119,6 +2353,8 @@ class HP12cCalculator {
         
         // Update registers display
         this.updateRegisters();
+        // Update XY debug display (temporary troubleshooting)
+        this.updateXYDebug();
     }
     
     updateFunctionIndicators() {
@@ -2480,11 +2716,43 @@ class HP12cCalculator {
         
         // Show/hide storage register group based on whether any values are stored
         const storageGroup = document.getElementById('storage-register-group');
-        storageGroup.style.display = hasNonZero ? 'block' : 'none';
+        if (this.storagePanelHiddenByUser) {
+            storageGroup.style.display = 'none';
+        } else {
+            storageGroup.style.display = hasNonZero ? 'block' : 'none';
+        }
     }
     
     formatRegisterValue(value) {
         return this.formatNumber(value, this.displayDecimals);
+    }
+
+    updateXYDebug() {
+        const xEl = document.getElementById('debug-x');
+        const yEl = document.getElementById('debug-y');
+        const zEl = document.getElementById('debug-z');
+        const tEl = document.getElementById('debug-t');
+        if (!xEl || !yEl || !zEl || !tEl) return;
+        // Use stack values for full precision when not typing; while typing use display for X
+        const xVal = this.isTyping ? parseFloat(this.display.replace(/,/g,'')) || 0 : this.stack[0];
+        const yVal = this.stack[1];
+        const zVal = this.stack[2];
+        const tVal = this.stack[3];
+        xEl.textContent = this.formatNumber(xVal);
+        yEl.textContent = this.formatNumber(yVal);
+        zEl.textContent = this.formatNumber(zVal);
+        tEl.textContent = this.formatNumber(tVal);
+    }
+
+    toggleStackDebug() {
+        const debugPanel = document.getElementById('xy-debug');
+        if (debugPanel) {
+            if (debugPanel.style.display === 'none') {
+                debugPanel.style.display = 'flex';
+            } else {
+                debugPanel.style.display = 'none';
+            }
+        }
     }
 }
 
@@ -2493,15 +2761,28 @@ document.addEventListener('DOMContentLoaded', () => {
     window.calculator = new HP12cCalculator();
     console.log('HP12c Calculator initialized');
     
-    // Add g-shift labels to buttons
+    // Add g-shift and f-shift labels to buttons
     const buttons = document.querySelectorAll('.calc-btn');
     buttons.forEach(button => {
         const gFunction = button.getAttribute('data-g');
+        const fFunction = button.getAttribute('data-f');
         const primaryLabel = button.textContent;
-        if (gFunction && gFunction.trim() !== '') {
-            button.innerHTML = `<span class="primary-label">${primaryLabel}</span><span class="g-label">${gFunction}</span>`;
-        } else {
-            button.innerHTML = `<span class="primary-label">${primaryLabel}</span><span class="g-label">&nbsp;</span>`;
+        
+        // Build HTML with both f-label and g-label spans
+        let labelHTML = `<span class="primary-label">${primaryLabel}</span>`;
+        
+        // Add f-label if exists (will be shown/hidden by CSS based on f-active class)
+        if (fFunction && fFunction.trim() !== '') {
+            labelHTML += `<span class="f-label">${fFunction}</span>`;
         }
+        
+        // Add g-label if exists
+        if (gFunction && gFunction.trim() !== '') {
+            labelHTML += `<span class="g-label">${gFunction}</span>`;
+        } else {
+            labelHTML += `<span class="g-label">&nbsp;</span>`;
+        }
+        
+        button.innerHTML = labelHTML;
     });
 });

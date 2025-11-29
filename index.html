@@ -16,8 +16,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=74">
-    <script src="calculator.js?v=79"></script>
+    <link rel="stylesheet" href="styles.css?v=81">
+    <script src="calculator.js?v=81"></script>
+    <script src="calculator-core.js?v=81"></script>
 </head>
 <body>
     <div class="container">
@@ -93,6 +94,14 @@
                     <button class="calc-btn" data-key="sum" data-primary="Σ+" data-f="" data-g="Σ-" style="top: 87%; left: 81.2%;">Σ+</button>
                     <button class="calc-btn" data-key="plus" data-primary="+" data-f="" data-g="" style="top: 87%; left: 90.2%;">+</button>
                 </div>
+
+                <!-- Stack Debug (f-+ toggles) -->
+                <div id="xy-debug" style="margin-top: 8px; padding: 6px 10px; background: #0b2e40; color: #e6f2f7; border-radius: 6px; font-family: 'Share Tech Mono', monospace; display: none; gap: 16px;">
+                    <div>X: <span id="debug-x">0.00</span></div>
+                    <div>Y: <span id="debug-y">0.00</span></div>
+                    <div>Z: <span id="debug-z">0.00</span></div>
+                    <div>T: <span id="debug-t">0.00</span></div>
+                </div>
             </div>
 
             <!-- Financial Registers -->
@@ -129,6 +138,8 @@
                             <button class="help-category-btn" onclick="showCategory('investment')">📈 Investment Analysis</button>
                             <button class="help-category-btn" onclick="showCategory('bonds')">📑 Bond Valuation</button>
                             <button class="help-category-btn" onclick="showCategory('depreciation')">📉 Depreciation</button>
+                            <button class="help-category-btn" onclick="showCategory('realestate')">🏡 Real Estate</button>
+                            <button class="help-category-btn" onclick="showCategory('retirement')">🧓 Retirement Planning</button>
                             <button class="help-category-btn" onclick="showCategory('tips')">💡 Practice Tips & Common Errors</button>
                         </div>
                     </div>
@@ -186,7 +197,7 @@
         <div class="steps-section">
             <div id="registers-container-storage" class="registers-container">
                 <div class="register-group" id="storage-register-group" style="display: none;">
-                    <h3>Storage</h3>
+                    <h3>Storage <button id="toggle-storage-btn" class="storage-toggle-btn" onclick="window.calculator && window.calculator.toggleStorageRegisters()">Hide</button></h3>
                     <div class="register-display" id="storage-registers">
                     </div>
                 </div>
@@ -198,7 +209,7 @@
         </div>
     </div>
 
-    <script src="help.js?v=76"></script>
+    <script src="help.js?v=81"></script>
     <script>
         // Register service worker for PWA
         if ('serviceWorker' in navigator) {

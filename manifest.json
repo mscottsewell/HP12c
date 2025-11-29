@@ -16,7 +16,7 @@
     },
     {
       "src": "Assets/icon-192.png",
-      "sizes": "192x192",
+      "start_url": "/HP12c/",
       "type": "image/png",
       "purpose": "any"
     },

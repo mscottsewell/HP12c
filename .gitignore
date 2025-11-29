@@ -3,3 +3,10 @@
 /run_tests.html
 /test.html
 /TESTS.md
+# Development workspace
+/work/
+# Node and temp
+node_modules/
+*.log
+.DS_Store
+Thumbs.db

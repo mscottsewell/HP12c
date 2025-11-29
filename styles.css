@@ -178,6 +178,22 @@ body {
     border-radius: 0 0 6px 6px;
 }
 
+.calc-btn .f-label {
+    font-size: clamp(0.45rem, 0.95vw, 0.75rem);
+    color: #ff8c42;
+    font-weight: 600;
+    background: #2a2a2a;
+    width: 100%;
+    flex: 0 0 45%;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 6px 6px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
 .calc-btn:hover {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
     border: 2px solid rgba(255, 255, 255, 0.6);
@@ -195,13 +211,17 @@ body {
     background: #1a1a1a;
 }
 
-/* When f-shift is active, hide primary label and g-label, show only f function */
+/* When f-shift is active, hide primary label and g-label, show f-label */
 .calc-btn.f-active .primary-label {
     display: none;
 }
 
 .calc-btn.f-active .g-label {
     display: none;
+}
+
+.calc-btn.f-active .f-label {
+    display: none; /* Keep hidden, we use ::after instead */
 }
 
 .calc-btn.f-active::after {
@@ -265,6 +285,15 @@ body {
 
 .g-key .g-label {
     background: #1c7ed6;
+}
+
+/* Hide f-label on plus button unless f-active */
+.calc-btn[data-key="plus"] .f-label {
+    display: none;
+}
+
+.calc-btn[data-key="plus"].f-active .f-label {
+    display: flex;
 }
 
 /* Enter button styling (rectangular) */
@@ -761,11 +790,29 @@ body {
 
 .help-categories {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-flow: column;
-    grid-template-rows: repeat(5, auto);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, auto);
     gap: 10px;
     margin-top: 15px;
+}
+
+/* Responsive layout for help categories */
+@media (max-width: 1100px) {
+    .help-categories {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(6, auto);
+    }
+}
+
+@media (max-width: 700px) {
+    .help-categories {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+    }
+    .help-category-btn {
+        font-size: 0.95rem;
+        padding: 12px;
+    }
 }
 
 .help-category-btn {

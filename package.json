@@ -1,0 +1,27 @@
+{
+  "name": "hp12c",
+  "version": "1.0.0",
+  "description": "A web-based educational simulator of the HP12c Financial Calculator with full RPN functionality, comprehensive financial calculations, and an interactive step-by-step recording system. Perfect for learning calculator operations before using the physical device.\r <img width=\"1889\" height=\"1445\" alt=\"image\" src=\"https://github.com/user-attachments/assets/feab38dd-5f6c-4d89-80d6-690c37f92ec4\" />",
+  "main": "calculator.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "http-server -p 8080 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mscottsewell/HP12c.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mscottsewell/HP12c/issues"
+  },
+  "homepage": "https://github.com/mscottsewell/HP12c#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "jest": "^30.2.0"
+  }
+}

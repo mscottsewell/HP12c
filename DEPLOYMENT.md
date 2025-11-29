@@ -65,3 +65,21 @@ python -m http.server 8000
 Then open: http://localhost:8000
 
 Note: Service worker requires HTTPS to work (except on localhost), so some PWA features won't work until deployed.
+
+## Production Build (Recommended)
+
+Create a clean production bundle to publish:
+
+### Build
+```powershell
+pwsh ./build.ps1
+```
+
+This generates `dist/` containing only runtime files (HTML, CSS, JS, manifest, service worker, and web-safe assets).
+
+### Publish to GitHub Pages
+```powershell
+npx gh-pages -d dist
+```
+
+Or configure Pages to deploy from the `gh-pages` branch created by the command above.

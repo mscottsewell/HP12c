@@ -1,11 +1,12 @@
-# HP12c Financial Calculator Simulator
+# HP12c Financial Calculator Simulator for the Classroom
 
-A web-based educational simulator of the HP12c Financial Calculator with full RPN functionality, comprehensive financial calculations, and an interactive step-by-step recording system. Perfect for learning calculator operations before using the physical device.
+A web-based educational simulator of the HP12c Financial Calculator with an interactive step-by-step recording system designed for demonstrating the use of calculator on-screen in a classroom. 
+The FAQ and step recorder is also useful for students learning calculator operations before using the physical device.
 <img width="1889" height="1445" alt="image" src="https://github.com/user-attachments/assets/feab38dd-5f6c-4d89-80d6-690c37f92ec4" />
 
 ## Features
 
-### 🧮 Full Calculator Functionality
+### 🧮 Calculator Functionality
 - **RPN (Reverse Polish Notation) Logic**: Authentic HP12c stack-based calculations
 - **Complete Financial Functions**: 
   - Time Value of Money (TVM): Calculate n, i, PV, PMT, FV with Newton-Raphson methods
@@ -28,12 +29,10 @@ A web-based educational simulator of the HP12c Financial Calculator with full RP
 
 ### 📚 Educational Features
 - **Step Recording**: Every button press is recorded in sequence
-- **CHS Smart Positioning**: Change Sign (CHS) always displays at end of number for clarity
 - **Visual Feedback**: Buttons highlight when pressed with smooth animations
 - **Function Indicators**: Shows when f or g functions are active
 - **Clear Documentation**: Each step shows button name, function, and result
 - **Interactive FAQ**: Built-in help system with real calculator examples
-- **Auto-scroll**: Steps panel automatically scrolls to show latest entry
 
 ### 🎯 Learning Benefits
 - **Exact Reproduction**: Students can follow the exact same steps on their physical calculator

@@ -287,6 +287,22 @@ body {
     background: #1c7ed6;
 }
 
+/* XYZT Debug Overlay */
+#xy-debug {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 6px 10px;
+    background: #0b2e40;
+    color: #e6f2f7;
+    border-radius: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    display: none; /* default hidden; toggled to flex in JS */
+    gap: 16px;
+    z-index: 20;
+    pointer-events: none;
+}
+
 /* Hide f-label on plus button unless f-active */
 .calc-btn[data-key="plus"] .f-label {
     display: none;

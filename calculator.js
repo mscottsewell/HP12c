@@ -1296,6 +1296,13 @@ class HP12cCalculator {
     // Memory operations
     store(register) {
         this.memory[register] = this.getX();
+        // After completing a STO operation (with register selected),
+        // HP12C terminates the current numeric entry. The next digit
+        // should begin a new number rather than appending to the
+        // previously displayed value.
+        this.isNewNumber = true;
+        this.isTyping = false;
+        this.decimalEntered = false;
         // Auto-show storage panel if a value is stored and user has not hidden it
         if (!this.storagePanelHiddenByUser) {
             this.autoShowMemoryPanel();

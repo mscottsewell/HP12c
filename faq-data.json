@@ -603,7 +603,7 @@
                 "name": "Impact of Starting Early vs. Late [Accumulation]",
                 "problem": "Person A starts saving $500/month at age 25. Person B starts at age 35 saving $500/month. Both retire at 65 with 7% return. Compare their retirement balances and calculate the difference.",
                 "steps": [
-                    "(In this simulator to display the XYZT registers, press 'f' '+')",
+                    "(In this simulator to display the XYZT registers, press `f` `+`)",
                     "Person A: `480` `n` (40 years × 12 months)",
                     "`7` `ENTER` `12` `÷` `i` (monthly rate)",
                     "`0` `PV` (no initial balance)",

@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="styles.css?v=81">
     <script src="calculator.js?v=81"></script>
     <script src="calculator-core.js?v=81"></script>
+    <!-- Preload large calculator background to reduce perceived render delay -->
+    <link rel="preload" as="image" href="Assets/AmyCalc_HP_12c_Background.png">
 </head>
 <body>
     <div class="container">
@@ -44,7 +46,7 @@
 
                 <!-- Calculator Image with Button Overlays -->
                 <div class="calculator-image-container">
-                    <img src="Assets/AmyCalc_HP_12c_Background.png" alt="AmyCalc12c Calculator" class="calculator-image">
+                    <img src="Assets/AmyCalc_HP_12c_Background.png" alt="AmyCalc12c Calculator" class="calculator-image" width="1889" height="1445" loading="eager">
                     
                     <!-- Row 1 buttons -->
                     <button class="calc-btn" data-key="n" data-primary="n" data-f="AMORT" data-g="12×" style="top: 39%; left: 9.2%;">n</button>

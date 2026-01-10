@@ -968,15 +968,18 @@ class HP12cCalculator {
         /**
          * Calculate number of periods (n) from PV, PMT, FV, and i
          * Uses logarithmic formula when possible, iterative method otherwise
+         * Rounds up to next integer to match real HP-12C behavior
          */
         const rate = this.i / 100;
-        
+
         if (rate === 0) {
             // Simple case: no interest
             if (this.pmt === 0) {
                 this.setX(0);
             } else {
-                this.setX(-(this.pv + this.fv) / this.pmt);
+                const result = -(this.pv + this.fv) / this.pmt;
+                // Round up to next integer (HP-12C behavior)
+                this.setX(Math.ceil(result));
             }
         } else {
             // Use logarithmic formula
@@ -984,18 +987,21 @@ class HP12cCalculator {
             if (this.beginMode) {
                 pmtAdj = this.pmt / (1 + rate);
             }
-            
+
             const numerator = pmtAdj - this.fv * rate;
             const denominator = this.pv * rate + pmtAdj;
-            
+
             if (denominator === 0 || numerator / denominator <= 0) {
                 this.setX(0);
             } else {
                 const n = Math.log(numerator / denominator) / Math.log(1 + rate);
-                this.setX(n);
+                // HP-12C always rounds N up to the next highest integer
+                // This matches real calculator behavior where fractional periods mean
+                // you need one more complete period to reach your goal
+                this.setX(Math.ceil(n));
             }
         }
-        
+
         this.n = this.getX();
         this.lastTVMWasCalculation = true;
     }

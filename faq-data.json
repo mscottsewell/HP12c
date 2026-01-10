@@ -77,7 +77,8 @@
                     "`10000` `FV` (target amount)",
                     "`n` (calculate time periods)"
                 ],
-                "result": "9.01 years"
+                "result": "10 years",
+                "note": "HP-12C rounds N up to next integer (exact: 9.006 years). This ensures you know how many complete periods are needed."
             },
             {
                 "name": "Interest Rate Calculation",
@@ -282,6 +283,18 @@
     },
     "tips": {
         "title": "Practice Tips & Common Errors",
-        "examples": []
+        "examples": [
+            {
+                "name": "HP-12C Always Rounds N Up",
+                "problem": "Why does calculating N sometimes give a whole number when the exact answer should have decimals?",
+                "steps": [
+                    "This is authentic HP-12C behavior",
+                    "When solving for N (number of periods), the HP-12C always rounds UP to the next highest integer",
+                    "Example: If the exact answer is 9.006 years, HP-12C displays 10",
+                    "Reason: In real-world scenarios, you need 10 complete periods to reach your goal, not 9.006 periods"
+                ],
+                "result": "This matches real HP-12C calculators and differs from most other financial calculators and Excel"
+            }
+        ]
     }
 }

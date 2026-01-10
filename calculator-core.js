@@ -87,29 +87,36 @@ function calculatePMT(n, i, pv, fv = 0, beginMode = false) {
  * @param {number} pmt - Payment per period
  * @param {number} fv - Future value
  * @param {boolean} [beginMode=false] - Payments at beginning of period
- * @returns {number} Number of periods
+ * @returns {number} Number of periods (rounded up to next integer like real HP-12C)
  */
 function calculateN(i, pv, pmt = 0, fv = 0, beginMode = false) {
     const rate = i / 100;
-    
+
     if (rate === 0) {
         if (pmt === 0) return 0;
-        return -(pv + fv) / pmt;
+        const result = -(pv + fv) / pmt;
+        // Round up to next integer (HP-12C behavior)
+        return Math.ceil(result);
     }
-    
+
     let pmtAdj = pmt;
     if (beginMode) {
         pmtAdj = pmt / (1 + rate);
     }
-    
+
     const numerator = pmtAdj - fv * rate;
     const denominator = pv * rate + pmtAdj;
-    
+
     if (denominator === 0 || numerator / denominator <= 0) {
         return 0;
     }
-    
-    return Math.log(numerator / denominator) / Math.log(1 + rate);
+
+    const n = Math.log(numerator / denominator) / Math.log(1 + rate);
+
+    // HP-12C always rounds N up to the next highest integer
+    // This matches real calculator behavior where fractional periods mean
+    // you need one more complete period to reach your goal
+    return Math.ceil(n);
 }
 
 /**

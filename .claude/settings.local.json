@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start index.html)",
+      "Bash(ls:*)",
+      "Bash(npm test:*)"
+    ]
+  }
+}

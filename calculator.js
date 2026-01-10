@@ -2684,8 +2684,8 @@ class HP12cCalculator {
         let html = '';
         keys.forEach((key, idx) => {
             const isDigit = /^[0-9.]$/.test(key);
-            // Avoid font issues with combining macron in x̄: render as an overlined x
-            const renderedKey = key.replace(/x\u0304/g, '<span class="xbar">x</span>');
+            // Keep original text so users can copy/paste symbols like x̄
+            const renderedKey = key;
             // Add space before non-digit keys (except first key)
             if (idx > 0 && !isDigit) {
                 html += ' ';

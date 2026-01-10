@@ -256,9 +256,9 @@ class HP12cCalculator {
         
         // Record the step (group consecutive number entries and operations that follow them)
         const isNumberEntry = this.isDigit(key) || key === 'decimal' || key === 'eex' || key === 'chs';
-        const isOperatorOrStorage = ['plus', 'minus', 'multiply', 'divide', 'n', 'i', 'pv', 'pmt', 'fv', 
-                                       'enter', 'sto', 'rcl', 'percent', 'delta-percent',
-                                       'percent-total', 'power', 'reciprocal'].includes(key) ||
+                const isOperatorOrStorage = ['plus', 'minus', 'multiply', 'divide', 'n', 'i', 'pv', 'pmt', 'fv', 
+                                                                             'enter', 'sto', 'rcl', 'percent', 'delta-percent',
+                                                                             'percent-total', 'power', 'reciprocal', 'sum'].includes(key) ||
                                      ['CFo', 'CFj', 'Nj'].includes(functionUsed);
         
         // Use the appropriate display value for the step
@@ -2660,6 +2660,8 @@ class HP12cCalculator {
             'AMORT': 'amortization',
             'INT': 'amortization interest',
             'Σ': 'sum statistics',
+            'Σ+': 'add to data set',
+            'Σ-': 'remove from data set',
             'D.MY': 'set date format D.MY',
             'M.DY': 'set date format M.DY',
             'ΔDYS': 'calculate days between dates',

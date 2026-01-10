@@ -125,8 +125,10 @@ function showCategory(categoryKey) {
 function formatStep(step) {
     // Replace backtick content with code tags for shaded background
     return step.replace(/`([^`]+)`/g, (match, content) => {
+        // Avoid font issues with combining macron in x̄: render as an overlined x
+        const rendered = content.replace(/x\u0304/g, '<span class="xbar">x</span>');
         // Wrap all content in code tag for shaded background
-        return `<code>${content}</code>`;
+        return `<code>${rendered}</code>`;
     });
 }
 

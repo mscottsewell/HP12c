@@ -2674,11 +2674,13 @@ class HP12cCalculator {
         let html = '';
         keys.forEach((key, idx) => {
             const isDigit = /^[0-9.]$/.test(key);
+            // Avoid font issues with combining macron in x̄: render as an overlined x
+            const renderedKey = key.replace(/x\u0304/g, '<span class="xbar">x</span>');
             // Add space before non-digit keys (except first key)
             if (idx > 0 && !isDigit) {
                 html += ' ';
             }
-            html += `<span class="step-key">${key}</span>`;
+            html += `<span class="step-key">${renderedKey}</span>`;
         });
         
         return html;

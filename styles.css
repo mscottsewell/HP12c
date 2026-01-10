@@ -13,6 +13,27 @@ body {
     color: #333;
 }
 
+:root {
+    --mono-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "DejaVu Sans Mono", "Noto Sans Mono", monospace;
+}
+
+/* Font-independent x̄ rendering (used in steps/FAQ) */
+.xbar {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+    padding-top: 0.15em;
+}
+
+.xbar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.05em;
+    border-top: 0.12em solid currentColor;
+}
+
 .container {
     display: flex;
     max-width: 1500px;
@@ -515,7 +536,7 @@ body {
     color: #2c3e50;
     padding: 2px 6px;
     border-radius: 3px;
-    font-family: 'Courier New', monospace;
+    font-family: var(--mono-font);
     font-weight: 600;
     font-size: 0.85rem;
     white-space: nowrap;
@@ -705,7 +726,7 @@ body {
     background: #e9ecef;
     padding: 2px 6px;
     border-radius: 3px;
-    font-family: 'Courier New', monospace;
+    font-family: var(--mono-font);
     font-size: 0.85em;
     color: #c7254e;
 }
@@ -921,7 +942,7 @@ body {
 .steps-list li {
     margin-bottom: 4px;
     line-height: 1.4;
-    font-family: 'Courier New', monospace;
+    font-family: var(--mono-font);
     font-size: 0.9rem;
 }
 
@@ -929,7 +950,7 @@ body {
     background: #e9ecef;
     padding: 2px 6px;
     border-radius: 3px;
-    font-family: 'Courier New', monospace;
+    font-family: var(--mono-font);
     font-size: 1em;
     color: #000000;
     font-weight: 600;

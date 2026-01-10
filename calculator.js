@@ -1779,9 +1779,16 @@ class HP12cCalculator {
     // Statistical functions
     meanWeighted() {
         /**
-         * Calculate weighted mean where y values are weights
-         * Returns x̄w = Σ(x·y) / Σy
-         * Also returns ȳ in Y register
+         * Calculate weighted mean.
+         *
+         * Data entry (as used in the FAQ): value ENTER weight Σ+
+         * With Σ+ using x from X and y from Y, this means:
+         *   x = weight
+         *   y = value
+         *
+         * Returns weighted mean of y using x as weights:
+         *   ȳw = Σ(x·y) / Σx
+         * Also returns arithmetic mean of y in the Y register.
          */
         const n = this.memory[11] || 0;
         if (n === 0) {
@@ -1789,23 +1796,24 @@ class HP12cCalculator {
             return;
         }
         
+        const sumX = this.memory[12] || 0;
         const sumY = this.memory[13] || 0;
         const sumXY = this.memory[16] || 0;
         
-        if (sumY === 0) {
+        if (sumX === 0) {
             this.setX(0);
             return;
         }
         
-        // Weighted mean of x
-        const xMeanWeighted = sumXY / sumY;
+        // Weighted mean of y using x as weights
+        const yMeanWeighted = sumXY / sumX;
         
         // Mean of y (standard arithmetic mean)
         const yMean = sumY / n;
         
         // Set results in stack
         this.stack[1] = yMean;  // ȳ in Y register
-        this.setX(xMeanWeighted); // x̄w in X register
+        this.setX(yMeanWeighted); // ȳw in X register
     }
     
     meanLinearReg() {

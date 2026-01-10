@@ -112,13 +112,18 @@ The calculator maintains six statistical registers:
 - R₁₆: Σxy (sum of x times y)
 
 ### meanWeighted()
-**Purpose**: Calculate weighted mean where y values are weights.
+**Purpose**: Calculate weighted mean (as used by the FAQ “Weighted Average” example).
 
 **Formula**:
 ```
-x̄w = Σ(x·y) / Σy
+ȳw = Σ(x·y) / Σx
 ȳ = Σy / n
 ```
+
+**Notes**:
+
+- The simulator’s `Σ+` uses **x from X** and **y from Y**.
+- With the common weighted-average keystrokes `value ENTER weight Σ+`, that means `x = weight` and `y = value`.
 
 **Returns**: Weighted mean in X, arithmetic mean of y in Y
 

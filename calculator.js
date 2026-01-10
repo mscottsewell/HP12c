@@ -610,10 +610,18 @@ class HP12cCalculator {
                 
             // 12x and 12÷ functions - g-shift
             case '12×':
+                // Real HP-12C behavior: g-12× (on the n key) multiplies by 12 and stores into n
                 this.multiply12();
+                if (key === 'n') {
+                    this.storeN();
+                }
                 break;
             case '12÷':
+                // Real HP-12C behavior: g-12÷ (on the i key) divides by 12 and stores into i
                 this.divide12();
+                if (key === 'i') {
+                    this.storeI();
+                }
                 break;
                 
             // Memory and display
@@ -2621,8 +2629,8 @@ class HP12cCalculator {
             'R↓': 'roll stack down',
             'x↔y': 'swap X and Y',
             'LSTx': 'recall last X',
-            '12×': 'multiply by 12',
-            '12÷': 'divide by 12',
+            '12×': 'multiply by 12 and store to n',
+            '12÷': 'divide by 12 and store to i',
             'FRAC': 'fractional part',
             'INTG': 'integer part',
             'n!': 'factorial',

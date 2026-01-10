@@ -294,6 +294,17 @@
                     "Reason: In real-world scenarios, you need 10 complete periods to reach your goal, not 9.006 periods"
                 ],
                 "result": "This matches real HP-12C calculators and differs from most other financial calculators and Excel"
+            },
+            {
+                "name": "g-12× / g-12÷ store n and i",
+                "problem": "Do g-12× and g-12÷ store into n/i on a real HP-12C?",
+                "steps": [
+                    "Yes. On the real HP-12C, `g-12×` (the blue function on the `n` key) multiplies the entered value by 12 and stores it into the `n` register in the same keypress.",
+                    "Similarly, `g-12÷` (the blue function on the `i` key) divides the entered value by 12 and stores it into the `i` register in the same keypress.",
+                    "Example (30-year loan, monthly): `30` `g-12×` stores 360 in `n`.",
+                    "Example (6% annual nominal → monthly): `6` `g-12÷` stores 0.5 in `i`."
+                ],
+                "result": "This simulator now matches that behavior: no extra unshifted press of `n`/`i` is required after `g-12×` / `g-12÷`."
             }
         ]
     }

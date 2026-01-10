@@ -60,6 +60,7 @@ This simulator includes full support for:
 
 - **RPN Stack Operations** - Four-register stack (X, Y, Z, T) with proper lift behavior
 - **LastX Register** - Saves X value before operations for error recovery
+- **Scientific Notation (EEX)** - Full support for entering and manipulating scientific notation with proper exponent handling
 - **Arithmetic Operations** - Add, subtract, multiply, divide, power, reciprocal, square root
 - **Financial Calculations** - TVM (N, I/Y, PV, PMT, FV), NPV, IRR, bonds, amortization, depreciation
 - **Statistical Functions** - Σ+, Σ-, mean, standard deviation, linear regression
@@ -67,6 +68,8 @@ This simulator includes full support for:
 - **Date Calculations** - Date arithmetic with M.DY and D.MY formats
 - **Number Formatting** - Scientific notation, fixed decimal places
 - **Percentage Functions** - %, Δ%, %T
+- **Conversion Functions** - Polar↔Rectangular, Hours↔H.MS, Degrees↔Radians
+- **Cash Flow Sum** - f-Σ calculates sum of all stored cash flows
 
 ## Reporting Issues
 

@@ -128,6 +128,9 @@ class HP12cCalculator {
         /** @type {('add'|'subtract'|'multiply'|'divide'|null)} Pending memory arithmetic operation */
         this.waitingForRegisterOp = null;
 
+        /** @type {boolean} Entering exponent after EEX key press */
+        this.isEnteringExponent = false;
+
         /** @type {boolean} User manually hid storage panel */
         this.storagePanelHiddenByUser = false;
 
@@ -581,6 +584,9 @@ class HP12cCalculator {
             case 'IRR':
                 this.calculateIRR();
                 break;
+            case 'Σ':
+                this.sumCashFlows();
+                break;
                 
             // Memory operations
             case 'STO':
@@ -794,6 +800,21 @@ class HP12cCalculator {
     }
     
     enterDigit(digit) {
+        // If entering exponent after EEX, append to exponent part
+        if (this.isEnteringExponent) {
+            // Find the 'e' or 'e-' in display and append digit to exponent
+            const eIndex = this.display.indexOf('e');
+            if (eIndex !== -1) {
+                // Limit exponent to 2 digits (HP-12C allows -99 to 99)
+                const exponentPart = this.display.substring(eIndex + 1);
+                const cleanExponent = exponentPart.replace('-', '').replace('+', '');
+                if (cleanExponent.length < 2) {
+                    this.display += digit;
+                }
+            }
+            return;
+        }
+        
         if (this.isNewNumber) {
             // Lift stack only when stack-lift is enabled (after operations). ENTER disables it.
             if (this.stackLiftEnabled) {
@@ -827,13 +848,26 @@ class HP12cCalculator {
     }
     
     enterExponent() {
+        // Only allow EEX if not already in exponent mode
         if (this.display.indexOf('e') === -1) {
+            // If starting fresh, need a mantissa first
+            if (this.isNewNumber) {
+                this.display = '1';
+                this.isNewNumber = false;
+                this.isTyping = true;
+            }
             this.display += 'e';
+            this.isEnteringExponent = true;
         }
     }
     
     // Stack operations
     enter() {
+        // If in exponent entry mode, finalize the scientific notation
+        if (this.isEnteringExponent) {
+            this.finalizeExponentEntry();
+        }
+        
         // HP12C ENTER duplicates X into Y without altering X
         const value = this.getX();
         // If user was typing, commit the typed value to X before duplicating
@@ -851,6 +885,32 @@ class HP12cCalculator {
         this.stackLiftEnabled = false;
         // Format the display with proper decimal places
         this.display = this.formatNumber(this.stack[0]);
+    }
+    
+    finalizeExponentEntry() {
+        if (this.isEnteringExponent) {
+            // Parse the display string with exponent
+            const eIndex = this.display.indexOf('e');
+            if (eIndex !== -1) {
+                const mantissa = this.display.substring(0, eIndex);
+                let exponent = this.display.substring(eIndex + 1);
+                
+                // Handle empty or incomplete exponent (default to 0)
+                if (exponent === '' || exponent === '-' || exponent === '+') {
+                    exponent = '0';
+                }
+                
+                // Calculate the actual value
+                const mantissaNum = parseFloat(mantissa);
+                const exponentNum = parseInt(exponent);
+                const value = mantissaNum * Math.pow(10, exponentNum);
+                
+                // Update display to show the calculated value
+                this.display = String(value);
+                this.stack[0] = value;
+            }
+            this.isEnteringExponent = false;
+        }
     }
     
     pushStack(value) {
@@ -892,6 +952,7 @@ class HP12cCalculator {
     
     // Basic arithmetic operations
     add() {
+        if (this.isEnteringExponent) this.finalizeExponentEntry();
         const x = this.getX();
         this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
@@ -902,6 +963,7 @@ class HP12cCalculator {
     }
     
     subtract() {
+        if (this.isEnteringExponent) this.finalizeExponentEntry();
         const x = this.getX();
         this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
@@ -912,6 +974,7 @@ class HP12cCalculator {
     }
     
     multiply() {
+        if (this.isEnteringExponent) this.finalizeExponentEntry();
         const x = this.getX();
         this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
@@ -922,6 +985,7 @@ class HP12cCalculator {
     }
     
     divide() {
+        if (this.isEnteringExponent) this.finalizeExponentEntry();
         const x = this.getX();
         this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
@@ -937,6 +1001,7 @@ class HP12cCalculator {
     
     // Mathematical functions
     power() {
+        if (this.isEnteringExponent) this.finalizeExponentEntry();
         // HP-12C behavior: y^x computes Y raised to X (base in Y, exponent in X)
         const x = this.getX();
         this.lastX = x; // Save X before operation (HP-12C behavior)
@@ -977,7 +1042,25 @@ class HP12cCalculator {
     }
     
     changeSign() {
-        if (this.isTyping) {
+        if (this.isEnteringExponent) {
+            // Toggle exponent sign, not mantissa sign
+            const eIndex = this.display.indexOf('e');
+            if (eIndex !== -1) {
+                const mantissa = this.display.substring(0, eIndex + 1);
+                const exponent = this.display.substring(eIndex + 1);
+                
+                if (exponent.startsWith('-')) {
+                    // Remove negative sign from exponent
+                    this.display = mantissa + exponent.substring(1);
+                } else if (exponent.length === 0) {
+                    // Add negative sign to empty exponent
+                    this.display = mantissa + '-';
+                } else {
+                    // Add negative sign to positive exponent
+                    this.display = mantissa + '-' + exponent;
+                }
+            }
+        } else if (this.isTyping) {
             if (this.display.startsWith('-')) {
                 this.display = this.display.substring(1);
             } else {
@@ -1337,6 +1420,22 @@ class HP12cCalculator {
         this.setX(irr * 100); // Return as percentage even if not fully converged
     }
     
+    sumCashFlows() {
+        // f-Σ: Calculate sum of all cash flows (CFo + all CFj)
+        if (this.cashFlows.length === 0) {
+            this.setX(0);
+            return;
+        }
+        
+        let sum = 0;
+        for (let i = 0; i < this.cashFlows.length; i++) {
+            const count = this.cashFlowCounts[i] || 1;
+            sum += this.cashFlows[i] * count;
+        }
+        
+        this.setX(sum);
+    }
+    
     // Percentage functions
     percent() {
         if (this.isTyping) this.pushStack(this.getX());
@@ -1602,6 +1701,7 @@ class HP12cCalculator {
         this.isNewNumber = true;
         this.isTyping = false;
         this.decimalEntered = false;
+        this.isEnteringExponent = false;
         this.fActive = false;
         this.gActive = false;
         this.updateFunctionIndicators();
@@ -2121,6 +2221,22 @@ class HP12cCalculator {
         // Convert radians to degrees
         const radians = this.getX();
         this.setX(radians * 180 / Math.PI);
+    }
+    
+    degToRad() {
+        // Convert degrees to radians  
+        const degrees = this.getX();
+        this.setX(degrees * Math.PI / 180);
+    }
+    
+    hmsToHours() {
+        // Convert H.MMSS format to decimal hours (reverse of →H)
+        const hms = this.getX();
+        const h = Math.floor(hms);
+        const fractional = hms - h;
+        const m = Math.floor(fractional * 100);
+        const s = Math.round((fractional * 100 - m) * 100);
+        this.setX(h + m / 60 + s / 3600);
     }
     
     // Test functions

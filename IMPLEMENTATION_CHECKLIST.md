@@ -57,7 +57,7 @@ Review completed: January 10, 2026
 ### Documentation Updates
 - [x] Create KNOWN_LIMITATIONS.md documenting intentional simplifications
 - [x] Document that programming functions (R/S, SST, PRGM, GTO) are simplified
-- [ ] Document EEX limitations in current implementation
+- [x] Document EEX limitations in current implementation
 - [x] Update README.md with link to limitations document
 - [x] Add section in FAQ about differences from real HP-12C
 
@@ -66,38 +66,38 @@ Review completed: January 10, 2026
 ## 🟡 Medium Priority - Enhanced Functionality
 
 ### EEX (Scientific Notation Entry)
-- [ ] Implement proper EEX state tracking (entering exponent mode)
-- [ ] Handle digit entry after EEX (should append to exponent)
-- [ ] Handle CHS after EEX (should toggle exponent sign, not mantissa)
-- [ ] Handle invalid operations during EEX entry
-- [ ] Display proper scientific notation format during entry
-- [ ] Test various scientific notation entries (1.5e-10, 2.3e5, etc.)
+- [x] Implement proper EEX state tracking (entering exponent mode)
+- [x] Handle digit entry after EEX (should append to exponent)
+- [x] Handle CHS after EEX (should toggle exponent sign, not mantissa)
+- [x] Handle invalid operations during EEX entry
+- [x] Display proper scientific notation format during entry
+- [x] Test various scientific notation entries (1.5e-10, 2.3e5, etc.)
 
 **Testing:**
-- [ ] Test: 1.5 EEX 3 = 1500
-- [ ] Test: 2 EEX CHS 4 = 0.0002
-- [ ] Test: 6.02 EEX 23 = 6.02×10²³
+- [x] Test: 1.5 EEX 3 = 1500
+- [x] Test: 2 EEX CHS 4 = 0.0002
+- [x] Test: 6.02 EEX 23 = 6.02×10²³
 
 ### Missing f-Σ Function
-- [ ] Implement f-Σ (sum of cash flows) function
-- [ ] Add to switch statement as case 'Σ':
-- [ ] Calculate sum of all stored cash flows (CFo + all CFj)
-- [ ] Display result in X register
-- [ ] Test with various cash flow scenarios
+- [x] Implement f-Σ (sum of cash flows) function
+- [x] Add to switch statement as case 'Σ':
+- [x] Calculate sum of all stored cash flows (CFo + all CFj)
+- [x] Display result in X register
+- [x] Test with various cash flow scenarios
 
 ### Conversion Functions Verification
-- [ ] Test `polarToRect()` (f-P/R) with known values
-- [ ] Test `rectToPolar()` (g-→P) with known values
-- [ ] Test `hoursToHMS()` (g-→H) with decimal hours
-- [ ] Test `radToDeg()` (g-→DEG) with radian values
-- [ ] Implement `hmsToHours()` (reverse of →H) if needed
-- [ ] Implement `degToRad()` (g-→RAD) - currently missing
-- [ ] Add test cases for all conversion functions
+- [x] Test `polarToRect()` (f-P/R) with known values
+- [x] Test `rectToPolar()` (g-→P) with known values
+- [x] Test `hoursToHMS()` (g-→H) with decimal hours
+- [x] Test `radToDeg()` (g-→DEG) with radian values
+- [x] Implement `hmsToHours()` (reverse of →H) if needed
+- [x] Implement `degToRad()` (g-→RAD) - currently missing
+- [x] Add test cases for all conversion functions
 
 **Testing:**
-- [ ] Test: Convert (3,4) rectangular to polar = (5, 53.13°)
-- [ ] Test: Convert 2.5 hours to H.MS = 2.30
-- [ ] Test: Convert π/2 radians to degrees = 90°
+- [x] Test: Convert (3,4) rectangular to polar = (5, 53.13°)
+- [x] Test: Convert 2.5 hours to H.MS = 2.30
+- [x] Test: Convert π/2 radians to degrees = 90°
 
 ---
 
@@ -125,9 +125,10 @@ Review completed: January 10, 2026
 ## 🧪 Testing Requirements
 
 ### New Test Files Needed
-- [ ] Create `calculator-lastx.test.js` for LastX functionality
-- [ ] Create `calculator-memory-arithmetic.test.js` for STO+/- etc.
-- [ ] Create `calculator-eex.test.js` for scientific notation entry
+- [x] Create `calculator-lastx.test.js` for LastX functionality
+- [x] Create `calculator-memory-arithmetic.test.js` for STO+/- etc.
+- [x] Create `calculator-eex.test.js` for scientific notation entry
+- [x] Create `calculator-conversions.test.js` for conversion functions
 - [ ] Create `calculator-conversions.test.js` for all conversion functions
 - [ ] Create `calculator-dates.test.js` for date calculations
 - [ ] Create `calculator-bonds.test.js` for bond pricing/YTM

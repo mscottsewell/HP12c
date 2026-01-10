@@ -644,6 +644,7 @@ class HP12cCalculator {
             case 'x̄,w':
                 this.meanWeighted();
                 break;
+            case 'x̄':
             case 'x̄,r':
                 this.meanLinearReg();
                 break;
@@ -654,6 +655,7 @@ class HP12cCalculator {
                 this.standardDeviation();
                 break;
             case 'x̂':
+            case 'x̂,r':
                 this.xEstimate();
                 break;
                 
@@ -2645,9 +2647,11 @@ class HP12cCalculator {
             '→DEG': 'radians to degrees',
             's': 'standard deviation',
             'x̄,w': 'weighted mean',
-            'x̄,r': 'mean (linear regression)',
+            'x̄': 'mean',
+            'x̄,r': 'mean',
             'ŷ,r': 'y estimate (regression)',
             'x̂': 'x estimate (regression)',
+            'x̂,r': 'x estimate (regression)',
             'PRICE': 'bond price',
             'YTM': 'bond yield to maturity',
             'SL': 'straight-line depreciation',

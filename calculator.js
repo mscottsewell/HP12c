@@ -270,8 +270,10 @@ class HP12cCalculator {
         const isTVMCalculation = this.lastTVMWasCalculation && ['n', 'i', 'pv', 'pmt', 'fv'].includes(key);
         const isCalculationFunction = ['NPV', 'IRR', 'ΔDYS', 'DATE'].includes(functionUsed);
         const isSwapOperation = functionUsed === 'x↔y';
-        const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display : 
-                                 ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution);
+        const isSigmaOperation = ['Σ+', 'Σ-'].includes(functionUsed);
+        const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display :
+                     ((isSigmaOperation && this.lastStepWasNumber) ? displayBeforeExecution :
+                      ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution));
         
         // Don't record steps for f and g key presses, CLRG, CLx, or ON
         if (key === 'f' || key === 'g') {

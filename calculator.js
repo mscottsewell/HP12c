@@ -887,6 +887,12 @@ class HP12cCalculator {
         this.display = this.formatNumber(this.stack[0]);
     }
     
+    /**
+     * Finalize exponent entry mode (EEX)
+     * Parses the mantissa and exponent from display, calculates the scientific notation value,
+     * and updates both the display and X register
+     * Example: "1.5e3" becomes 1500
+     */
     finalizeExponentEntry() {
         if (this.isEnteringExponent) {
             // Parse the display string with exponent
@@ -1420,6 +1426,12 @@ class HP12cCalculator {
         this.setX(irr * 100); // Return as percentage even if not fully converged
     }
     
+    /**
+     * Sum all cash flows (f-Σ function)
+     * Calculates CFo + CF1*N1 + CF2*N2 + ... + CFn*Nn
+     * Returns the sum in the X register
+     * Example: CFo=1000, CF1=500(×3), CF2=-200 → Σ = 1000 + 1500 - 200 = 2300
+     */
     sumCashFlows() {
         // f-Σ: Calculate sum of all cash flows (CFo + all CFj)
         if (this.cashFlows.length === 0) {
@@ -2223,12 +2235,22 @@ class HP12cCalculator {
         this.setX(radians * 180 / Math.PI);
     }
     
+    /**
+     * Convert degrees to radians (g-→RAD)
+     * Takes X in degrees, returns radians in X
+     * Example: 90° → π/2 (1.5708...)
+     */
     degToRad() {
         // Convert degrees to radians  
         const degrees = this.getX();
         this.setX(degrees * Math.PI / 180);
     }
     
+    /**
+     * Convert H.MMSS format to decimal hours
+     * Reverse of →H function
+     * Example: 2.3045 (2h 30m 45s) → 2.5125 hours
+     */
     hmsToHours() {
         // Convert H.MMSS format to decimal hours (reverse of →H)
         const hms = this.getX();
@@ -2246,6 +2268,35 @@ class HP12cCalculator {
         const x = this.getX();
         const y = this.stack[1];
         const result = x <= y;
+        this.display = result ? 'TRUE' : 'FALSE';
+        setTimeout(() => this.updateDisplay(), 1000);
+    }
+    
+    /**
+     * Test if X > 0 (g-x>0 function)
+     * Displays TRUE or FALSE for 1 second, then returns to normal display
+     * Does not affect the stack
+     */
+    testXGreaterThanZero() {
+        // Test if X > 0
+        const x = this.getX();
+        const result = x > 0;
+        this.display = result ? 'TRUE' : 'FALSE';
+        setTimeout(() => this.updateDisplay(), 1000);
+    }
+    
+    /**
+     * Test if X < Y (g-x<y function)
+     * Compares X and Y registers
+     * Displays TRUE or FALSE for 1 second, then returns to normal display
+     * Does not drop the stack
+     */
+    testXLessThanY() {
+        // Test if X < Y
+        if (this.isTyping) this.pushStack(this.getX());
+        const x = this.getX();
+        const y = this.stack[1];
+        const result = x < y;
         this.display = result ? 'TRUE' : 'FALSE';
         setTimeout(() => this.updateDisplay(), 1000);
     }

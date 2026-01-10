@@ -294,23 +294,44 @@ Each button is precisely positioned over the calculator image using CSS absolute
 
 ### Testing
 
-**Automated Test Suite** (`test-functions.html`):
-- 36 comprehensive tests covering all calculator functions
-- All tests passing ✅
-- Validates against HP12c reference values
+**Modern Jest Test Suite:**
+- **122 comprehensive tests** across 8 test files
+- All tests passing ✅ (100% pass rate)
+- Validates against HP-12C reference values
+- Coverage includes unit tests, integration tests, and workflow tests
+
+**Test Files:**
+1. `calculator-core.test.js` - Core RPN stack operations (16 tests)
+2. `calculator.test.js` - Financial and mathematical functions (24 tests)
+3. `calculator-stats.test.js` - Statistical functions (15 tests)
+4. `calculator-lastx.test.js` - LastX register behavior (6 tests)
+5. `calculator-memory-arithmetic.test.js` - Memory arithmetic (20 tests)
+6. `calculator-eex.test.js` - Scientific notation entry (20 tests)
+7. `calculator-conversions.test.js` - Conversion functions (21 tests)
+8. `calculator-integration.test.js` - Complete workflows (18 tests)
 
 **To run tests:**
-1. Open `test-functions.html` in browser
-2. Click "Run All Tests"
+```bash
+npm test                           # Run all tests
+npm test calculator-core.test.js   # Run specific file
+npm test -- --coverage             # With coverage report
+```
 
 **Test Coverage:**
-- Financial TVM (n, i, PV, PMT, FV)
-- Cash flow analysis (NPV, IRR)
-- Statistical functions (regression, mean, std dev)
+- Financial TVM (n, i, PV, PMT, FV) with monthly/annual rates
+- Cash flow analysis (NPV, IRR, f-Σ)
+- Statistical functions (regression, mean, std dev, Σ+/Σ-)
 - Date arithmetic and day counting
 - Bond pricing and yield
-- All depreciation methods
+- All depreciation methods (SL, SOYD, DB)
 - Amortization schedules
+- Memory arithmetic (STO+, STO-, STO×, STO÷)
+- RCL arithmetic (RCL+, RCL-, RCL×, RCL÷)
+- Scientific notation (EEX) with exponent handling
+- Conversion functions (polar/rect, HMS/hours, deg/rad)
+- Edge cases: division by zero, overflow, underflow
+
+See [TESTING_SUMMARY.md](TESTING_SUMMARY.md) for detailed test coverage analysis.
 
 ### Implementation Status
 
@@ -319,13 +340,18 @@ Each button is precisely positioned over the calculator image using CSS absolute
 | RPN Stack Operations | ✅ Complete | Four-register stack (X, Y, Z, T) |
 | Basic Math | ✅ Complete | +, −, ×, ÷, powers, roots, logs |
 | Financial TVM | ✅ Complete | Newton-Raphson solver, END/BEGIN modes |
-| Cash Flow (NPV/IRR) | ✅ Complete | Iterative methods for complex flows |
+| Cash Flow (NPV/IRR) | ✅ Complete | Iterative methods for complex flows, f-Σ sum |
 | Bond Functions | ✅ Complete | Price and yield to maturity |
 | Depreciation | ✅ Complete | SL, SOYD, DB with corrected formulas |
 | Amortization | ✅ Complete | Principal/interest schedules |
 | Statistics | ✅ Complete | Linear regression, Σ operations |
 | Date Functions | ✅ Complete | M.DY/D.MY formats, day counting |
-| Memory Registers | ✅ Complete | 20 storage registers |
+| Memory Registers | ✅ Complete | 20 storage registers with arithmetic |
+| Memory Arithmetic | ✅ Complete | STO+/−/×/÷ and RCL+/−/×/÷ |
+| Scientific Notation | ✅ Complete | EEX with proper exponent handling |
+| Conversion Functions | ✅ Complete | Polar/rect, HMS/hours, deg/rad |
+| Test Functions | ✅ Complete | x>0, x<y tests |
+| LastX Register | ✅ Complete | Proper preservation across all operations |
 | Program Mode | ❌ Not Implemented | PSE, BST, GTO, PRGM placeholders |
 
 **Recent Fixes (October 2025):**

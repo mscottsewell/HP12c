@@ -125,6 +125,9 @@ class HP12cCalculator {
         /** @type {('store'|'recall'|null)} Pending memory register operation */
         this.waitingForRegister = null;
 
+        /** @type {('add'|'subtract'|'multiply'|'divide'|null)} Pending memory arithmetic operation */
+        this.waitingForRegisterOp = null;
+
         /** @type {boolean} User manually hid storage panel */
         this.storagePanelHiddenByUser = false;
 
@@ -380,12 +383,32 @@ class HP12cCalculator {
         if (this.waitingForRegister && this.isDigit(key)) {
             const register = parseInt(key);
             if (this.waitingForRegister === 'store') {
-                this.store(register);
+                if (this.waitingForRegisterOp) {
+                    this.storeArithmetic(register, this.waitingForRegisterOp);
+                    this.waitingForRegisterOp = null;
+                } else {
+                    this.store(register);
+                }
             } else if (this.waitingForRegister === 'recall') {
-                this.recall(register);
+                if (this.waitingForRegisterOp) {
+                    this.recallArithmetic(register, this.waitingForRegisterOp);
+                    this.waitingForRegisterOp = null;
+                } else {
+                    this.recall(register);
+                }
             }
             this.waitingForRegister = null;
             // Do not enter number typing mode; just return so handleButtonPress can finalize step
+            return;
+        }
+        
+        // If we're waiting for a register and get an arithmetic operator, prepare for memory arithmetic
+        if (this.waitingForRegister && ['+', '−', '×', '÷'].includes(func)) {
+            if (func === '+') this.waitingForRegisterOp = 'add';
+            else if (func === '−') this.waitingForRegisterOp = 'subtract';
+            else if (func === '×') this.waitingForRegisterOp = 'multiply';
+            else if (func === '÷') this.waitingForRegisterOp = 'divide';
+            // Continue waiting for register digit
             return;
         }
         
@@ -870,6 +893,7 @@ class HP12cCalculator {
     // Basic arithmetic operations
     add() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
         this.stack[0] = this.stack[1]; // Drop stack
         this.stack[1] = this.stack[2];
@@ -879,6 +903,7 @@ class HP12cCalculator {
     
     subtract() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
         this.stack[0] = this.stack[1]; // Drop stack
         this.stack[1] = this.stack[2];
@@ -888,6 +913,7 @@ class HP12cCalculator {
     
     multiply() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
         this.stack[0] = this.stack[1]; // Drop stack
         this.stack[1] = this.stack[2];
@@ -897,6 +923,7 @@ class HP12cCalculator {
     
     divide() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
         if (x === 0) {
             this.setX(Infinity);
@@ -912,6 +939,7 @@ class HP12cCalculator {
     power() {
         // HP-12C behavior: y^x computes Y raised to X (base in Y, exponent in X)
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         const y = this.stack[1];
         // Drop stack (binary op consumes X and Y)
         this.stack[0] = this.stack[1];
@@ -922,6 +950,7 @@ class HP12cCalculator {
     
     reciprocal() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         if (x === 0) {
             this.setX(Infinity);
         } else {
@@ -931,16 +960,19 @@ class HP12cCalculator {
     
     squareRoot() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(Math.sqrt(x));
     }
     
     naturalLog() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(Math.log(x));
     }
     
     exponential() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(Math.exp(x));
     }
     
@@ -991,6 +1023,7 @@ class HP12cCalculator {
          * Uses logarithmic formula when possible, iterative method otherwise
          * Rounds up to next integer to match real HP-12C behavior
          */
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         const rate = this.i / 100;
 
         if (rate === 0) {
@@ -1042,6 +1075,7 @@ class HP12cCalculator {
          * Calculate interest rate (i) from n, PV, PMT, and FV
          * Uses Newton-Raphson iterative method
          */
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         if (this.n === 0) {
             this.setX(0);
             this.lastTVMWasCalculation = true;
@@ -1150,6 +1184,7 @@ class HP12cCalculator {
     
     calculatePV() {
         // PV = PMT * ((1 - (1 + i)^(-n)) / i) + FV / (1 + i)^n
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         const rate = this.i / 100;
         if (rate === 0) {
             this.setX(-this.pmt * this.n - this.fv);
@@ -1169,6 +1204,7 @@ class HP12cCalculator {
     calculatePMT() {
         // HP12c PMT calculation
         // Standard formula: PMT = (PV * i * (1 + i)^n) / ((1 + i)^n - 1) + (FV * i) / ((1 + i)^n - 1)
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         const rate = this.i / 100;
         if (rate === 0) {
             this.setX(-(this.pv + this.fv) / this.n);
@@ -1187,6 +1223,7 @@ class HP12cCalculator {
     
     calculateFV() {
         // FV = -PV * (1 + i)^n - PMT * (((1 + i)^n - 1) / i)
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         const rate = this.i / 100;
         if (rate === 0) {
             this.setX(-this.pv - this.pmt * this.n);
@@ -1241,6 +1278,7 @@ class HP12cCalculator {
     
     calculateNPV() {
         // Net Present Value calculation
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         if (this.cashFlows.length === 0) {
             this.setX(0);
             return;
@@ -1263,6 +1301,7 @@ class HP12cCalculator {
     
     calculateIRR() {
         // Internal Rate of Return using Newton-Raphson method
+        this.lastX = this.getX(); // Save X before calculation (HP-12C behavior)
         if (this.cashFlows.length < 2) {
             this.setX(0);
             return;
@@ -1303,6 +1342,7 @@ class HP12cCalculator {
         if (this.isTyping) this.pushStack(this.getX());
         const y = this.stack[1];
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX((x / 100) * y);
     }
     
@@ -1310,6 +1350,7 @@ class HP12cCalculator {
         if (this.isTyping) this.pushStack(this.getX());
         const y = this.stack[1];
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX((x / y) * 100);
     }
     
@@ -1317,6 +1358,7 @@ class HP12cCalculator {
         if (this.isTyping) this.pushStack(this.getX());
         const y = this.stack[1]; // old value
         const x = this.getX();   // new value
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(((x - y) / y) * 100);
     }
     
@@ -1345,6 +1387,78 @@ class HP12cCalculator {
         this.stack[1] = this.stack[0];
         // Set the recalled value and enable stack-lift for next entry
         this.setX(value);
+    }
+    
+    /** Memory arithmetic operations (STO+, STO-, STO×, STO÷) */
+    storeArithmetic(register, operation) {
+        const x = this.getX();
+        const memValue = this.memory[register] || 0;
+        let result;
+        
+        switch (operation) {
+            case 'add':
+                result = memValue + x;
+                break;
+            case 'subtract':
+                result = memValue - x;
+                break;
+            case 'multiply':
+                result = memValue * x;
+                break;
+            case 'divide':
+                result = memValue / x;
+                break;
+            default:
+                result = memValue;
+        }
+        
+        this.memory[register] = result;
+        
+        // After completing memory arithmetic, HP12C terminates numeric entry
+        this.isNewNumber = true;
+        this.isTyping = false;
+        this.decimalEntered = false;
+        
+        // Auto-show storage panel if user hasn't hidden it
+        if (!this.storagePanelHiddenByUser) {
+            this.autoShowMemoryPanel();
+        }
+    }
+    
+    /** Recall arithmetic operations (RCL+, RCL-, RCL×, RCL÷) */
+    recallArithmetic(register, operation) {
+        // RCL arithmetic performs the operation on X register with memory value
+        // and places result in X (with stack lift)
+        const x = this.getX();
+        const memValue = this.memory[register] || 0;
+        let result;
+        
+        // Save X before operation (HP-12C behavior)
+        this.lastX = x;
+        
+        switch (operation) {
+            case 'add':
+                result = x + memValue;
+                break;
+            case 'subtract':
+                result = x - memValue;
+                break;
+            case 'multiply':
+                result = x * memValue;
+                break;
+            case 'divide':
+                result = x / memValue;
+                break;
+            default:
+                result = x;
+        }
+        
+        // RCL arithmetic lifts stack like normal RCL
+        this.stack[3] = this.stack[2];
+        this.stack[2] = this.stack[1];
+        this.stack[1] = this.stack[0];
+        
+        this.setX(result);
     }
     
     // Statistics
@@ -1667,16 +1781,19 @@ class HP12cCalculator {
     // Math functions - g-shift
     fractionalPart() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(x - Math.floor(x));
     }
     
     integerPart() {
         const x = this.getX();
+        this.lastX = x; // Save X before operation (HP-12C behavior)
         this.setX(Math.floor(x));
     }
     
     factorial() {
         const n = Math.floor(this.getX());
+        this.lastX = n; // Save X before operation (HP-12C behavior)
         if (n < 0) {
             this.setX(NaN);
             return;

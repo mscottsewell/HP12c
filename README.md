@@ -367,6 +367,8 @@ This project is designed for educational use to help students learn HP-12c calcu
 
 **Educational Purpose**: This simulator replicates essential HP-12c functions for learning purposes. While comprehensive and mathematically verified, always verify critical financial calculations with the actual HP-12c calculator or professional financial software.
 
+**Known Limitations**: See [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) for details on intentional simplifications (e.g., programming features not implemented).
+
 **No Warranty**: This software is provided "as is" without warranty of any kind. Use for educational purposes only.
 
 ---

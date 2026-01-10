@@ -5,6 +5,8 @@
 /TESTS.md
 # Development workspace
 /work/
+# VS Code
+.vscode/
 # Node and temp
 node_modules/
 *.log

@@ -254,8 +254,9 @@ class HP12cCalculator {
             return; // Skip normal step recording block
         }
         
-        // Record the step (group consecutive number entries and operations that follow them)
-        const isNumberEntry = this.isDigit(key) || key === 'decimal' || key === 'eex' || key === 'chs';
+                // Record the step (group consecutive number entries and operations that follow them)
+                // Only treat digit keys as number entry when they're used as digits (not when g-shift maps them to a function).
+                const isNumberEntry = (this.isDigit(key) && functionUsed === key) || key === 'decimal' || key === 'eex' || key === 'chs';
                 const isOperatorOrStorage = ['plus', 'minus', 'multiply', 'divide', 'n', 'i', 'pv', 'pmt', 'fv', 
                                                                              'enter', 'sto', 'rcl', 'percent', 'delta-percent',
                                                                              'percent-total', 'power', 'reciprocal', 'sum'].includes(key) ||
@@ -271,7 +272,8 @@ class HP12cCalculator {
         const isCalculationFunction = ['NPV', 'IRR', 'ΔDYS', 'DATE'].includes(functionUsed);
         const isSwapOperation = functionUsed === 'x↔y';
         const isSigmaOperation = ['Σ+', 'Σ-'].includes(functionUsed);
-        const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation) ? this.display :
+        const isStatCalculation = ['x̄,w', 'x̄', 'x̄,r', 'ŷ,r', 'x̂', 'x̂,r', 's'].includes(functionUsed);
+        const stepDisplayValue = (isTVMCalculation || isCalculationFunction || isSwapOperation || isStatCalculation) ? this.display :
                      ((isSigmaOperation && this.lastStepWasNumber) ? displayBeforeExecution :
                       ((isOperatorOrStorage && this.lastStepWasNumber) ? this.display : displayBeforeExecution));
         

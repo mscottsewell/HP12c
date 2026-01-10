@@ -48,6 +48,9 @@ class HP12cCalculator {
         
         /** @type {Array<{x: number, y: number}>} Statistics data pairs */
         this.stats = [];
+
+        /** @type {boolean} Debug flag to show the registers panel above Calculation Steps */
+        this.registersPanelEnabled = localStorage.getItem('hp12c_debug_showRegisters') === 'true';
         
         // Now set display with correct decimal places
         /** @type {string} Current display value as formatted string */
@@ -1730,6 +1733,7 @@ class HP12cCalculator {
     autoShowMemoryPanel() {
         const group = document.getElementById('storage-register-group');
         if (!group) return;
+        if (!this.registersPanelEnabled) return;
         const hasNonZero = this.memory.some(v => v !== 0);
         if (hasNonZero && group.style.display === 'none') {
             group.style.display = '';
@@ -1739,8 +1743,18 @@ class HP12cCalculator {
 
     toggleStorageRegisters() {
         const group = document.getElementById('storage-register-group');
+        const container = document.getElementById('registers-container-storage');
         const btn = document.getElementById('toggle-storage-btn');
         if (!group || !btn) return;
+
+        // If the whole panel is disabled (default), enable it for debugging.
+        if (!this.registersPanelEnabled) {
+            this.registersPanelEnabled = true;
+            localStorage.setItem('hp12c_debug_showRegisters', 'true');
+            this.storagePanelHiddenByUser = false;
+            if (container) container.style.display = '';
+        }
+
         if (group.style.display === 'none') {
             group.style.display = '';
             this.storagePanelHiddenByUser = false;
@@ -2761,7 +2775,9 @@ class HP12cCalculator {
         
         // Show/hide storage register group based on whether any values are stored
         const storageGroup = document.getElementById('storage-register-group');
-        if (this.storagePanelHiddenByUser) {
+        if (!this.registersPanelEnabled) {
+            storageGroup.style.display = 'none';
+        } else if (this.storagePanelHiddenByUser) {
             storageGroup.style.display = 'none';
         } else {
             storageGroup.style.display = hasNonZero ? 'block' : 'none';
@@ -2805,6 +2821,12 @@ class HP12cCalculator {
 document.addEventListener('DOMContentLoaded', () => {
     window.calculator = new HP12cCalculator();
     console.log('HP12c Calculator initialized');
+
+    // Hide the registers panel above Calculation Steps unless explicitly enabled for debugging.
+    const storageContainer = document.getElementById('registers-container-storage');
+    if (storageContainer) {
+        storageContainer.style.display = window.calculator.registersPanelEnabled ? '' : 'none';
+    }
     
     // Add g-shift and f-shift labels to buttons
     const buttons = document.querySelectorAll('.calc-btn');

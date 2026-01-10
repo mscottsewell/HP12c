@@ -901,9 +901,13 @@ class HP12cCalculator {
     
     // Mathematical functions
     power() {
-        if (this.isTyping) this.pushStack(this.getX());
-        const y = this.popStack();
-        const x = this.popStack();
+        // HP-12C behavior: y^x computes Y raised to X (base in Y, exponent in X)
+        const x = this.getX();
+        const y = this.stack[1];
+        // Drop stack (binary op consumes X and Y)
+        this.stack[0] = this.stack[1];
+        this.stack[1] = this.stack[2];
+        this.stack[2] = this.stack[3];
         this.setX(Math.pow(y, x));
     }
     

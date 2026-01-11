@@ -61,8 +61,8 @@
                 "name": "Present Value of Annuity (Monthly Payments)",
                 "problem": "What is the present value of the right to receive a payment of $3,000 at the end of every month for 15 years at a discount rate of 8% per year?",
                 "steps": [
-                    "`180` `n` (15 years × 12 months)",
-                    "`8` `ENTER` `12` `÷` `i` (8% ÷ 12 = monthly rate)",
+                    "`15` `g-12×` (15 years → 180 months)",
+                    "`8` `g-12÷` (8% annual → 0.6667% monthly)",
                     "`3000` `PMT` (monthly payment)",
                     "`PV` (calculate present value)"
                 ],
